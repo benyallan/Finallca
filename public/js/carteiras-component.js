@@ -11,8 +11,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var v_money__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! v-money */ "./node_modules/v-money/dist/v-money.js");
+/* harmony import */ var v_money__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(v_money__WEBPACK_IMPORTED_MODULE_0__);
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
+    Money: v_money__WEBPACK_IMPORTED_MODULE_0__.Money,
     NovaCarteiraModal: function NovaCarteiraModal() {
       return __webpack_require__.e(/*! import() | nova-carteira-modal */ "nova-carteira-modal").then(__webpack_require__.bind(__webpack_require__, /*! ./modals/NovaCarteiraModal.vue */ "./resources/js/components/carteiras/modals/NovaCarteiraModal.vue"));
     }
@@ -24,6 +28,19 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     console.log('Component mounted.');
+  },
+  data: function data() {
+    return {
+      price: 123.45,
+      money: {
+        decimal: ',',
+        thousands: '.',
+        prefix: 'R$ ',
+        suffix: ' ',
+        precision: 2,
+        masked: false
+      }
+    };
   }
 });
 
@@ -59,7 +76,20 @@ var render = function render() {
     attrs: {
       variant: "success"
     }
-  }, [_vm._v("Teste de modal")])], 1), _vm._v(" "), _c("b-modal", {
+  }, [_vm._v("Teste de modal")])], 1), _vm._v(" "), _c("form", {
+    attrs: {
+      action: "",
+      method: "post"
+    }
+  }, [_vm._m(0), _vm._v(" "), _c("money", _vm._b({
+    model: {
+      value: _vm.price,
+      callback: function callback($$v) {
+        _vm.price = $$v;
+      },
+      expression: "price"
+    }
+  }, "money", _vm.money, false)), _vm._v(" " + _vm._s(_vm.price) + "\n        ")], 1), _vm._v(" "), _c("b-modal", {
     attrs: {
       id: "modal-1",
       title: "BootstrapVue"
@@ -69,7 +99,32 @@ var render = function render() {
   }, [_vm._v("Hello from modal!")])]), _vm._v(" "), _c("nova-carteira-modal")], 1);
 };
 
-var staticRenderFns = [];
+var staticRenderFns = [function () {
+  var _vm = this,
+      _c = _vm._self._c;
+
+  return _c("div", {
+    staticClass: "form-group"
+  }, [_c("label", {
+    attrs: {
+      "for": ""
+    }
+  }, [_vm._v("Nome")]), _vm._v(" "), _c("input", {
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "nome",
+      id: "",
+      "aria-describedby": "helpId",
+      placeholder: "Nome da carteira"
+    }
+  }), _vm._v(" "), _c("small", {
+    staticClass: "form-text text-muted",
+    attrs: {
+      id: "helpId"
+    }
+  }, [_vm._v("Nome da nova carteira")])]);
+}];
 render._withStripped = true;
 
 

@@ -4,11 +4,13 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
  import BootstrapVue from 'bootstrap-vue';
+ import money from 'v-money'
 
 require('./bootstrap');
 
 window.Vue = require('vue').default;
 Vue.use(BootstrapVue);
+Vue.use(money, {precision: 4})
 
 /**
  * The following block of code may be used to automatically register your
