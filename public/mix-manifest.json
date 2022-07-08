@@ -1,6 +1,6 @@
 {
     "/js/app.js": "/js/app.js",
+    "/js/carteiras-component.js": "/js/carteiras-component.js",
     "/js/nova-carteira-modal.js": "/js/nova-carteira-modal.js",
-    "/css/app.css": "/css/app.css",
-    "/js/carteiras-component.js": "/js/carteiras-component.js"
+    "/css/app.css": "/css/app.css"
 }

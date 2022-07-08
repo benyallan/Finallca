@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Carteira extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['nome','saldo_inicial'];
 }

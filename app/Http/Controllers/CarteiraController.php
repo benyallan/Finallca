@@ -36,7 +36,7 @@ class CarteiraController extends Controller
      */
     public function store(StoreCarteiraRequest $request)
     {
-        //
+        return Carteira::create($request->all());
     }
 
     /**

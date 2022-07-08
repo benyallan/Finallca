@@ -11,12 +11,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var v_money__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! v-money */ "./node_modules/v-money/dist/v-money.js");
-/* harmony import */ var v_money__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(v_money__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var v_money__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! v-money */ "./node_modules/v-money/dist/v-money.js");
+/* harmony import */ var v_money__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(v_money__WEBPACK_IMPORTED_MODULE_1__);
+
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
-    Money: v_money__WEBPACK_IMPORTED_MODULE_0__.Money,
+    Money: v_money__WEBPACK_IMPORTED_MODULE_1__.Money,
     NovaCarteiraModal: function NovaCarteiraModal() {
       return __webpack_require__.e(/*! import() | nova-carteira-modal */ "nova-carteira-modal").then(__webpack_require__.bind(__webpack_require__, /*! ./modals/NovaCarteiraModal.vue */ "./resources/js/components/carteiras/modals/NovaCarteiraModal.vue"));
     }
@@ -24,16 +27,24 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     showModal: function showModal() {
       this.$bvModal.show('nova-carteira-modal');
+    },
+    addCarteira: function addCarteira() {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/carteiras', this.post).then(function (response) {
+        console.log(response);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+      this.carteiras.push({
+        nome: this.post.nome,
+        saldo_atual: this.post.saldo_inicial
+      });
     }
-  },
-  mounted: function mounted() {
-    console.log('Component mounted.');
   },
   data: function data() {
     return {
       carteiras: [],
       post: {
-        carteira: null,
+        nome: null,
         saldo_inicial: 0
       },
       money: {
@@ -129,7 +140,17 @@ var render = function render() {
       },
       expression: "post.saldo_inicial"
     }
-  }, "money", _vm.money, false))], 1), _vm._v(" "), _vm._m(0)])]), _vm._v(" "), _c("b-table", {
+  }, "money", _vm.money, false))], 1), _vm._v(" "), _c("div", {
+    staticClass: "col-4"
+  }, [_c("button", {
+    staticClass: "btn btn-primary my-4",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.addCarteira
+    }
+  }, [_vm._v("Adicionar carteira")])])])]), _vm._v(" "), _c("b-table", {
     attrs: {
       striped: "",
       hover: "",
@@ -138,19 +159,7 @@ var render = function render() {
   }), _vm._v(" "), _c("nova-carteira-modal")], 1);
 };
 
-var staticRenderFns = [function () {
-  var _vm = this,
-      _c = _vm._self._c;
-
-  return _c("div", {
-    staticClass: "col-4"
-  }, [_c("button", {
-    staticClass: "btn btn-primary my-4",
-    attrs: {
-      type: "button"
-    }
-  }, [_vm._v("Adicionar carteira")])]);
-}];
+var staticRenderFns = [];
 render._withStripped = true;
 
 

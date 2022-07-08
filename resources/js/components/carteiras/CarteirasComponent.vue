@@ -16,7 +16,7 @@
                     <money id="saldo inicial" name="sald-inicial" class="form-control" v-model="post.saldo_inicial" v-bind="money"></money>
                 </div>
                 <div class="col-4">
-                    <button type="button" class="btn btn-primary my-4">Adicionar carteira</button>
+                    <button type="button" @click="addCarteira" class="btn btn-primary my-4">Adicionar carteira</button>
                 </div>
             </div>
         </form>
@@ -27,7 +27,8 @@
 </template>
 
 <script>
-    import {Money} from 'v-money'
+    import axios from 'axios'
+import {Money} from 'v-money'
     
     export default {
         components: {
@@ -37,16 +38,25 @@
         methods: {
             showModal() {
                 this.$bvModal.show('nova-carteira-modal')
+            },
+            addCarteira() {
+                axios.post('/carteiras', this.post)
+                .then(function (response) {
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                this.carteiras.push(
+                    {nome: this.post.nome, saldo_atual: this.post.saldo_inicial}
+                )
             }
-        },
-        mounted() {
-            console.log('Component mounted.')
         },
         data () {
             return {
                 carteiras: [],
                 post: {
-                    carteira: null,
+                    nome: null,
                     saldo_inicial: 0
                 },
                 money: {
