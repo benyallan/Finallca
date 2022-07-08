@@ -31,7 +31,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      price: 123.45,
+      carteiras: [],
+      post: {
+        carteira: null,
+        saldo_inicial: 0
+      },
       money: {
         decimal: ',',
         thousands: '.',
@@ -63,9 +67,7 @@ var render = function render() {
 
   return _c("div", {
     staticClass: "container"
-  }, [_c("div", {
-    staticClass: "row justify-content-center"
-  }, [_c("b-button", {
+  }, [_c("div", [_c("b-button", {
     directives: [{
       name: "b-modal",
       rawName: "v-b-modal.nova-carteira-modal",
@@ -76,27 +78,64 @@ var render = function render() {
     attrs: {
       variant: "success"
     }
-  }, [_vm._v("Teste de modal")])], 1), _vm._v(" "), _c("form", {
+  }, [_vm._v("Teste de modal")])], 1), _vm._v(" "), _c("form", [_c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-4"
+  }, [_c("label", {
     attrs: {
-      action: "",
-      method: "post"
+      "for": "nome"
     }
-  }, [_vm._m(0), _vm._v(" "), _c("money", _vm._b({
+  }, [_vm._v("Nome")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.post.nome,
+      expression: "post.nome"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "nome",
+      id: "nome",
+      placeholder: "Nome da carteira"
+    },
+    domProps: {
+      value: _vm.post.nome
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+
+        _vm.$set(_vm.post, "nome", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "col-4"
+  }, [_c("label", {
+    attrs: {
+      "for": "saldo-inicial"
+    }
+  }, [_vm._v("Saldo inicial")]), _vm._v(" "), _c("money", _vm._b({
+    staticClass: "form-control",
+    attrs: {
+      id: "saldo inicial",
+      name: "sald-inicial"
+    },
     model: {
-      value: _vm.price,
+      value: _vm.post.saldo_inicial,
       callback: function callback($$v) {
-        _vm.price = $$v;
+        _vm.$set(_vm.post, "saldo_inicial", $$v);
       },
-      expression: "price"
+      expression: "post.saldo_inicial"
     }
-  }, "money", _vm.money, false)), _vm._v(" " + _vm._s(_vm.price) + "\n        ")], 1), _vm._v(" "), _c("b-modal", {
+  }, "money", _vm.money, false))], 1), _vm._v(" "), _vm._m(0)])]), _vm._v(" "), _c("b-table", {
     attrs: {
-      id: "modal-1",
-      title: "BootstrapVue"
+      striped: "",
+      hover: "",
+      items: _vm.carteiras
     }
-  }, [_c("p", {
-    staticClass: "my-4"
-  }, [_vm._v("Hello from modal!")])]), _vm._v(" "), _c("nova-carteira-modal")], 1);
+  }), _vm._v(" "), _c("nova-carteira-modal")], 1);
 };
 
 var staticRenderFns = [function () {
@@ -104,26 +143,13 @@ var staticRenderFns = [function () {
       _c = _vm._self._c;
 
   return _c("div", {
-    staticClass: "form-group"
-  }, [_c("label", {
+    staticClass: "col-4"
+  }, [_c("button", {
+    staticClass: "btn btn-primary my-4",
     attrs: {
-      "for": ""
+      type: "button"
     }
-  }, [_vm._v("Nome")]), _vm._v(" "), _c("input", {
-    staticClass: "form-control",
-    attrs: {
-      type: "text",
-      name: "nome",
-      id: "",
-      "aria-describedby": "helpId",
-      placeholder: "Nome da carteira"
-    }
-  }), _vm._v(" "), _c("small", {
-    staticClass: "form-text text-muted",
-    attrs: {
-      id: "helpId"
-    }
-  }, [_vm._v("Nome da nova carteira")])]);
+  }, [_vm._v("Adicionar carteira")])]);
 }];
 render._withStripped = true;
 
