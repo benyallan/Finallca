@@ -3,10 +3,12 @@
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
+ import BootstrapVue from 'bootstrap-vue';
 
 require('./bootstrap');
 
 window.Vue = require('vue').default;
+Vue.use(BootstrapVue);
 
 /**
  * The following block of code may be used to automatically register your
@@ -19,7 +21,7 @@ window.Vue = require('vue').default;
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('carteiras-component', require('./components/CarteirasComponent.vue').default);
+// Vue.component('carteiras-component', require('./components/carteiras/CarteirasComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -29,4 +31,7 @@ Vue.component('carteiras-component', require('./components/CarteirasComponent.vu
 
 const app = new Vue({
     el: '#app',
+    components: {
+        CarteirasComponent: () => import('./components/carteiras/CarteirasComponent.vue' /* webpackChunkName: "carteiras-component" */ ),
+    }
 });
