@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCarteiraRequest;
 use App\Http\Requests\UpdateCarteiraRequest;
 use App\Models\Carteira;
+use Exception;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CarteiraController extends Controller
 {
@@ -36,7 +39,21 @@ class CarteiraController extends Controller
      */
     public function store(StoreCarteiraRequest $request)
     {
-        return Carteira::create($request->all());
+        try {
+            return Carteira::create($request->all());
+        } catch (Exception $e) {
+            $exception_message = !empty($e->getMessage()) ? 
+                                    trim($e->getMessage()) : 
+                                    'App Error Exception';
+            Log::error("\nUser: " . Auth::user() . 
+                "\nError store Carteira | Request Send to: " . 
+                json_encode($request->all()) . PHP_EOL .
+                $exception_message . PHP_EOL . "In file " . 
+                $e->getFile() . " on line " . $e->getLine() . PHP_EOL . 
+                $e
+            );
+            return  response()->json(['status' => 'Server Error'], 500);
+        }
     }
 
     /**
