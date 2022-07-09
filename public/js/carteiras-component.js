@@ -29,14 +29,16 @@ __webpack_require__.r(__webpack_exports__);
       this.$bvModal.show('nova-carteira-modal');
     },
     addCarteira: function addCarteira() {
+      var _this = this;
+
+      var carteira = this.post;
       axios__WEBPACK_IMPORTED_MODULE_0___default().post('/carteiras', this.post).then(function (response) {
-        console.log(response);
+        _this.carteiras.push({
+          nome: response.data.nome,
+          saldo_atual: response.data.saldo_inicial
+        });
       })["catch"](function (error) {
         console.log(error);
-      });
-      this.carteiras.push({
-        nome: this.post.nome,
-        saldo_atual: this.post.saldo_inicial
       });
     }
   },

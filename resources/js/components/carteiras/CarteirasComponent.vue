@@ -40,16 +40,18 @@ import {Money} from 'v-money'
                 this.$bvModal.show('nova-carteira-modal')
             },
             addCarteira() {
+                let carteira = this.post
                 axios.post('/carteiras', this.post)
-                .then(function (response) {
-                    console.log(response);
+                .then( response => {
+                    this.carteiras.push({
+                        nome: response.data.nome,
+                        saldo_atual: response.data.saldo_inicial
+                    })
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
-                this.carteiras.push(
-                    {nome: this.post.nome, saldo_atual: this.post.saldo_inicial}
-                )
+                
             }
         },
         data () {
