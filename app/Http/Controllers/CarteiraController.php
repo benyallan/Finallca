@@ -22,16 +22,6 @@ class CarteiraController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreCarteiraRequest  $request
@@ -99,5 +89,10 @@ class CarteiraController extends Controller
     public function destroy(Carteira $carteira)
     {
         //
+    }
+
+    public function get()
+    {
+        return Carteira::select('nome','saldo_inicial')->get();
     }
 }

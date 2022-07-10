@@ -21,7 +21,36 @@
             </div>
         </form>
 
-        <b-table striped hover :items="carteiras"></b-table>
+        <b-table 
+            striped hover 
+            :items="tabela.items"
+            :fields="tabela.fields"
+        >
+        <template #cell(nome)="data">
+            <b-form-input 
+                v-if="tabela.items[data.index].isEdit" 
+                type="text" v-model="tabela.items[data.index].nome">
+            </b-form-input>
+            <span v-else>{{data.value}}</span>
+        </template>
+        <template #cell(saldo_inicial)="data">
+            <b-form-input 
+                v-if="tabela.items[data.index].isEdit" 
+                type="text" v-model="tabela.items[data.index].saldo_inicial">
+            </b-form-input>
+            <span v-else>{{data.value}}</span>
+        </template>
+        <template #cell(acoes)="data">
+            <b-button @click="editRowHandler(data)" variant="primary">
+                <span v-if="!tabela.items[data.index].isEdit">Editar</span>
+                <span v-else>Salvar</span>
+            </b-button>
+            <b-button variant="danger">Delete</b-button>
+        </template>
+        </b-table>
+         <pre>
+            {{ tabela.items }}
+        </pre>
         <nova-carteira-modal></nova-carteira-modal>
     </div>
 </template>
@@ -40,18 +69,20 @@ import {Money} from 'v-money'
                 this.$bvModal.show('nova-carteira-modal')
             },
             addCarteira() {
-                let carteira = this.post
                 axios.post('/carteiras', this.post)
                 .then( response => {
-                    this.carteiras.push({
+                    this.tabela.items.splice(0,0,{
                         nome: response.data.nome,
-                        saldo_atual: response.data.saldo_inicial
+                        saldo_inicial: response.data.saldo_inicial
                     })
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
-                
+            },
+            editRowHandler(data) {
+                this.tabela.items[data.index].isEdit = 
+                    !this.tabela.items[data.index].isEdit;
             }
         },
         data () {
@@ -60,6 +91,14 @@ import {Money} from 'v-money'
                 post: {
                     nome: null,
                     saldo_inicial: 0
+                },
+                tabela: {
+                    fields: [
+                            {key: 'nome', label: 'Nome'},
+                            {key: 'saldo_inicial', label: 'Saldo Inicial'},
+                            {key: 'acoes', label: 'Ações'}
+                        ],
+                    items: [],
                 },
                 money: {
                     decimal: ',',
@@ -70,6 +109,17 @@ import {Money} from 'v-money'
                     masked: false
                 }
             }
+        },
+        mounted() {
+            axios.get('/carteiras/get').then(response => {
+                response.data.forEach( item => {
+                    this.tabela.items.push({
+                        nome: item.nome,
+                        saldo_inicial: item.saldo_inicial,
+                        isEdit: false
+                    })
+                })
+            })
         }
     }
 </script>

@@ -31,15 +31,17 @@ __webpack_require__.r(__webpack_exports__);
     addCarteira: function addCarteira() {
       var _this = this;
 
-      var carteira = this.post;
       axios__WEBPACK_IMPORTED_MODULE_0___default().post('/carteiras', this.post).then(function (response) {
-        _this.carteiras.push({
+        _this.tabela.items.splice(0, 0, {
           nome: response.data.nome,
-          saldo_atual: response.data.saldo_inicial
+          saldo_inicial: response.data.saldo_inicial
         });
       })["catch"](function (error) {
         console.log(error);
       });
+    },
+    editRowHandler: function editRowHandler(data) {
+      this.tabela.items[data.index].isEdit = !this.tabela.items[data.index].isEdit;
     }
   },
   data: function data() {
@@ -48,6 +50,19 @@ __webpack_require__.r(__webpack_exports__);
       post: {
         nome: null,
         saldo_inicial: 0
+      },
+      tabela: {
+        fields: [{
+          key: 'nome',
+          label: 'Nome'
+        }, {
+          key: 'saldo_inicial',
+          label: 'Saldo Inicial'
+        }, {
+          key: 'acoes',
+          label: 'Ações'
+        }],
+        items: []
       },
       money: {
         decimal: ',',
@@ -58,6 +73,19 @@ __webpack_require__.r(__webpack_exports__);
         masked: false
       }
     };
+  },
+  mounted: function mounted() {
+    var _this2 = this;
+
+    axios__WEBPACK_IMPORTED_MODULE_0___default().get('/carteiras/get').then(function (response) {
+      response.data.forEach(function (item) {
+        _this2.tabela.items.push({
+          nome: item.nome,
+          saldo_inicial: item.saldo_inicial,
+          isEdit: false
+        });
+      });
+    });
   }
 });
 
@@ -156,9 +184,61 @@ var render = function render() {
     attrs: {
       striped: "",
       hover: "",
-      items: _vm.carteiras
-    }
-  }), _vm._v(" "), _c("nova-carteira-modal")], 1);
+      items: _vm.tabela.items,
+      fields: _vm.tabela.fields
+    },
+    scopedSlots: _vm._u([{
+      key: "cell(nome)",
+      fn: function fn(data) {
+        return [_vm.tabela.items[data.index].isEdit ? _c("b-form-input", {
+          attrs: {
+            type: "text"
+          },
+          model: {
+            value: _vm.tabela.items[data.index].nome,
+            callback: function callback($$v) {
+              _vm.$set(_vm.tabela.items[data.index], "nome", $$v);
+            },
+            expression: "tabela.items[data.index].nome"
+          }
+        }) : _c("span", [_vm._v(_vm._s(data.value))])];
+      }
+    }, {
+      key: "cell(saldo_inicial)",
+      fn: function fn(data) {
+        return [_vm.tabela.items[data.index].isEdit ? _c("b-form-input", {
+          attrs: {
+            type: "text"
+          },
+          model: {
+            value: _vm.tabela.items[data.index].saldo_inicial,
+            callback: function callback($$v) {
+              _vm.$set(_vm.tabela.items[data.index], "saldo_inicial", $$v);
+            },
+            expression: "tabela.items[data.index].saldo_inicial"
+          }
+        }) : _c("span", [_vm._v(_vm._s(data.value))])];
+      }
+    }, {
+      key: "cell(acoes)",
+      fn: function fn(data) {
+        return [_c("b-button", {
+          attrs: {
+            variant: "primary"
+          },
+          on: {
+            click: function click($event) {
+              return _vm.editRowHandler(data);
+            }
+          }
+        }, [!_vm.tabela.items[data.index].isEdit ? _c("span", [_vm._v("Editar")]) : _c("span", [_vm._v("Salvar")])]), _vm._v(" "), _c("b-button", {
+          attrs: {
+            variant: "danger"
+          }
+        }, [_vm._v("Delete")])];
+      }
+    }])
+  }), _vm._v(" "), _c("pre", [_vm._v("            " + _vm._s(_vm.tabela.items) + "\n        ")]), _vm._v(" "), _c("nova-carteira-modal")], 1);
 };
 
 var staticRenderFns = [];
