@@ -35,5 +35,6 @@ const app = new Vue({
     el: '#app',
     components: {
         CarteirasComponent: () => import('./components/carteiras/CarteirasComponent.vue' /* webpackChunkName: "carteiras-component" */ ),
+        ContasCorrente: () => import('./components/contas_corrente/ContasCorrente.vue' /* webpackChunkName: "contas-corrente" */ ),
     }
 });

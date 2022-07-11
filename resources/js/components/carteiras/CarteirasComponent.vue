@@ -56,70 +56,70 @@
 </template>
 
 <script>
-    import axios from 'axios'
+import axios from 'axios'
 import {Money} from 'v-money'
     
-    export default {
-        components: {
-            Money,
-            NovaCarteiraModal: () => import('./modals/NovaCarteiraModal.vue' /* webpackChunkName: "nova-carteira-modal" */),
+export default {
+    components: {
+        Money,
+        NovaCarteiraModal: () => import('./modals/NovaCarteiraModal.vue' /* webpackChunkName: "nova-carteira-modal" */),
+    },
+    methods: {
+        showModal() {
+            this.$bvModal.show('nova-carteira-modal')
         },
-        methods: {
-            showModal() {
-                this.$bvModal.show('nova-carteira-modal')
-            },
-            addCarteira() {
-                axios.post('/carteiras', this.post)
-                .then( response => {
-                    this.tabela.items.splice(0,0,{
-                        nome: response.data.nome,
-                        saldo_inicial: response.data.saldo_inicial
-                    })
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-            editRowHandler(data) {
-                this.tabela.items[data.index].isEdit = 
-                    !this.tabela.items[data.index].isEdit;
-            }
-        },
-        data () {
-            return {
-                carteiras: [],
-                post: {
-                    nome: null,
-                    saldo_inicial: 0
-                },
-                tabela: {
-                    fields: [
-                            {key: 'nome', label: 'Nome'},
-                            {key: 'saldo_inicial', label: 'Saldo Inicial'},
-                            {key: 'acoes', label: 'Ações'}
-                        ],
-                    items: [],
-                },
-                money: {
-                    decimal: ',',
-                    thousands: '.',
-                    prefix: 'R$ ',
-                    suffix: ' ',
-                    precision: 2,
-                    masked: false
-                }
-            }
-        },
-        mounted() {
-            axios.get('/carteiras/get').then(response => {
-                response.data.forEach( item => {
-                    this.tabela.items.push({
-                        nome: item.nome,
-                        saldo_inicial: item.saldo_inicial,
-                        isEdit: false
-                    })
+        addCarteira() {
+            axios.post('/carteiras', this.post)
+            .then( response => {
+                this.tabela.items.splice(0,0,{
+                    nome: response.data.nome,
+                    saldo_inicial: response.data.saldo_inicial
                 })
             })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        editRowHandler(data) {
+            this.tabela.items[data.index].isEdit = 
+                !this.tabela.items[data.index].isEdit;
         }
+    },
+    data () {
+        return {
+            carteiras: [],
+            post: {
+                nome: null,
+                saldo_inicial: 0
+            },
+            tabela: {
+                fields: [
+                        {key: 'nome', label: 'Nome'},
+                        {key: 'saldo_inicial', label: 'Saldo Inicial'},
+                        {key: 'acoes', label: 'Ações'}
+                    ],
+                items: [],
+            },
+            money: {
+                decimal: ',',
+                thousands: '.',
+                prefix: 'R$ ',
+                suffix: ' ',
+                precision: 2,
+                masked: false
+            }
+        }
+    },
+    mounted() {
+        axios.get('/carteiras/get').then(response => {
+            response.data.forEach( item => {
+                this.tabela.items.push({
+                    nome: item.nome,
+                    saldo_inicial: item.saldo_inicial,
+                    isEdit: false
+                })
+            })
+        })
     }
+}
 </script>

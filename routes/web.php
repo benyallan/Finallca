@@ -26,3 +26,6 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/carteiras', [App\Http\Controllers\CarteiraController::class, 'index'])->name('carteira.index');
 Route::post('/carteiras', [App\Http\Controllers\CarteiraController::class, 'store'])->name('carteira.store');
 Route::get('/carteiras/get', [App\Http\Controllers\CarteiraController::class, 'get'])->name('carteira.get');
+
+// Contas Corrente
+Route::get('/contascorrente', [App\Http\Controllers\ContaCorrenteController::class, 'index'])->name('contascorrente.index');
