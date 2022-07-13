@@ -3,13 +3,15 @@
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
- import BootstrapVue from 'bootstrap-vue';
+ import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
  import money from 'v-money'
 
 require('./bootstrap');
 
 window.Vue = require('vue').default;
 Vue.use(BootstrapVue);
+Vue.use(BootstrapVueIcons);
+// Vue.use(IconsPlugin);
 Vue.use(money, {precision: 4})
 
 /**

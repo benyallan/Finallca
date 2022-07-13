@@ -21,12 +21,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   name: "EditableTable",
   components: {},
   props: {
-    items: Array,
+    value: Array,
     fields: Array
   },
   data: function data() {
     return {
-      tableItems: this.items.map(function (item) {
+      isBusy: false,
+      filter: null,
+      filterOn: [],
+      tableItems: this.value.map(function (item) {
         return _objectSpread(_objectSpread({}, item), {}, {
           isEdit: false
         });
@@ -36,6 +39,29 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   methods: {
     editRowHandler: function editRowHandler(data) {
       this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
+    },
+    inputHandler: function inputHandler(value, index, key) {
+      this.tableItems[index][key] = value;
+      this.$set(this.tableItems, index, this.tableItems[index]);
+      this.$emit("input", this.tableItems);
+    },
+    addRowHandler: function addRowHandler() {
+      var newRow = this.fields.reduce(function (a, c) {
+        return _objectSpread(_objectSpread({}, a), {}, _defineProperty({}, c.key, null));
+      }, {});
+      newRow.isEdit = true;
+      this.tableItems.unshift(newRow);
+      this.$emit('input', this.tableItems);
+    },
+    removeRowHandler: function removeRowHandler(index, remover, data) {
+      if (remover) {
+        this.tableItems = this.tableItems.filter(function (item, i) {
+          return i !== index;
+        });
+        this.$emit('input', this.tableItems);
+      } else {
+        this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
+      }
     }
   }
 });
@@ -62,41 +88,62 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       fields: [{
-        key: "name",
-        label: "Name"
+        key: "banco",
+        label: "Banco",
+        type: 'text',
+        sortable: true
       }, {
-        key: "department",
-        label: "Department"
+        key: "agencia",
+        label: "Agência",
+        type: 'text',
+        sortable: false
       }, {
-        key: "age",
-        label: "Age"
+        key: "numero",
+        label: "Número",
+        type: 'text',
+        sortable: false
       }, {
-        key: "dateOfBirth",
-        label: "Date Of Birth"
+        key: "nome",
+        label: "Nome do titular",
+        type: 'text',
+        sortable: true
+      }, {
+        key: "obs",
+        label: "Observações",
+        type: 'text',
+        sortable: false
+      }, {
+        key: "saldo_inicial",
+        label: "Saldo Inicial",
+        type: 'text',
+        sortable: false
       }, {
         key: "edit",
-        label: ""
+        label: "",
+        type: "edit",
+        sortable: false
       }],
       items: [{
-        age: 40,
-        name: 'Dickerson',
-        department: 'Development',
-        dateOfBirth: '1984-05-20'
+        banco: 'Banco do Brasil',
+        agencia: '492-8',
+        numero: '4699-X',
+        nome: 'Beny Allan Rolim Barbosa Olivera e ' + 'Carina Rosa de Oliveira Rolim',
+        obs: 'Conta conjunta',
+        saldo_inicial: 'R$20,00'
       }, {
-        age: 21,
-        name: 'Larsen',
-        department: 'Marketing',
-        dateOfBirth: '1984-05-20'
+        banco: 'Bradesco',
+        agencia: '123-4',
+        numero: '8888-X',
+        nome: 'Carina Rosa de Oliveira Rolim',
+        obs: 'Conta particular',
+        saldo_inicial: 'R$30,00'
       }, {
-        age: 89,
-        name: 'Geneva',
-        department: 'HR',
-        dateOfBirth: '1984-05-20'
-      }, {
-        age: 38,
-        name: 'Jami',
-        department: 'Accounting',
-        dateOfBirth: '1984-05-20'
+        banco: 'Caixa Econômica Federal',
+        agencia: '456-7',
+        numero: '9999-0',
+        nome: 'Beny Allan Rolim Barbosa Olivera',
+        obs: 'Conta da casa',
+        saldo_inicial: 'R$40,00'
       }]
     };
   }
@@ -119,85 +166,142 @@ var render = function render() {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("b-table", {
+  return _c("article", [_c("b-row", [_c("b-col", {
+    attrs: {
+      cols: "2"
+    }
+  }, [_c("b-button", {
+    staticClass: "add-button d-flex",
+    attrs: {
+      variant: "success"
+    },
+    on: {
+      click: _vm.addRowHandler
+    }
+  }, [_vm._v("\n                Adicionar\n            ")])], 1), _vm._v(" "), _c("b-col", {
+    attrs: {
+      cols: "4"
+    }
+  }, [_c("b-input-group", {
+    attrs: {
+      size: "sm"
+    }
+  }, [_c("b-form-input", {
+    attrs: {
+      id: "filter-input",
+      type: "search",
+      placeholder: "Pesquisar"
+    },
+    model: {
+      value: _vm.filter,
+      callback: function callback($$v) {
+        _vm.filter = $$v;
+      },
+      expression: "filter"
+    }
+  }), _vm._v(" "), _c("b-input-group-append", [_c("b-button", {
+    attrs: {
+      disabled: !_vm.filter
+    },
+    on: {
+      click: function click($event) {
+        _vm.filter = "";
+      }
+    }
+  }, [_vm._v("\n                            Limpar\n                        ")])], 1)], 1)], 1), _vm._v(" "), _c("b-col", {
+    attrs: {
+      cols: "6"
+    }
+  }, [_c("b-form-checkbox-group", {
+    staticClass: "mt-1 d-flex",
+    model: {
+      value: _vm.filterOn,
+      callback: function callback($$v) {
+        _vm.filterOn = $$v;
+      },
+      expression: "filterOn"
+    }
+  }, [_c("b-form-checkbox", {
+    staticClass: "m-2",
+    attrs: {
+      value: "banco"
+    }
+  }, [_vm._v("\n                    Banco\n                ")]), _vm._v(" "), _c("b-form-checkbox", {
+    staticClass: "m-2",
+    attrs: {
+      value: "agencia"
+    }
+  }, [_vm._v("\n                    Agência\n                ")]), _vm._v(" "), _c("b-form-checkbox", {
+    staticClass: "m-2",
+    attrs: {
+      value: "numero"
+    }
+  }, [_vm._v("\n                    Conta Corrente\n                ")])], 1)], 1)], 1), _vm._v(" "), _c("b-table", {
+    staticClass: "b-table",
     attrs: {
       items: _vm.tableItems,
-      fields: _vm.fields
+      fields: _vm.fields,
+      busy: _vm.isBusy,
+      filter: _vm.filter,
+      "filter-included-fields": _vm.filterOn,
+      responsive: ""
     },
-    scopedSlots: _vm._u([{
-      key: "cell(name)",
-      fn: function fn(data) {
-        return [_vm.tableItems[data.index].isEdit ? _c("b-form-input", {
-          attrs: {
-            type: "text"
-          },
-          model: {
-            value: _vm.tableItems[data.index].name,
-            callback: function callback($$v) {
-              _vm.$set(_vm.tableItems[data.index], "name", $$v);
+    scopedSlots: _vm._u([_vm._l(_vm.fields, function (field, index) {
+      return {
+        key: "cell(".concat(field.key, ")"),
+        fn: function fn(data) {
+          return [field.type === "text" && _vm.tableItems[data.index].isEdit ? _c("b-form-input", {
+            key: index,
+            attrs: {
+              type: field.type,
+              value: _vm.tableItems[data.index][field.key]
             },
-            expression: "tableItems[data.index].name"
-          }
-        }) : _c("span", [_vm._v(_vm._s(data.value))])];
-      }
-    }, {
-      key: "cell(department)",
-      fn: function fn(data) {
-        return [_vm.tableItems[data.index].isEdit ? _c("b-form-select", {
-          attrs: {
-            options: ["Development", "Marketing", "HR", "Accounting"]
-          },
-          model: {
-            value: _vm.tableItems[data.index].department,
-            callback: function callback($$v) {
-              _vm.$set(_vm.tableItems[data.index], "department", $$v);
-            },
-            expression: "tableItems[data.index].department"
-          }
-        }) : _c("span", [_vm._v(_vm._s(data.value))])];
-      }
-    }, {
-      key: "cell(age)",
-      fn: function fn(data) {
-        return [_vm.tableItems[data.index].isEdit ? _c("b-form-input", {
-          attrs: {
-            type: "number"
-          },
-          model: {
-            value: _vm.tableItems[data.index].age,
-            callback: function callback($$v) {
-              _vm.$set(_vm.tableItems[data.index], "age", $$v);
-            },
-            expression: "tableItems[data.index].age"
-          }
-        }) : _c("span", [_vm._v(_vm._s(data.value))])];
-      }
-    }, {
-      key: "cell(dateOfBirth)",
-      fn: function fn(data) {
-        return [_vm.tableItems[data.index].isEdit ? _c("b-form-datepicker", {
-          model: {
-            value: _vm.tableItems[data.index].dateOfBirth,
-            callback: function callback($$v) {
-              _vm.$set(_vm.tableItems[data.index], "dateOfBirth", $$v);
-            },
-            expression: "tableItems[data.index].dateOfBirth"
-          }
-        }) : _c("span", [_vm._v(_vm._s(data.value))])];
-      }
-    }, {
-      key: "cell(edit)",
-      fn: function fn(data) {
-        return [_c("b-button", {
-          on: {
-            click: function click($event) {
-              return _vm.editRowHandler(data);
+            on: {
+              blur: function blur(e) {
+                return _vm.inputHandler(e.target.value, data.index, field.key);
+              }
             }
-          }
-        }, [!_vm.tableItems[data.index].isEdit ? _c("span", [_vm._v("Edit")]) : _c("span", [_vm._v("Done")])])];
-      }
-    }])
-  });
+          }) : field.type === "edit" ? _c("div", {
+            key: index
+          }, [_c("b-button", {
+            on: {
+              click: function click($event) {
+                return _vm.editRowHandler(data);
+              }
+            }
+          }, [!_vm.tableItems[data.index].isEdit ? _c("span", [_vm._v("\n                            Editar\n                        ")]) : _c("span", [_vm._v("Salvar")])]), _vm._v(" "), _c("b-button", {
+            staticClass: "delete-button",
+            attrs: {
+              variant: "danger"
+            },
+            on: {
+              click: function click($event) {
+                return _vm.removeRowHandler(data.index, !_vm.tableItems[data.index].isEdit, data);
+              }
+            }
+          }, [!_vm.tableItems[data.index].isEdit ? _c("span", [_vm._v("\n                            Remover\n                        ")]) : _c("span", [_vm._v("Cancelar")])])], 1) : _c("span", {
+            key: index
+          }, [_vm._v(_vm._s(data.value))])];
+        }
+      };
+    }), {
+      key: "table-caption",
+      fn: function fn() {
+        return [_vm._v("\n                Total de Contas corrente: " + _vm._s(_vm.tableItems.length) + " \n            ")];
+      },
+      proxy: true
+    }, {
+      key: "table-busy",
+      fn: function fn() {
+        return [_c("div", {
+          staticClass: "text-center text-danger my-2"
+        }, [_c("b-spinner", {
+          staticClass: "align-middle"
+        }), _vm._v(" "), _c("strong", [_vm._v("Loading...")])], 1)];
+      },
+      proxy: true
+    }], null, true)
+  })], 1);
 };
 
 var staticRenderFns = [];
@@ -227,14 +331,43 @@ var render = function render() {
     }
   }, [_c("EditableTable", {
     attrs: {
-      items: _vm.items,
       fields: _vm.fields
+    },
+    model: {
+      value: _vm.items,
+      callback: function callback($$v) {
+        _vm.items = $$v;
+      },
+      expression: "items"
     }
-  })], 1);
+  }), _vm._v(" "), _c("pre", [_vm._v("      " + _vm._s(_vm.items) + "\n    ")])], 1);
 };
 
 var staticRenderFns = [];
 render._withStripped = true;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css&":
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css& ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\n.add-button {\n        margin-bottom: 10px;\n}\nspan.sr-only {\n        display:none;\n}\nlabel.custom-control-label {\n        padding-left: 5px;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
 
 /***/ }),
@@ -334,6 +467,35 @@ module.exports = function (cssWithMappingToString) {
 
   return list;
 };
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css&":
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css& ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EditableTable_vue_vue_type_style_index_0_id_7e0df68f_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css& */ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css&");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EditableTable_vue_vue_type_style_index_0_id_7e0df68f_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"], options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EditableTable_vue_vue_type_style_index_0_id_7e0df68f_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
 
 /***/ }),
 
@@ -656,15 +818,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _EditableTable_vue_vue_type_template_id_7e0df68f___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EditableTable.vue?vue&type=template&id=7e0df68f& */ "./resources/js/Components/EditableTable.vue?vue&type=template&id=7e0df68f&");
 /* harmony import */ var _EditableTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EditableTable.vue?vue&type=script&lang=js& */ "./resources/js/Components/EditableTable.vue?vue&type=script&lang=js&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony import */ var _EditableTable_vue_vue_type_style_index_0_id_7e0df68f_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css& */ "./resources/js/Components/EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
+;
 
 
 /* normalize component */
-;
-var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _EditableTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _EditableTable_vue_vue_type_template_id_7e0df68f___WEBPACK_IMPORTED_MODULE_0__.render,
   _EditableTable_vue_vue_type_template_id_7e0df68f___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
@@ -780,6 +944,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ContasCorrente_vue_vue_type_template_id_8a10b5fa___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ContasCorrente_vue_vue_type_template_id_8a10b5fa___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ContasCorrente.vue?vue&type=template&id=8a10b5fa& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/contas_corrente/ContasCorrente.vue?vue&type=template&id=8a10b5fa&");
+
+
+/***/ }),
+
+/***/ "./resources/js/Components/EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css&":
+/*!************************************************************************************************!*\
+  !*** ./resources/js/Components/EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css& ***!
+  \************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EditableTable_vue_vue_type_style_index_0_id_7e0df68f_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader/dist/cjs.js!../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css&");
 
 
 /***/ }),

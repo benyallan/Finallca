@@ -1,7 +1,7 @@
 {
     "/js/app.js": "/js/app.js",
     "/js/carteiras-component.js": "/js/carteiras-component.js",
+    "/js/contas-corrente.js": "/js/contas-corrente.js",
     "/js/nova-carteira-modal.js": "/js/nova-carteira-modal.js",
-    "/css/app.css": "/css/app.css",
-    "/js/contas-corrente.js": "/js/contas-corrente.js"
+    "/css/app.css": "/css/app.css"
 }
