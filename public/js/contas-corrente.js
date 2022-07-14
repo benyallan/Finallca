@@ -25,7 +25,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       filter: null,
       editando: false,
       linha: {
-        banco: null
+        banco: null,
+        agencia: null,
+        numero: null,
+        nome: null,
+        obs: null
       },
       filterOn: [],
       tableFields: [{
@@ -45,7 +49,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         sortable: false
       }, {
         key: "nome",
-        label: "Nome do titular",
+        label: "Titular",
         type: 'text',
         sortable: true
       }, {
@@ -101,19 +105,29 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         console.log(error);
       });
     },
-    editarLinha: function editarLinha(data, key) {
+    editarLinha: function editarLinha(data) {
       this.editando = true;
-      this.linha[key] = this.tableItems[data.index][key];
-      this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
+      this.linha['banco'] = this.tableItems[data.index]['banco'];
+      this.linha['agencia'] = this.tableItems[data.index]['agencia'];
+      this.linha['numero'] = this.tableItems[data.index]['numero'];
+      this.linha['nome'] = this.tableItems[data.index]['nome'];
+      this.linha['obs'] = this.tableItems[data.index]['obs'];
+      this.linha['saldo_inicial'] = this.tableItems[data.index]['saldo_inicial'];
+      this.tableItems[data.index].isEdit = true;
     },
-    salvarRegistro: function salvarRegistro(data, key) {
+    salvarRegistro: function salvarRegistro(data) {
       this.editando = false;
-      this.tableItems[data.index][key] = this.linha[key];
-      this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
+      this.tableItems[data.index]['banco'] = this.linha['banco'];
+      this.tableItems[data.index]['agencia'] = this.linha['agencia'];
+      this.tableItems[data.index]['numero'] = this.linha['numero'];
+      this.tableItems[data.index]['nome'] = this.linha['nome'];
+      this.tableItems[data.index]['obs'] = this.linha['obs'];
+      this.tableItems[data.index]['saldo_inicial'] = this.linha['saldo_inicial'];
+      this.tableItems[data.index].isEdit = false;
     },
-    cancelarAlteracoes: function cancelarAlteracoes(data, key) {
+    cancelarAlteracoes: function cancelarAlteracoes(data) {
       this.editando = false;
-      this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
+      this.tableItems[data.index].isEdit = false;
     },
     alteraTabela: function alteraTabela(value, key) {
       this.linha[key] = value;
@@ -264,6 +278,81 @@ var render = function render() {
         }) : _c("span", [_vm._v(_vm._s(data.value))])];
       }
     }, {
+      key: "cell(agencia)",
+      fn: function fn(data) {
+        return [_vm.tableItems[data.index].isEdit ? _c("b-form-input", {
+          attrs: {
+            type: "text",
+            value: _vm.linha["agencia"]
+          },
+          on: {
+            blur: function blur(e) {
+              return _vm.alteraTabela(e.target.value, "agencia");
+            }
+          }
+        }) : _c("span", [_vm._v(_vm._s(data.value))])];
+      }
+    }, {
+      key: "cell(numero)",
+      fn: function fn(data) {
+        return [_vm.tableItems[data.index].isEdit ? _c("b-form-input", {
+          attrs: {
+            type: "text",
+            value: _vm.linha["numero"]
+          },
+          on: {
+            blur: function blur(e) {
+              return _vm.alteraTabela(e.target.value, "numero");
+            }
+          }
+        }) : _c("span", [_vm._v(_vm._s(data.value))])];
+      }
+    }, {
+      key: "cell(nome)",
+      fn: function fn(data) {
+        return [_vm.tableItems[data.index].isEdit ? _c("b-form-input", {
+          attrs: {
+            type: "text",
+            value: _vm.linha["nome"]
+          },
+          on: {
+            blur: function blur(e) {
+              return _vm.alteraTabela(e.target.value, "nome");
+            }
+          }
+        }) : _c("span", [_vm._v(_vm._s(data.value))])];
+      }
+    }, {
+      key: "cell(obs)",
+      fn: function fn(data) {
+        return [_vm.tableItems[data.index].isEdit ? _c("b-form-input", {
+          attrs: {
+            type: "text",
+            value: _vm.linha["obs"]
+          },
+          on: {
+            blur: function blur(e) {
+              return _vm.alteraTabela(e.target.value, "obs");
+            }
+          }
+        }) : _c("span", [_vm._v(_vm._s(data.value))])];
+      }
+    }, {
+      key: "cell(saldo_inicial)",
+      fn: function fn(data) {
+        return [_vm.tableItems[data.index].isEdit ? _c("b-form-input", {
+          attrs: {
+            type: "text",
+            value: _vm.linha["saldo_inicial"]
+          },
+          on: {
+            blur: function blur(e) {
+              return _vm.alteraTabela(e.target.value, "saldo_inicial");
+            }
+          }
+        }) : _c("span", [_vm._v(_vm._s(data.value))])];
+      }
+    }, {
       key: "cell(edit)",
       fn: function fn(data) {
         return [!_vm.editando ? _c("b-button", {
@@ -272,7 +361,7 @@ var render = function render() {
           },
           on: {
             click: function click($event) {
-              return _vm.editarLinha(data, "banco");
+              return _vm.editarLinha(data);
             }
           }
         }, [_vm._v("\n                        Editar\n                    ")]) : _vm._e(), _vm._v(" "), _vm.editando && _vm.tableItems[data.index].isEdit ? _c("b-button", {
@@ -281,7 +370,7 @@ var render = function render() {
           },
           on: {
             click: function click($event) {
-              return _vm.salvarRegistro(data, "banco");
+              return _vm.salvarRegistro(data);
             }
           }
         }, [_vm._v("\n                        Salvar\n                    ")]) : _vm._e(), _vm._v(" "), _vm.editando && _vm.tableItems[data.index].isEdit ? _c("b-button", {
@@ -290,7 +379,7 @@ var render = function render() {
           },
           on: {
             click: function click($event) {
-              return _vm.cancelarAlteracoes(data, "banco");
+              return _vm.cancelarAlteracoes(data);
             }
           }
         }, [_vm._v("\n                        Cancelar\n                    ")]) : _vm._e(), _vm._v(" "), !_vm.editando ? _c("b-button", {

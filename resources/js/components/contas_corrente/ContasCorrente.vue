@@ -67,25 +67,75 @@
                     ></b-form-input>
                     <span v-else>{{data.value}}</span>
                 </template>
+                <template #cell(agencia)="data">
+                    <b-form-input 
+                        v-if="tableItems[data.index].isEdit" 
+                        type="text" 
+                        :value="linha['agencia']" 
+                        @blur="(e) => 
+                            alteraTabela(e.target.value, 'agencia')"
+                    ></b-form-input>
+                    <span v-else>{{data.value}}</span>
+                </template>
+                <template #cell(numero)="data">
+                    <b-form-input 
+                        v-if="tableItems[data.index].isEdit" 
+                        type="text" 
+                        :value="linha['numero']" 
+                        @blur="(e) => 
+                            alteraTabela(e.target.value, 'numero')"
+                    ></b-form-input>
+                    <span v-else>{{data.value}}</span>
+                </template>
+                <template #cell(nome)="data">
+                    <b-form-input 
+                        v-if="tableItems[data.index].isEdit" 
+                        type="text" 
+                        :value="linha['nome']" 
+                        @blur="(e) => 
+                            alteraTabela(e.target.value, 'nome')"
+                    ></b-form-input>
+                    <span v-else>{{data.value}}</span>
+                </template>
+                <template #cell(obs)="data">
+                    <b-form-input 
+                        v-if="tableItems[data.index].isEdit" 
+                        type="text" 
+                        :value="linha['obs']" 
+                        @blur="(e) => 
+                            alteraTabela(e.target.value, 'obs')"
+                    ></b-form-input>
+                    <span v-else>{{data.value}}</span>
+                </template>
+                <template #cell(saldo_inicial)="data">
+                    <b-form-input 
+                        v-if="tableItems[data.index].isEdit" 
+                        type="text" 
+                        :value="linha['saldo_inicial']" 
+                        @blur="(e) => 
+                            alteraTabela(e.target.value, 'saldo_inicial')"
+                    ></b-form-input>
+                    <span v-else>{{data.value}}</span>
+                </template>
                 <template #cell(edit)="data">
                     <b-button 
                         v-if="!editando"
                         variant="primary"
-                        @click="editarLinha(data, 'banco')"
+                        @click="editarLinha(data)"
                     >
                         Editar
                     </b-button>
                     <b-button 
                         v-if="editando && tableItems[data.index].isEdit" 
                         variant="success"
-                        @click="salvarRegistro(data, 'banco')"
+                        @click="salvarRegistro(data)"
                     >
                         Salvar
                     </b-button>
                     <b-button 
                         v-if="editando && tableItems[data.index].isEdit" 
                         variant="danger"
-                        @click="cancelarAlteracoes(data, 'banco')"
+                        @click="cancelarAlteracoes(data)"
                     >
                         Cancelar
                     </b-button>
@@ -126,13 +176,17 @@ export default {
             editando: false,
             linha: {
                 banco: null,
+                agencia: null,
+                numero: null,
+                nome: null,
+                obs: null,
             },
             filterOn: [],
             tableFields: [
                 { key: "banco", label: "Banco", type: 'text', sortable: true },
                 { key: "agencia", label: "Agência", type: 'text', sortable: false },
                 { key: "numero", label: "Número", type: 'text', sortable: false },
-                { key: "nome", label: "Nome do titular", type: 'text', sortable: true },
+                { key: "nome", label: "Titular", type: 'text', sortable: true },
                 { key: "obs", label: "Observações", type: 'text', sortable: false },
                 { key: "saldo_inicial", label: "Saldo Inicial", type: 'text', sortable: false },
                 { key: "edit", label: "", type: "edit", sortable: false }
@@ -179,19 +233,29 @@ export default {
                 console.log(error);
             });
         },
-        editarLinha(data, key) {
+        editarLinha(data) {
             this.editando = true
-            this.linha[key] = this.tableItems[data.index][key]
-            this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
+            this.linha['banco'] = this.tableItems[data.index]['banco']
+            this.linha['agencia'] = this.tableItems[data.index]['agencia']
+            this.linha['numero'] = this.tableItems[data.index]['numero']
+            this.linha['nome'] = this.tableItems[data.index]['nome']
+            this.linha['obs'] = this.tableItems[data.index]['obs']
+            this.linha['saldo_inicial'] = this.tableItems[data.index]['saldo_inicial']
+            this.tableItems[data.index].isEdit = true;
         },
-        salvarRegistro(data, key) {
+        salvarRegistro(data) {
             this.editando = false
-            this.tableItems[data.index][key] = this.linha[key]
-            this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
+            this.tableItems[data.index]['banco'] = this.linha['banco']
+            this.tableItems[data.index]['agencia'] = this.linha['agencia']
+            this.tableItems[data.index]['numero'] = this.linha['numero']
+            this.tableItems[data.index]['nome'] = this.linha['nome']
+            this.tableItems[data.index]['obs'] = this.linha['obs']
+            this.tableItems[data.index]['saldo_inicial'] = this.linha['saldo_inicial']
+            this.tableItems[data.index].isEdit = false;
         },
-        cancelarAlteracoes(data, key) {
+        cancelarAlteracoes(data) {
             this.editando = false
-            this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
+            this.tableItems[data.index].isEdit = false;
         },
         alteraTabela(value, key) {
             this.linha[key] = value;
