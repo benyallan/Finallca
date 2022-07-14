@@ -29,3 +29,4 @@ Route::get('/carteiras/get', [App\Http\Controllers\CarteiraController::class, 'g
 
 // Contas Corrente
 Route::get('/contascorrente', [App\Http\Controllers\ContaCorrenteController::class, 'index'])->name('contascorrente.index');
+Route::post('/contascorrente', [App\Http\Controllers\ContaCorrenteController::class, 'store'])->name('contascorrente.store');

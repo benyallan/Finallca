@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreContaCorrenteRequest;
 use App\Http\Requests\UpdateContaCorrenteRequest;
 use App\Models\ContaCorrente;
+use Exception;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ContaCorrenteController extends Controller
 {
@@ -36,7 +39,26 @@ class ContaCorrenteController extends Controller
      */
     public function store(StoreContaCorrenteRequest $request)
     {
-        //
+        try {
+            $contacorrente = ContaCorrente::create($request->all());
+            Log::info("\nUsuário: " . Auth::user() . 
+                    "\nConta Corrente adicionada ao Banco de Dados 
+                    com sucesso." .
+                    json_encode($contacorrente) . PHP_EOL
+                );
+        } catch (Exception $e) {
+            $exception_message = !empty($e->getMessage()) ? 
+                                    trim($e->getMessage()) : 
+                                    'Erro na Aplicação';
+            Log::error("\nUsuário: " . Auth::user() . 
+                "\nErro ao salvar nova Carteira | Request enviado: " . 
+                json_encode($request->all()) . PHP_EOL .
+                $exception_message . PHP_EOL . "No arquivo " . 
+                $e->getFile() . " na linha " . $e->getLine() . PHP_EOL . 
+                $e
+            );
+            return  response()->json(['status' => 'Erro interno'], 500);
+        }
     }
 
     /**
