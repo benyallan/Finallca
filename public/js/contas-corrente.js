@@ -1,10 +1,10 @@
 "use strict";
 (self["webpackChunk"] = self["webpackChunk"] || []).push([["contas-corrente"],{
 
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/EditableTable.vue?vue&type=script&lang=js&":
-/*!********************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/EditableTable.vue?vue&type=script&lang=js& ***!
-  \********************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/contas_corrente/ContasCorrente.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/contas_corrente/ContasCorrente.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -18,76 +18,13 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: "EditableTable",
-  components: {},
-  props: {
-    value: Array,
-    fields: Array
-  },
+  name: "ContasCorrente",
   data: function data() {
     return {
       isBusy: false,
       filter: null,
       filterOn: [],
-      tableItems: this.value.map(function (item) {
-        return _objectSpread(_objectSpread({}, item), {}, {
-          isEdit: false
-        });
-      })
-    };
-  },
-  methods: {
-    editRowHandler: function editRowHandler(data) {
-      this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
-    },
-    inputHandler: function inputHandler(value, index, key) {
-      this.tableItems[index][key] = value;
-      this.$set(this.tableItems, index, this.tableItems[index]);
-      this.$emit("input", this.tableItems);
-    },
-    addRowHandler: function addRowHandler() {
-      var newRow = this.fields.reduce(function (a, c) {
-        return _objectSpread(_objectSpread({}, a), {}, _defineProperty({}, c.key, null));
-      }, {});
-      newRow.isEdit = true;
-      this.tableItems.unshift(newRow);
-      this.$emit('input', this.tableItems);
-    },
-    removeRowHandler: function removeRowHandler(index, remover, data) {
-      if (remover) {
-        this.tableItems = this.tableItems.filter(function (item, i) {
-          return i !== index;
-        });
-        this.$emit('input', this.tableItems);
-      } else {
-        this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
-      }
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/contas_corrente/ContasCorrente.vue?vue&type=script&lang=js&":
-/*!*************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/contas_corrente/ContasCorrente.vue?vue&type=script&lang=js& ***!
-  \*************************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _Components_EditableTable_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Components/EditableTable.vue */ "./resources/js/Components/EditableTable.vue");
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: "ContasCorrente",
-  components: {
-    EditableTable: _Components_EditableTable_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
-  },
-  data: function data() {
-    return {
-      fields: [{
+      tableFields: [{
         key: "banco",
         label: "Banco",
         type: 'text',
@@ -123,7 +60,7 @@ __webpack_require__.r(__webpack_exports__);
         type: "edit",
         sortable: false
       }],
-      items: [{
+      tableItems: [{
         banco: 'Banco do Brasil',
         agencia: '492-8',
         numero: '4699-X',
@@ -146,15 +83,62 @@ __webpack_require__.r(__webpack_exports__);
         saldo_inicial: 'R$40,00'
       }]
     };
+  },
+  methods: {
+    addContaCorrente: function addContaCorrente() {
+      var _this = this;
+
+      axios.post('/contascorrente', this.post).then(function (response) {
+        _this.tabela.items.splice(0, 0, {
+          nome: response.data.nome,
+          saldo_inicial: response.data.saldo_inicial
+        });
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    editRowHandler: function editRowHandler(data) {
+      this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
+    },
+    inputHandler: function inputHandler(value, index, key) {
+      this.tableItems[index][key] = value;
+      this.$set(this.tableItems, index, this.tableItems[index]);
+      this.$emit("input", this.tableItems);
+    },
+    addRowHandler: function addRowHandler() {
+      var newRow = this.fields.reduce(function (a, c) {
+        return _objectSpread(_objectSpread({}, a), {}, _defineProperty({}, c.key, null));
+      }, {});
+      newRow.isEdit = true;
+      this.tableItems.unshift(newRow);
+      this.$emit('input', this.tableItems);
+    },
+    removeRowHandler: function removeRowHandler(index, remover, data) {
+      if (remover) {
+        this.tableItems = this.tableItems.filter(function (item, i) {
+          return i !== index;
+        });
+        this.$emit('input', this.tableItems);
+      } else {
+        this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
+      }
+    }
+  },
+  mounted: function mounted() {
+    this.tableItems = this.tableItems.map(function (item) {
+      return _objectSpread(_objectSpread({}, item), {}, {
+        isEdit: false
+      });
+    });
   }
 });
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/EditableTable.vue?vue&type=template&id=7e0df68f&":
-/*!*******************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/EditableTable.vue?vue&type=template&id=7e0df68f& ***!
-  \*******************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/contas_corrente/ContasCorrente.vue?vue&type=template&id=8a10b5fa&":
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/contas_corrente/ContasCorrente.vue?vue&type=template&id=8a10b5fa& ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -166,7 +150,11 @@ var render = function render() {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("article", [_c("b-row", [_c("b-col", {
+  return _c("div", {
+    attrs: {
+      id: "ContasCorrente"
+    }
+  }, [[_c("article", [_c("b-row", [_c("b-col", {
     attrs: {
       cols: "2"
     }
@@ -178,7 +166,7 @@ var render = function render() {
     on: {
       click: _vm.addRowHandler
     }
-  }, [_vm._v("\n                Adicionar\n            ")])], 1), _vm._v(" "), _c("b-col", {
+  }, [_vm._v("\n                    Adicionar\n                ")])], 1), _vm._v(" "), _c("b-col", {
     attrs: {
       cols: "4"
     }
@@ -208,7 +196,7 @@ var render = function render() {
         _vm.filter = "";
       }
     }
-  }, [_vm._v("\n                            Limpar\n                        ")])], 1)], 1)], 1), _vm._v(" "), _c("b-col", {
+  }, [_vm._v("\n                                Limpar\n                            ")])], 1)], 1)], 1), _vm._v(" "), _c("b-col", {
     attrs: {
       cols: "6"
     }
@@ -226,27 +214,27 @@ var render = function render() {
     attrs: {
       value: "banco"
     }
-  }, [_vm._v("\n                    Banco\n                ")]), _vm._v(" "), _c("b-form-checkbox", {
+  }, [_vm._v("\n                        Banco\n                    ")]), _vm._v(" "), _c("b-form-checkbox", {
     staticClass: "m-2",
     attrs: {
       value: "agencia"
     }
-  }, [_vm._v("\n                    Agência\n                ")]), _vm._v(" "), _c("b-form-checkbox", {
+  }, [_vm._v("\n                        Agência\n                    ")]), _vm._v(" "), _c("b-form-checkbox", {
     staticClass: "m-2",
     attrs: {
       value: "numero"
     }
-  }, [_vm._v("\n                    Conta Corrente\n                ")])], 1)], 1)], 1), _vm._v(" "), _c("b-table", {
+  }, [_vm._v("\n                        Conta Corrente\n                    ")])], 1)], 1)], 1), _vm._v(" "), _c("b-table", {
     staticClass: "b-table",
     attrs: {
       items: _vm.tableItems,
-      fields: _vm.fields,
+      fields: _vm.tableFields,
       busy: _vm.isBusy,
       filter: _vm.filter,
       "filter-included-fields": _vm.filterOn,
       responsive: ""
     },
-    scopedSlots: _vm._u([_vm._l(_vm.fields, function (field, index) {
+    scopedSlots: _vm._u([_vm._l(_vm.tableFields, function (field, index) {
       return {
         key: "cell(".concat(field.key, ")"),
         fn: function fn(data) {
@@ -269,7 +257,7 @@ var render = function render() {
                 return _vm.editRowHandler(data);
               }
             }
-          }, [!_vm.tableItems[data.index].isEdit ? _c("span", [_vm._v("\n                            Editar\n                        ")]) : _c("span", [_vm._v("Salvar")])]), _vm._v(" "), _c("b-button", {
+          }, [!_vm.tableItems[data.index].isEdit ? _c("span", [_vm._v("\n                                Editar\n                            ")]) : _c("span", [_vm._v("Salvar")])]), _vm._v(" "), _c("b-button", {
             staticClass: "delete-button",
             attrs: {
               variant: "danger"
@@ -279,7 +267,7 @@ var render = function render() {
                 return _vm.removeRowHandler(data.index, !_vm.tableItems[data.index].isEdit, data);
               }
             }
-          }, [_vm._v("\n                        Remover\n                    ")])], 1) : _c("span", {
+          }, [_vm._v("\n                            Remover\n                        ")])], 1) : _c("span", {
             key: index
           }, [_vm._v(_vm._s(data.value))])];
         }
@@ -287,7 +275,7 @@ var render = function render() {
     }), {
       key: "table-caption",
       fn: function fn() {
-        return [_vm._v("\n                Total de Contas corrente: " + _vm._s(_vm.tableItems.length) + " \n            ")];
+        return [_vm._v("\n                    Total de Contas corrente: " + _vm._s(_vm.tableItems.length) + " \n                ")];
       },
       proxy: true
     }, {
@@ -301,73 +289,11 @@ var render = function render() {
       },
       proxy: true
     }], null, true)
-  })], 1);
+  })], 1)]], 2);
 };
 
 var staticRenderFns = [];
 render._withStripped = true;
-
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/contas_corrente/ContasCorrente.vue?vue&type=template&id=8a10b5fa&":
-/*!************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/contas_corrente/ContasCorrente.vue?vue&type=template&id=8a10b5fa& ***!
-  \************************************************************************************************************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "render": () => (/* binding */ render),
-/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
-/* harmony export */ });
-var render = function render() {
-  var _vm = this,
-      _c = _vm._self._c;
-
-  return _c("div", {
-    attrs: {
-      id: "ContasCorrente"
-    }
-  }, [_c("EditableTable", {
-    attrs: {
-      fields: _vm.fields
-    },
-    model: {
-      value: _vm.items,
-      callback: function callback($$v) {
-        _vm.items = $$v;
-      },
-      expression: "items"
-    }
-  }), _vm._v(" "), _c("pre", [_vm._v("      " + _vm._s(_vm.items) + "\n    ")])], 1);
-};
-
-var staticRenderFns = [];
-render._withStripped = true;
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css&":
-/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css& ***!
-  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
-// Imports
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.add-button {\n        margin-bottom: 10px;\n}\nspan.sr-only {\n        display:none;\n}\nlabel.custom-control-label {\n        padding-left: 5px;\n}\n", ""]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
 
 /***/ }),
@@ -388,7 +314,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n#ContasCorrente {\n  text-align: center;\n  margin: 60px;\n}\nthead, tbody, tfoot, tr, td, th {\n  text-align: left;\n  width: 100px;\n  vertical-align: middle;\n}\npre {\n  text-align: left;\n  color: #d63384 !important;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n#ContasCorrente {\n    text-align: center;\n    margin: 60px;\n}\nthead, tbody, tfoot, tr, td, th {\n    text-align: left;\n    width: 100px;\n    vertical-align: middle;\n}\n.add-button {\n        margin-bottom: 10px;\n}\nspan.sr-only {\n        display:none;\n}\nlabel.custom-control-label {\n        padding-left: 5px;\n}\npre {\n        text-align: left;\n        color: #d63384;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -467,35 +393,6 @@ module.exports = function (cssWithMappingToString) {
 
   return list;
 };
-
-/***/ }),
-
-/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css&":
-/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css& ***!
-  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EditableTable_vue_vue_type_style_index_0_id_7e0df68f_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css& */ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css&");
-
-            
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EditableTable_vue_vue_type_style_index_0_id_7e0df68f_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"], options);
-
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EditableTable_vue_vue_type_style_index_0_id_7e0df68f_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
 
 /***/ }),
 
@@ -806,46 +703,6 @@ module.exports = function (list, options) {
 
 /***/ }),
 
-/***/ "./resources/js/Components/EditableTable.vue":
-/*!***************************************************!*\
-  !*** ./resources/js/Components/EditableTable.vue ***!
-  \***************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _EditableTable_vue_vue_type_template_id_7e0df68f___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EditableTable.vue?vue&type=template&id=7e0df68f& */ "./resources/js/Components/EditableTable.vue?vue&type=template&id=7e0df68f&");
-/* harmony import */ var _EditableTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EditableTable.vue?vue&type=script&lang=js& */ "./resources/js/Components/EditableTable.vue?vue&type=script&lang=js&");
-/* harmony import */ var _EditableTable_vue_vue_type_style_index_0_id_7e0df68f_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css& */ "./resources/js/Components/EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-;
-
-
-/* normalize component */
-
-var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
-  _EditableTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _EditableTable_vue_vue_type_template_id_7e0df68f___WEBPACK_IMPORTED_MODULE_0__.render,
-  _EditableTable_vue_vue_type_template_id_7e0df68f___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/Components/EditableTable.vue"
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
-
-/***/ }),
-
 /***/ "./resources/js/components/contas_corrente/ContasCorrente.vue":
 /*!********************************************************************!*\
   !*** ./resources/js/components/contas_corrente/ContasCorrente.vue ***!
@@ -886,21 +743,6 @@ component.options.__file = "resources/js/components/contas_corrente/ContasCorren
 
 /***/ }),
 
-/***/ "./resources/js/Components/EditableTable.vue?vue&type=script&lang=js&":
-/*!****************************************************************************!*\
-  !*** ./resources/js/Components/EditableTable.vue?vue&type=script&lang=js& ***!
-  \****************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EditableTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./EditableTable.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/EditableTable.vue?vue&type=script&lang=js&");
- /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EditableTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
 /***/ "./resources/js/components/contas_corrente/ContasCorrente.vue?vue&type=script&lang=js&":
 /*!*********************************************************************************************!*\
   !*** ./resources/js/components/contas_corrente/ContasCorrente.vue?vue&type=script&lang=js& ***!
@@ -916,22 +758,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/Components/EditableTable.vue?vue&type=template&id=7e0df68f&":
-/*!**********************************************************************************!*\
-  !*** ./resources/js/Components/EditableTable.vue?vue&type=template&id=7e0df68f& ***!
-  \**********************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EditableTable_vue_vue_type_template_id_7e0df68f___WEBPACK_IMPORTED_MODULE_0__.render),
-/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EditableTable_vue_vue_type_template_id_7e0df68f___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EditableTable_vue_vue_type_template_id_7e0df68f___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./EditableTable.vue?vue&type=template&id=7e0df68f& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/EditableTable.vue?vue&type=template&id=7e0df68f&");
-
-
-/***/ }),
-
 /***/ "./resources/js/components/contas_corrente/ContasCorrente.vue?vue&type=template&id=8a10b5fa&":
 /*!***************************************************************************************************!*\
   !*** ./resources/js/components/contas_corrente/ContasCorrente.vue?vue&type=template&id=8a10b5fa& ***!
@@ -944,18 +770,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ContasCorrente_vue_vue_type_template_id_8a10b5fa___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ContasCorrente_vue_vue_type_template_id_8a10b5fa___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ContasCorrente.vue?vue&type=template&id=8a10b5fa& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/contas_corrente/ContasCorrente.vue?vue&type=template&id=8a10b5fa&");
-
-
-/***/ }),
-
-/***/ "./resources/js/Components/EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css&":
-/*!************************************************************************************************!*\
-  !*** ./resources/js/Components/EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css& ***!
-  \************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EditableTable_vue_vue_type_style_index_0_id_7e0df68f_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader/dist/cjs.js!../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Components/EditableTable.vue?vue&type=style&index=0&id=7e0df68f&lang=css&");
 
 
 /***/ }),
