@@ -80,10 +80,7 @@
                         variant="danger" 
                         @click="removeRowHandler(data.index, !tableItems[data.index].isEdit, data)"
                     >
-                        <span v-if="!tableItems[data.index].isEdit">
-                            Remover
-                        </span>
-                        <span v-else>Cancelar</span>
+                        Remover
                     </b-button>
                 </div>
                 <span v-else :key="index">{{data.value}}</span>
@@ -94,7 +91,7 @@
             <template #table-busy>
                 <div class="text-center text-danger my-2">
                     <b-spinner class="align-middle"></b-spinner>
-                    <strong>Loading...</strong>
+                    <strong>Carregando...</strong>
                 </div>
             </template>
         </b-table>

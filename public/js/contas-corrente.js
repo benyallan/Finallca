@@ -297,7 +297,7 @@ var render = function render() {
           staticClass: "text-center text-danger my-2"
         }, [_c("b-spinner", {
           staticClass: "align-middle"
-        }), _vm._v(" "), _c("strong", [_vm._v("Loading...")])], 1)];
+        }), _vm._v(" "), _c("strong", [_vm._v("Carregando...")])], 1)];
       },
       proxy: true
     }], null, true)
