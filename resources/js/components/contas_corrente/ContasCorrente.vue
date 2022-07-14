@@ -60,22 +60,37 @@
                 <template #cell(banco)="data">
                     <b-form-input 
                         v-if="tableItems[data.index].isEdit" 
-                        :key="index" 
                         type="text" 
-                        :value="tableItems[data.index]['banco']" 
+                        :value="linha['banco']" 
                         @blur="(e) => 
-                            alteraTabela(e.target.value, data.index, 'banco')"
+                            alteraTabela(e.target.value, 'banco')"
                     ></b-form-input>
                     <span v-else>{{data.value}}</span>
                 </template>
                 <template #cell(edit)="data">
-                    <b-button @click="editRowHandler(data)">
-                        <span v-if="!tableItems[data.index].isEdit">
-                            Editar
-                        </span>
-                        <span v-else>Salvar</span>
+                    <b-button 
+                        v-if="!editando"
+                        variant="primary"
+                        @click="editarLinha(data, 'banco')"
+                    >
+                        Editar
                     </b-button>
                     <b-button 
+                        v-if="editando && tableItems[data.index].isEdit" 
+                        variant="success"
+                        @click="salvarRegistro(data, 'banco')"
+                    >
+                        Salvar
+                    </b-button>
+                    <b-button 
+                        v-if="editando && tableItems[data.index].isEdit" 
+                        variant="danger"
+                        @click="cancelarAlteracoes(data, 'banco')"
+                    >
+                        Cancelar
+                    </b-button>
+                    <b-button 
+                        v-if="!editando"
                         class="delete-button" 
                         variant="danger" 
                         @click="removeRowHandler(data.index, !tableItems[data.index].isEdit, data)"
@@ -108,6 +123,10 @@ export default {
         return {
             isBusy: false,
             filter: null,
+            editando: false,
+            linha: {
+                banco: null,
+            },
             filterOn: [],
             tableFields: [
                 { key: "banco", label: "Banco", type: 'text', sortable: true },
@@ -160,13 +179,23 @@ export default {
                 console.log(error);
             });
         },
-        editRowHandler(data) {
+        editarLinha(data, key) {
+            this.editando = true
+            this.linha[key] = this.tableItems[data.index][key]
             this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
         },
-        alteraTabela(value, index, key) {
-            this.tableItems[index][key] = value;
-            this.$set(this.tableItems, index, this.tableItems[index]);
-            this.$emit("input", this.tableItems);
+        salvarRegistro(data, key) {
+            this.editando = false
+            this.tableItems[data.index][key] = this.linha[key]
+            this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
+        },
+        cancelarAlteracoes(data, key) {
+            this.editando = false
+            this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
+        },
+        alteraTabela(value, key) {
+            this.linha[key] = value;
+            this.$emit("input", this.linha);
         },
         addRowHandler() {
             const newRow = this.fields.reduce((a, c) => ({...a, [c.key]: null}) ,{})

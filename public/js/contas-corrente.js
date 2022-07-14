@@ -23,6 +23,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return {
       isBusy: false,
       filter: null,
+      editando: false,
+      linha: {
+        banco: null
+      },
       filterOn: [],
       tableFields: [{
         key: "banco",
@@ -97,13 +101,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         console.log(error);
       });
     },
-    editRowHandler: function editRowHandler(data) {
+    editarLinha: function editarLinha(data, key) {
+      this.editando = true;
+      this.linha[key] = this.tableItems[data.index][key];
       this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
     },
-    alteraTabela: function alteraTabela(value, index, key) {
-      this.tableItems[index][key] = value;
-      this.$set(this.tableItems, index, this.tableItems[index]);
-      this.$emit("input", this.tableItems);
+    salvarRegistro: function salvarRegistro(data, key) {
+      this.editando = false;
+      this.tableItems[data.index][key] = this.linha[key];
+      this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
+    },
+    cancelarAlteracoes: function cancelarAlteracoes(data, key) {
+      this.editando = false;
+      this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
+    },
+    alteraTabela: function alteraTabela(value, key) {
+      this.linha[key] = value;
+      this.$emit("input", this.linha);
     },
     addRowHandler: function addRowHandler() {
       var newRow = this.fields.reduce(function (a, c) {
@@ -238,14 +252,13 @@ var render = function render() {
       key: "cell(banco)",
       fn: function fn(data) {
         return [_vm.tableItems[data.index].isEdit ? _c("b-form-input", {
-          key: _vm.index,
           attrs: {
             type: "text",
-            value: _vm.tableItems[data.index]["banco"]
+            value: _vm.linha["banco"]
           },
           on: {
             blur: function blur(e) {
-              return _vm.alteraTabela(e.target.value, data.index, "banco");
+              return _vm.alteraTabela(e.target.value, "banco");
             }
           }
         }) : _c("span", [_vm._v(_vm._s(data.value))])];
@@ -253,13 +266,34 @@ var render = function render() {
     }, {
       key: "cell(edit)",
       fn: function fn(data) {
-        return [_c("b-button", {
+        return [!_vm.editando ? _c("b-button", {
+          attrs: {
+            variant: "primary"
+          },
           on: {
             click: function click($event) {
-              return _vm.editRowHandler(data);
+              return _vm.editarLinha(data, "banco");
             }
           }
-        }, [!_vm.tableItems[data.index].isEdit ? _c("span", [_vm._v("\n                            Editar\n                        ")]) : _c("span", [_vm._v("Salvar")])]), _vm._v(" "), _c("b-button", {
+        }, [_vm._v("\n                        Editar\n                    ")]) : _vm._e(), _vm._v(" "), _vm.editando && _vm.tableItems[data.index].isEdit ? _c("b-button", {
+          attrs: {
+            variant: "success"
+          },
+          on: {
+            click: function click($event) {
+              return _vm.salvarRegistro(data, "banco");
+            }
+          }
+        }, [_vm._v("\n                        Salvar\n                    ")]) : _vm._e(), _vm._v(" "), _vm.editando && _vm.tableItems[data.index].isEdit ? _c("b-button", {
+          attrs: {
+            variant: "danger"
+          },
+          on: {
+            click: function click($event) {
+              return _vm.cancelarAlteracoes(data, "banco");
+            }
+          }
+        }, [_vm._v("\n                        Cancelar\n                    ")]) : _vm._e(), _vm._v(" "), !_vm.editando ? _c("b-button", {
           staticClass: "delete-button",
           attrs: {
             variant: "danger"
@@ -269,7 +303,7 @@ var render = function render() {
               return _vm.removeRowHandler(data.index, !_vm.tableItems[data.index].isEdit, data);
             }
           }
-        }, [_vm._v("\n                        Remover\n                    ")])];
+        }, [_vm._v("\n                        Remover\n                    ")]) : _vm._e()];
       }
     }, {
       key: "table-caption",
