@@ -57,35 +57,31 @@
                 :filter-included-fields="filterOn"
                 responsive
             >
-                <template 
-                    v-for="(field, index) in tableFields" 
-                        #[`cell(${field.key})`]="data"
-                >
+                <template #cell(banco)="data">
                     <b-form-input 
-                        v-if="field.type === 'text' && 
-                            tableItems[data.index].isEdit" 
+                        v-if="tableItems[data.index].isEdit" 
                         :key="index" 
-                        :type="field.type" 
-                        :value="tableItems[data.index][field.key]" 
+                        type="text" 
+                        :value="tableItems[data.index]['banco']" 
                         @blur="(e) => 
-                            inputHandler(e.target.value, data.index, field.key)"
+                            alteraTabela(e.target.value, data.index, 'banco')"
                     ></b-form-input>
-                    <div v-else-if="field.type === 'edit'" :key="index">
-                        <b-button @click="editRowHandler(data)">
-                            <span v-if="!tableItems[data.index].isEdit">
-                                Editar
-                            </span>
-                            <span v-else>Salvar</span>
-                        </b-button>
-                        <b-button 
-                            class="delete-button" 
-                            variant="danger" 
-                            @click="removeRowHandler(data.index, !tableItems[data.index].isEdit, data)"
-                        >
-                            Remover
-                        </b-button>
-                    </div>
-                    <span v-else :key="index">{{data.value}}</span>
+                    <span v-else>{{data.value}}</span>
+                </template>
+                <template #cell(edit)="data">
+                    <b-button @click="editRowHandler(data)">
+                        <span v-if="!tableItems[data.index].isEdit">
+                            Editar
+                        </span>
+                        <span v-else>Salvar</span>
+                    </b-button>
+                    <b-button 
+                        class="delete-button" 
+                        variant="danger" 
+                        @click="removeRowHandler(data.index, !tableItems[data.index].isEdit, data)"
+                    >
+                        Remover
+                    </b-button>
                 </template>
                 <template #table-caption>
                     Total de Contas corrente: {{tableItems.length}} 
@@ -99,9 +95,9 @@
             </b-table>
         </article>
     </template>
-    <!-- <pre>
+    <pre>
       {{tableItems}}
-    </pre> -->
+    </pre>
 </div>
 </template>
 
@@ -167,7 +163,7 @@ export default {
         editRowHandler(data) {
             this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
         },
-        inputHandler(value, index, key) {
+        alteraTabela(value, index, key) {
             this.tableItems[index][key] = value;
             this.$set(this.tableItems, index, this.tableItems[index]);
             this.$emit("input", this.tableItems);

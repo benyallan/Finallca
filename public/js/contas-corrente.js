@@ -100,7 +100,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     editRowHandler: function editRowHandler(data) {
       this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
     },
-    inputHandler: function inputHandler(value, index, key) {
+    alteraTabela: function alteraTabela(value, index, key) {
       this.tableItems[index][key] = value;
       this.$set(this.tableItems, index, this.tableItems[index]);
       this.$emit("input", this.tableItems);
@@ -234,45 +234,44 @@ var render = function render() {
       "filter-included-fields": _vm.filterOn,
       responsive: ""
     },
-    scopedSlots: _vm._u([_vm._l(_vm.tableFields, function (field, index) {
-      return {
-        key: "cell(".concat(field.key, ")"),
-        fn: function fn(data) {
-          return [field.type === "text" && _vm.tableItems[data.index].isEdit ? _c("b-form-input", {
-            key: index,
-            attrs: {
-              type: field.type,
-              value: _vm.tableItems[data.index][field.key]
-            },
-            on: {
-              blur: function blur(e) {
-                return _vm.inputHandler(e.target.value, data.index, field.key);
-              }
+    scopedSlots: _vm._u([{
+      key: "cell(banco)",
+      fn: function fn(data) {
+        return [_vm.tableItems[data.index].isEdit ? _c("b-form-input", {
+          key: _vm.index,
+          attrs: {
+            type: "text",
+            value: _vm.tableItems[data.index]["banco"]
+          },
+          on: {
+            blur: function blur(e) {
+              return _vm.alteraTabela(e.target.value, data.index, "banco");
             }
-          }) : field.type === "edit" ? _c("div", {
-            key: index
-          }, [_c("b-button", {
-            on: {
-              click: function click($event) {
-                return _vm.editRowHandler(data);
-              }
+          }
+        }) : _c("span", [_vm._v(_vm._s(data.value))])];
+      }
+    }, {
+      key: "cell(edit)",
+      fn: function fn(data) {
+        return [_c("b-button", {
+          on: {
+            click: function click($event) {
+              return _vm.editRowHandler(data);
             }
-          }, [!_vm.tableItems[data.index].isEdit ? _c("span", [_vm._v("\n                                Editar\n                            ")]) : _c("span", [_vm._v("Salvar")])]), _vm._v(" "), _c("b-button", {
-            staticClass: "delete-button",
-            attrs: {
-              variant: "danger"
-            },
-            on: {
-              click: function click($event) {
-                return _vm.removeRowHandler(data.index, !_vm.tableItems[data.index].isEdit, data);
-              }
+          }
+        }, [!_vm.tableItems[data.index].isEdit ? _c("span", [_vm._v("\n                            Editar\n                        ")]) : _c("span", [_vm._v("Salvar")])]), _vm._v(" "), _c("b-button", {
+          staticClass: "delete-button",
+          attrs: {
+            variant: "danger"
+          },
+          on: {
+            click: function click($event) {
+              return _vm.removeRowHandler(data.index, !_vm.tableItems[data.index].isEdit, data);
             }
-          }, [_vm._v("\n                            Remover\n                        ")])], 1) : _c("span", {
-            key: index
-          }, [_vm._v(_vm._s(data.value))])];
-        }
-      };
-    }), {
+          }
+        }, [_vm._v("\n                        Remover\n                    ")])];
+      }
+    }, {
       key: "table-caption",
       fn: function fn() {
         return [_vm._v("\n                    Total de Contas corrente: " + _vm._s(_vm.tableItems.length) + " \n                ")];
@@ -288,8 +287,8 @@ var render = function render() {
         }), _vm._v(" "), _c("strong", [_vm._v("Carregando...")])], 1)];
       },
       proxy: true
-    }], null, true)
-  })], 1)]], 2);
+    }])
+  })], 1)], _vm._v(" "), _c("pre", [_vm._v("      " + _vm._s(_vm.tableItems) + "\n    ")])], 2);
 };
 
 var staticRenderFns = [];
