@@ -279,7 +279,7 @@ var render = function render() {
                 return _vm.removeRowHandler(data.index, !_vm.tableItems[data.index].isEdit, data);
               }
             }
-          }, [!_vm.tableItems[data.index].isEdit ? _c("span", [_vm._v("\n                            Remover\n                        ")]) : _c("span", [_vm._v("Cancelar")])])], 1) : _c("span", {
+          }, [_vm._v("\n                        Remover\n                    ")])], 1) : _c("span", {
             key: index
           }, [_vm._v(_vm._s(data.value))])];
         }
