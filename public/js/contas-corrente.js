@@ -23,6 +23,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return {
       isBusy: false,
       filter: null,
+      adicionando: false,
       editando: false,
       linha: {
         banco: null,
@@ -116,7 +117,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.tableItems[data.index].isEdit = true;
     },
     salvarRegistro: function salvarRegistro(data) {
-      this.editando = false;
       this.tableItems[data.index]['banco'] = this.linha['banco'];
       this.tableItems[data.index]['agencia'] = this.linha['agencia'];
       this.tableItems[data.index]['numero'] = this.linha['numero'];
@@ -124,32 +124,43 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.tableItems[data.index]['obs'] = this.linha['obs'];
       this.tableItems[data.index]['saldo_inicial'] = this.linha['saldo_inicial'];
       this.tableItems[data.index].isEdit = false;
+      this.editando = false;
+      this.adicionando = false;
+      this.$emit('input', this.tableItems);
+      this.limpaLinha();
     },
     cancelarAlteracoes: function cancelarAlteracoes(data) {
+      if (this.adicionando) {
+        this.tableItems.shift();
+      }
+
       this.editando = false;
       this.tableItems[data.index].isEdit = false;
+      this.adicionando = false;
+      this.limpaLinha();
     },
     alteraTabela: function alteraTabela(value, key) {
       this.linha[key] = value;
       this.$emit("input", this.linha);
     },
-    addRowHandler: function addRowHandler() {
-      var newRow = this.fields.reduce(function (a, c) {
+    addNovaLinha: function addNovaLinha() {
+      this.editando = true;
+      var newRow = this.tableFields.reduce(function (a, c) {
         return _objectSpread(_objectSpread({}, a), {}, _defineProperty({}, c.key, null));
       }, {});
       newRow.isEdit = true;
       this.tableItems.unshift(newRow);
+      this.adicionando = true;
+      this.limpaLinha();
+    },
+    removeRowHandler: function removeRowHandler(index) {
+      this.tableItems = this.tableItems.filter(function (item, i) {
+        return i !== index;
+      });
       this.$emit('input', this.tableItems);
     },
-    removeRowHandler: function removeRowHandler(index, remover, data) {
-      if (remover) {
-        this.tableItems = this.tableItems.filter(function (item, i) {
-          return i !== index;
-        });
-        this.$emit('input', this.tableItems);
-      } else {
-        this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
-      }
+    limpaLinha: function limpaLinha() {
+      this.linha.banco = null, this.linha.agencia = null, this.linha.numero = null, this.linha.nome = null, this.linha.obs = null, this.linha.saldo_inicial = null;
     }
   },
   mounted: function mounted() {
@@ -192,7 +203,7 @@ var render = function render() {
       variant: "success"
     },
     on: {
-      click: _vm.addRowHandler
+      click: _vm.addNovaLinha
     }
   }, [_vm._v("\n                    Adicionar\n                ")])], 1), _vm._v(" "), _c("b-col", {
     attrs: {

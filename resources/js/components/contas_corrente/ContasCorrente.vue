@@ -7,7 +7,7 @@
                 <b-button 
                     class="add-button d-flex" 
                     variant="success" 
-                    @click="addRowHandler"
+                    @click="addNovaLinha"
                 >
                     Adicionar
                 </b-button>
@@ -173,6 +173,7 @@ export default {
         return {
             isBusy: false,
             filter: null,
+            adicionando: false,
             editando: false,
             linha: {
                 banco: null,
@@ -244,37 +245,51 @@ export default {
             this.tableItems[data.index].isEdit = true;
         },
         salvarRegistro(data) {
-            this.editando = false
             this.tableItems[data.index]['banco'] = this.linha['banco']
             this.tableItems[data.index]['agencia'] = this.linha['agencia']
             this.tableItems[data.index]['numero'] = this.linha['numero']
             this.tableItems[data.index]['nome'] = this.linha['nome']
             this.tableItems[data.index]['obs'] = this.linha['obs']
             this.tableItems[data.index]['saldo_inicial'] = this.linha['saldo_inicial']
-            this.tableItems[data.index].isEdit = false;
+            this.tableItems[data.index].isEdit = false
+            this.editando = false
+            this.adicionando = false
+            this.$emit('input', this.tableItems)
+            this.limpaLinha()
         },
         cancelarAlteracoes(data) {
+            if (this.adicionando) {
+                this.tableItems.shift()
+            }
             this.editando = false
-            this.tableItems[data.index].isEdit = false;
+            this.tableItems[data.index].isEdit = false
+            this.adicionando = false
+            this.limpaLinha()
         },
         alteraTabela(value, key) {
             this.linha[key] = value;
             this.$emit("input", this.linha);
         },
-        addRowHandler() {
-            const newRow = this.fields.reduce((a, c) => ({...a, [c.key]: null}) ,{})
-            newRow.isEdit = true;
-            this.tableItems.unshift(newRow);
-            this.$emit('input', this.tableItems);
+        addNovaLinha() {
+            this.editando = true
+            const newRow = this.tableFields.reduce((a, c) => ({...a, [c.key]: null}) ,{})
+            newRow.isEdit = true
+            this.tableItems.unshift(newRow)
+            this.adicionando = true
+            this.limpaLinha()
         },
-        removeRowHandler(index, remover, data) {
-            if (remover) {
-                this.tableItems = this.tableItems.filter((item, i) => i !== index);
-                this.$emit('input', this.tableItems);
-            } else {
-                this.tableItems[data.index].isEdit = !this.tableItems[data.index].isEdit;
-            }
+        removeRowHandler(index) {
+            this.tableItems = this.tableItems.filter((item, i) => i !== index);
+        this.$emit('input', this.tableItems);
         },
+        limpaLinha() {
+            this.linha.banco = null,
+            this.linha.agencia = null,
+            this.linha.numero = null,
+            this.linha.nome = null,
+            this.linha.obs = null,
+            this.linha.saldo_inicial = null
+        }
     },
     mounted() {
         this.tableItems = this.tableItems.map(item => ({...item, isEdit: false}));
