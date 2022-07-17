@@ -56,6 +56,7 @@
                 :filter="filter"
                 :filter-included-fields="filterOn"
                 responsive
+                @filtered="onFiltered"
             >
                 <template #cell(banco)="data">
                     <b-form-input 
@@ -149,7 +150,7 @@
                     </b-button>
                 </template>
                 <template #table-caption>
-                    Total de Contas corrente: {{tableItems.length}} 
+                    Total de Contas corrente: {{totalLinhas}} 
                 </template>
                 <template #table-busy>
                     <div class="text-center text-danger my-2">
@@ -160,9 +161,6 @@
             </b-table>
         </article>
     </template>
-    <pre>
-      {{tableItems}}
-    </pre>
 </div>
 </template>
 
@@ -183,6 +181,7 @@ export default {
                 obs: null,
             },
             filterOn: [],
+            totalLinhas: 0,
             tableFields: [
                 { key: "banco", label: "Banco", type: 'text', sortable: true },
                 { key: "agencia", label: "Agência", type: 'text', sortable: false },
@@ -289,10 +288,14 @@ export default {
             this.linha.nome = null,
             this.linha.obs = null,
             this.linha.saldo_inicial = null
+        },
+        onFiltered(filteredItems) {
+            this.totalLinhas = filteredItems.length
         }
     },
     mounted() {
         this.tableItems = this.tableItems.map(item => ({...item, isEdit: false}));
+        this.totalLinhas = this.tableItems.length
     }
 }
 </script>

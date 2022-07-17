@@ -33,6 +33,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         obs: null
       },
       filterOn: [],
+      totalLinhas: 0,
       tableFields: [{
         key: "banco",
         label: "Banco",
@@ -161,6 +162,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     limpaLinha: function limpaLinha() {
       this.linha.banco = null, this.linha.agencia = null, this.linha.numero = null, this.linha.nome = null, this.linha.obs = null, this.linha.saldo_inicial = null;
+    },
+    onFiltered: function onFiltered(filteredItems) {
+      this.totalLinhas = filteredItems.length;
     }
   },
   mounted: function mounted() {
@@ -169,6 +173,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         isEdit: false
       });
     });
+    this.totalLinhas = this.tableItems.length;
   }
 });
 
@@ -272,6 +277,9 @@ var render = function render() {
       filter: _vm.filter,
       "filter-included-fields": _vm.filterOn,
       responsive: ""
+    },
+    on: {
+      filtered: _vm.onFiltered
     },
     scopedSlots: _vm._u([{
       key: "cell(banco)",
@@ -408,7 +416,7 @@ var render = function render() {
     }, {
       key: "table-caption",
       fn: function fn() {
-        return [_vm._v("\n                    Total de Contas corrente: " + _vm._s(_vm.tableItems.length) + " \n                ")];
+        return [_vm._v("\n                    Total de Contas corrente: " + _vm._s(_vm.totalLinhas) + " \n                ")];
       },
       proxy: true
     }, {
@@ -422,7 +430,7 @@ var render = function render() {
       },
       proxy: true
     }])
-  })], 1)], _vm._v(" "), _c("pre", [_vm._v("      " + _vm._s(_vm.tableItems) + "\n    ")])], 2);
+  })], 1)]], 2);
 };
 
 var staticRenderFns = [];
