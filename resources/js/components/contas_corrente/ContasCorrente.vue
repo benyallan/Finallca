@@ -222,16 +222,26 @@ export default {
             this.linha['saldo_inicial'] = this.tableItems[data.index]['saldo_inicial']
             this.tableItems[data.index].isEdit = true;
         },
+        editarRegistro(data) {
+            axios.put('/contascorrente/' + data.item.id, this.linha)
+            .then( response => {
+                this.tableItems[data.index]['banco'] = response.data.banco
+                this.tableItems[data.index]['agencia'] = response.data.agencia
+                this.tableItems[data.index]['numero'] = response.data.numero
+                this.tableItems[data.index]['nome'] = response.data.nome
+                this.tableItems[data.index]['obs'] = response.data.obs
+                this.tableItems[data.index]['saldo_inicial'] = response.data.saldo_inicial
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+        },
         salvarRegistro(data) {
             if (this.adicionando) {
                 this.addContaCorrente(data)
+            } else {
+                this.editarRegistro(data)
             }
-            // this.tableItems[data.index]['banco'] = this.linha['banco']
-            // this.tableItems[data.index]['agencia'] = this.linha['agencia']
-            // this.tableItems[data.index]['numero'] = this.linha['numero']
-            // this.tableItems[data.index]['nome'] = this.linha['nome']
-            // this.tableItems[data.index]['obs'] = this.linha['obs']
-            // this.tableItems[data.index]['saldo_inicial'] = this.linha['saldo_inicial']
             this.tableItems[data.index].isEdit = false
             this.editando = false
             this.adicionando = false

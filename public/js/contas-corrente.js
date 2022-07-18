@@ -102,16 +102,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.linha['saldo_inicial'] = this.tableItems[data.index]['saldo_inicial'];
       this.tableItems[data.index].isEdit = true;
     },
+    editarRegistro: function editarRegistro(data) {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default().put('/contascorrente/' + data.item.id, this.linha).then(function (response) {
+        _this2.tableItems[data.index]['banco'] = response.data.banco;
+        _this2.tableItems[data.index]['agencia'] = response.data.agencia;
+        _this2.tableItems[data.index]['numero'] = response.data.numero;
+        _this2.tableItems[data.index]['nome'] = response.data.nome;
+        _this2.tableItems[data.index]['obs'] = response.data.obs;
+        _this2.tableItems[data.index]['saldo_inicial'] = response.data.saldo_inicial;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
     salvarRegistro: function salvarRegistro(data) {
       if (this.adicionando) {
         this.addContaCorrente(data);
-      } // this.tableItems[data.index]['banco'] = this.linha['banco']
-      // this.tableItems[data.index]['agencia'] = this.linha['agencia']
-      // this.tableItems[data.index]['numero'] = this.linha['numero']
-      // this.tableItems[data.index]['nome'] = this.linha['nome']
-      // this.tableItems[data.index]['obs'] = this.linha['obs']
-      // this.tableItems[data.index]['saldo_inicial'] = this.linha['saldo_inicial']
-
+      } else {
+        this.editarRegistro(data);
+      }
 
       this.tableItems[data.index].isEdit = false;
       this.editando = false;
@@ -143,16 +153,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.adicionando = true;
     },
     removeLinha: function removeLinha(data) {
-      var _this2 = this;
+      var _this3 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]('/contascorrente/' + data.item.id).then(function (response) {
-        _this2.tableItems = _this2.tableItems.filter(function (item, i) {
+        _this3.tableItems = _this3.tableItems.filter(function (item, i) {
           return i !== data.index;
         });
 
-        _this2.$emit('input', _this2.tableItems);
+        _this3.$emit('input', _this3.tableItems);
 
-        _this2.totalLinhas--;
+        _this3.totalLinhas--;
       })["catch"](function (error) {
         console.log(error);
       });
@@ -164,12 +174,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.totalLinhas = filteredItems.length;
     },
     get: function get() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.isBusy = true;
       axios__WEBPACK_IMPORTED_MODULE_0___default().get('/contascorrente/get').then(function (response) {
-        _this3.totalLinhas = response.data.length;
-        _this3.tableItems = response.data.map(function (item) {
+        _this4.totalLinhas = response.data.length;
+        _this4.tableItems = response.data.map(function (item) {
           return _objectSpread(_objectSpread({}, item), {}, {
             isEdit: false
           });

@@ -30,5 +30,6 @@ Route::get('/carteiras/get', [App\Http\Controllers\CarteiraController::class, 'g
 // Contas Corrente
 Route::get('/contascorrente', [App\Http\Controllers\ContaCorrenteController::class, 'index'])->name('contascorrente.index');
 Route::post('/contascorrente', [App\Http\Controllers\ContaCorrenteController::class, 'store'])->name('contascorrente.store');
+Route::put('/contascorrente/{contaCorrente}', [App\Http\Controllers\ContaCorrenteController::class, 'update'])->name('contascorrente.update');
 Route::get('/contascorrente/get', [App\Http\Controllers\ContaCorrenteController::class, 'get'])->name('contascorrente.get');
 Route::delete('/contascorrente/{contaCorrente}', [App\Http\Controllers\ContaCorrenteController::class, 'destroy'])->name('contascorrente.destroy');

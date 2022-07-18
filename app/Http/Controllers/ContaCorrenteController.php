@@ -42,7 +42,7 @@ class ContaCorrenteController extends Controller
                                     trim($e->getMessage()) : 
                                     'Erro na Aplicação';
             Log::error("\nUsuário: " . Auth::user() . 
-                "\nErro ao salvar nova Carteira | Request enviado: " . 
+                "\nErro ao salvar nova Conte Corrente | Request enviado: " . 
                 json_encode($request->all()) . PHP_EOL .
                 $exception_message . PHP_EOL . "No arquivo " . 
                 $e->getFile() . " na linha " . $e->getLine() . PHP_EOL . 
@@ -72,7 +72,27 @@ class ContaCorrenteController extends Controller
      */
     public function update(UpdateContaCorrenteRequest $request, ContaCorrente $contaCorrente)
     {
-        //
+        try {
+            $contaCorrente->update($request->all());
+            return json_encode($contaCorrente);
+            Log::info("\nUsuário: " . Auth::user() . 
+                    "\nConta Corrente editada no Banco de Dados 
+                    com sucesso." .
+                    json_encode($contaCorrente) . PHP_EOL
+                );
+        } catch (Exception $e) {
+            $exception_message = !empty($e->getMessage()) ? 
+                                    trim($e->getMessage()) : 
+                                    'Erro na Aplicação';
+            Log::error("\nUsuário: " . Auth::user() . 
+                "\nErro ao editar Conta Corrente | Request enviado: " . 
+                json_encode($request->all()) . PHP_EOL .
+                $exception_message . PHP_EOL . "No arquivo " . 
+                $e->getFile() . " na linha " . $e->getLine() . PHP_EOL . 
+                $e
+            );
+            return  response()->json(['status' => 'Erro interno'], 500);
+        }
     }
 
     /**
@@ -98,7 +118,7 @@ class ContaCorrenteController extends Controller
                                     trim($e->getMessage()) : 
                                     'Erro na Aplicação';
             Log::error("\nUsuário: " . Auth::user() . 
-                "\nErro ao salvar nova Carteira | Request enviado: " . 
+                "\nErro ao apagar Conta Corrente | Request enviado: " . 
                 json_encode($contaCorrente) . PHP_EOL .
                 $exception_message . PHP_EOL . "No arquivo " . 
                 $e->getFile() . " na linha " . $e->getLine() . PHP_EOL . 
