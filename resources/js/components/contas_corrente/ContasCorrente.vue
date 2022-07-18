@@ -165,6 +165,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: "ContasCorrente",
     data() {
@@ -191,43 +193,20 @@ export default {
                 { key: "saldo_inicial", label: "Saldo Inicial", type: 'text', sortable: false },
                 { key: "edit", label: "", type: "edit", sortable: false }
             ],
-            tableItems: [
-                { 
-                    banco: 'Banco do Brasil', 
-                    agencia: '492-8', 
-                    numero: '4699-X', 
-                    nome: 'Beny Allan Rolim Barbosa Olivera e ' +
-                            'Carina Rosa de Oliveira Rolim', 
-                    obs: 'Conta conjunta',
-                    saldo_inicial: 'R$20,00'
-                },
-                { 
-                    banco: 'Bradesco', 
-                    agencia: '123-4', 
-                    numero: '8888-X', 
-                    nome: 'Carina Rosa de Oliveira Rolim', 
-                    obs: 'Conta particular',
-                    saldo_inicial: 'R$30,00' 
-                },
-                { 
-                    banco: 'Caixa Econômica Federal', 
-                    agencia: '456-7', 
-                    numero: '9999-0', 
-                    nome: 'Beny Allan Rolim Barbosa Olivera', 
-                    obs: 'Conta da casa',
-                    saldo_inicial: 'R$40,00' 
-                },
-            ]
+            tableItems: []
         };
     },
     methods: {
-        addContaCorrente() {
-            axios.post('/contascorrente', this.post)
+        addContaCorrente(data) {
+            axios.post('/contascorrente', this.linha)
             .then( response => {
-                this.tabela.items.splice(0,0,{
-                    nome: response.data.nome,
-                    saldo_inicial: response.data.saldo_inicial
-                })
+                this.tableItems[data.index]['banco'] = response.data.banco
+                this.tableItems[data.index]['agencia'] = response.data.agencia
+                this.tableItems[data.index]['numero'] = response.data.numero
+                this.tableItems[data.index]['nome'] = response.data.nome
+                this.tableItems[data.index]['obs'] = response.data.obs
+                this.tableItems[data.index]['saldo_inicial'] = response.data.saldo_inicial
+                this.totalLinhas ++
             })
             .catch(function (error) {
                 console.log(error);
@@ -244,12 +223,15 @@ export default {
             this.tableItems[data.index].isEdit = true;
         },
         salvarRegistro(data) {
-            this.tableItems[data.index]['banco'] = this.linha['banco']
-            this.tableItems[data.index]['agencia'] = this.linha['agencia']
-            this.tableItems[data.index]['numero'] = this.linha['numero']
-            this.tableItems[data.index]['nome'] = this.linha['nome']
-            this.tableItems[data.index]['obs'] = this.linha['obs']
-            this.tableItems[data.index]['saldo_inicial'] = this.linha['saldo_inicial']
+            if (this.adicionando) {
+                this.addContaCorrente(data)
+            }
+            // this.tableItems[data.index]['banco'] = this.linha['banco']
+            // this.tableItems[data.index]['agencia'] = this.linha['agencia']
+            // this.tableItems[data.index]['numero'] = this.linha['numero']
+            // this.tableItems[data.index]['nome'] = this.linha['nome']
+            // this.tableItems[data.index]['obs'] = this.linha['obs']
+            // this.tableItems[data.index]['saldo_inicial'] = this.linha['saldo_inicial']
             this.tableItems[data.index].isEdit = false
             this.editando = false
             this.adicionando = false
@@ -275,7 +257,6 @@ export default {
             newRow.isEdit = true
             this.tableItems.unshift(newRow)
             this.adicionando = true
-            this.limpaLinha()
         },
         removeRowHandler(index) {
             this.tableItems = this.tableItems.filter((item, i) => i !== index);
@@ -291,11 +272,22 @@ export default {
         },
         onFiltered(filteredItems) {
             this.totalLinhas = filteredItems.length
+        },
+        get() {
+            this.isBusy = true
+            axios.get('/contascorrente/get')
+            .then( response => {
+                this.totalLinhas = response.data.length
+                this.tableItems = response.data.map(item => ({...item, isEdit: false}))
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+            this.isBusy = false
         }
     },
     mounted() {
-        this.tableItems = this.tableItems.map(item => ({...item, isEdit: false}));
-        this.totalLinhas = this.tableItems.length
+        this.get()
     }
 }
 </script>

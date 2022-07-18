@@ -11,11 +11,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "ContasCorrente",
@@ -70,39 +73,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         type: "edit",
         sortable: false
       }],
-      tableItems: [{
-        banco: 'Banco do Brasil',
-        agencia: '492-8',
-        numero: '4699-X',
-        nome: 'Beny Allan Rolim Barbosa Olivera e ' + 'Carina Rosa de Oliveira Rolim',
-        obs: 'Conta conjunta',
-        saldo_inicial: 'R$20,00'
-      }, {
-        banco: 'Bradesco',
-        agencia: '123-4',
-        numero: '8888-X',
-        nome: 'Carina Rosa de Oliveira Rolim',
-        obs: 'Conta particular',
-        saldo_inicial: 'R$30,00'
-      }, {
-        banco: 'Caixa Econômica Federal',
-        agencia: '456-7',
-        numero: '9999-0',
-        nome: 'Beny Allan Rolim Barbosa Olivera',
-        obs: 'Conta da casa',
-        saldo_inicial: 'R$40,00'
-      }]
+      tableItems: []
     };
   },
   methods: {
-    addContaCorrente: function addContaCorrente() {
+    addContaCorrente: function addContaCorrente(data) {
       var _this = this;
 
-      axios.post('/contascorrente', this.post).then(function (response) {
-        _this.tabela.items.splice(0, 0, {
-          nome: response.data.nome,
-          saldo_inicial: response.data.saldo_inicial
-        });
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/contascorrente', this.linha).then(function (response) {
+        _this.tableItems[data.index]['banco'] = response.data.banco;
+        _this.tableItems[data.index]['agencia'] = response.data.agencia;
+        _this.tableItems[data.index]['numero'] = response.data.numero;
+        _this.tableItems[data.index]['nome'] = response.data.nome;
+        _this.tableItems[data.index]['obs'] = response.data.obs;
+        _this.tableItems[data.index]['saldo_inicial'] = response.data.saldo_inicial;
+        _this.totalLinhas++;
       })["catch"](function (error) {
         console.log(error);
       });
@@ -118,12 +103,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.tableItems[data.index].isEdit = true;
     },
     salvarRegistro: function salvarRegistro(data) {
-      this.tableItems[data.index]['banco'] = this.linha['banco'];
-      this.tableItems[data.index]['agencia'] = this.linha['agencia'];
-      this.tableItems[data.index]['numero'] = this.linha['numero'];
-      this.tableItems[data.index]['nome'] = this.linha['nome'];
-      this.tableItems[data.index]['obs'] = this.linha['obs'];
-      this.tableItems[data.index]['saldo_inicial'] = this.linha['saldo_inicial'];
+      if (this.adicionando) {
+        this.addContaCorrente(data);
+      } // this.tableItems[data.index]['banco'] = this.linha['banco']
+      // this.tableItems[data.index]['agencia'] = this.linha['agencia']
+      // this.tableItems[data.index]['numero'] = this.linha['numero']
+      // this.tableItems[data.index]['nome'] = this.linha['nome']
+      // this.tableItems[data.index]['obs'] = this.linha['obs']
+      // this.tableItems[data.index]['saldo_inicial'] = this.linha['saldo_inicial']
+
+
       this.tableItems[data.index].isEdit = false;
       this.editando = false;
       this.adicionando = false;
@@ -152,7 +141,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       newRow.isEdit = true;
       this.tableItems.unshift(newRow);
       this.adicionando = true;
-      this.limpaLinha();
     },
     removeRowHandler: function removeRowHandler(index) {
       this.tableItems = this.tableItems.filter(function (item, i) {
@@ -165,15 +153,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     onFiltered: function onFiltered(filteredItems) {
       this.totalLinhas = filteredItems.length;
+    },
+    get: function get() {
+      var _this2 = this;
+
+      this.isBusy = true;
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/contascorrente/get').then(function (response) {
+        _this2.totalLinhas = response.data.length;
+        _this2.tableItems = response.data.map(function (item) {
+          return _objectSpread(_objectSpread({}, item), {}, {
+            isEdit: false
+          });
+        });
+      })["catch"](function (error) {
+        console.log(error);
+      });
+      this.isBusy = false;
     }
   },
   mounted: function mounted() {
-    this.tableItems = this.tableItems.map(function (item) {
-      return _objectSpread(_objectSpread({}, item), {}, {
-        isEdit: false
-      });
-    });
-    this.totalLinhas = this.tableItems.length;
+    this.get();
   }
 });
 

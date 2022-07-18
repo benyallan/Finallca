@@ -41,6 +41,7 @@ class ContaCorrenteController extends Controller
     {
         try {
             $contacorrente = ContaCorrente::create($request->all());
+            return json_encode($contacorrente);
             Log::info("\nUsuário: " . Auth::user() . 
                     "\nConta Corrente adicionada ao Banco de Dados 
                     com sucesso." .
@@ -104,5 +105,12 @@ class ContaCorrenteController extends Controller
     public function destroy(ContaCorrente $contaCorrente)
     {
         //
+    }
+
+    public function get()
+    {
+        return ContaCorrente::select(
+            'id','banco','agencia','numero','nome','obs','saldo_inicial'
+        )->get();
     }
 }
