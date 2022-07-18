@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ContaCorrenteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,8 +29,7 @@ Route::post('/carteiras', [App\Http\Controllers\CarteiraController::class, 'stor
 Route::get('/carteiras/get', [App\Http\Controllers\CarteiraController::class, 'get'])->name('carteira.get');
 
 // Contas Corrente
-Route::get('/contascorrente', [App\Http\Controllers\ContaCorrenteController::class, 'index'])->name('contascorrente.index');
-Route::post('/contascorrente', [App\Http\Controllers\ContaCorrenteController::class, 'store'])->name('contascorrente.store');
-Route::put('/contascorrente/{contaCorrente}', [App\Http\Controllers\ContaCorrenteController::class, 'update'])->name('contascorrente.update');
-Route::get('/contascorrente/get', [App\Http\Controllers\ContaCorrenteController::class, 'get'])->name('contascorrente.get');
-Route::delete('/contascorrente/{contaCorrente}', [App\Http\Controllers\ContaCorrenteController::class, 'destroy'])->name('contascorrente.destroy');
+Route::resource('contascorrente', ContaCorrenteController::class)
+    ->only(['index','store','update','destroy']);
+Route::get('/contascorrente/get', [ContaCorrenteController::class, 'get'])
+    ->name('contascorrente.get');
