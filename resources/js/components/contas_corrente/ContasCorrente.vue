@@ -144,7 +144,7 @@
                         v-if="!editando"
                         class="delete-button" 
                         variant="danger" 
-                        @click="removeRowHandler(data.index, !tableItems[data.index].isEdit, data)"
+                        @click="removeLinha(data)"
                     >
                         Remover
                     </b-button>
@@ -258,9 +258,16 @@ export default {
             this.tableItems.unshift(newRow)
             this.adicionando = true
         },
-        removeRowHandler(index) {
-            this.tableItems = this.tableItems.filter((item, i) => i !== index);
-        this.$emit('input', this.tableItems);
+        removeLinha(data) {
+            axios.delete('/contascorrente/' + data.item.id)
+            .then(response => {
+                this.tableItems = this.tableItems.filter((item, i) => i !== data.index);
+                this.$emit('input', this.tableItems);
+                this.totalLinhas --
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
         },
         limpaLinha() {
             this.linha.banco = null,

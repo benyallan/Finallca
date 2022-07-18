@@ -22,16 +22,6 @@ class ContaCorrenteController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreContaCorrenteRequest  $request
@@ -74,17 +64,6 @@ class ContaCorrenteController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\ContaCorrente  $contaCorrente
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(ContaCorrente $contaCorrente)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateContaCorrenteRequest  $request
@@ -104,7 +83,29 @@ class ContaCorrenteController extends Controller
      */
     public function destroy(ContaCorrente $contaCorrente)
     {
-        //
+        try {
+            $contaCorrente->delete();
+            return response()->json([
+                'message' => 'Conta corrente apagada com sucesso!'
+            ], 200);
+            Log::info("\nUsuário: " . Auth::user() . 
+                    "\nConta Corrente apagada do Banco de Dados 
+                    com sucesso." .
+                    json_encode($contaCorrente) . PHP_EOL
+                );
+        } catch (Exception $e) {
+            $exception_message = !empty($e->getMessage()) ? 
+                                    trim($e->getMessage()) : 
+                                    'Erro na Aplicação';
+            Log::error("\nUsuário: " . Auth::user() . 
+                "\nErro ao salvar nova Carteira | Request enviado: " . 
+                json_encode($contaCorrente) . PHP_EOL .
+                $exception_message . PHP_EOL . "No arquivo " . 
+                $e->getFile() . " na linha " . $e->getLine() . PHP_EOL . 
+                $e
+            );
+            return  response()->json(['status' => 'Erro interno'], 500);
+        }
     }
 
     public function get()

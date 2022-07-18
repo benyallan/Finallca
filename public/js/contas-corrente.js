@@ -142,11 +142,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.tableItems.unshift(newRow);
       this.adicionando = true;
     },
-    removeRowHandler: function removeRowHandler(index) {
-      this.tableItems = this.tableItems.filter(function (item, i) {
-        return i !== index;
+    removeLinha: function removeLinha(data) {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]('/contascorrente/' + data.item.id).then(function (response) {
+        _this2.tableItems = _this2.tableItems.filter(function (item, i) {
+          return i !== data.index;
+        });
+
+        _this2.$emit('input', _this2.tableItems);
+
+        _this2.totalLinhas--;
+      })["catch"](function (error) {
+        console.log(error);
       });
-      this.$emit('input', this.tableItems);
     },
     limpaLinha: function limpaLinha() {
       this.linha.banco = null, this.linha.agencia = null, this.linha.numero = null, this.linha.nome = null, this.linha.obs = null, this.linha.saldo_inicial = null;
@@ -155,12 +164,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.totalLinhas = filteredItems.length;
     },
     get: function get() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.isBusy = true;
       axios__WEBPACK_IMPORTED_MODULE_0___default().get('/contascorrente/get').then(function (response) {
-        _this2.totalLinhas = response.data.length;
-        _this2.tableItems = response.data.map(function (item) {
+        _this3.totalLinhas = response.data.length;
+        _this3.tableItems = response.data.map(function (item) {
           return _objectSpread(_objectSpread({}, item), {}, {
             isEdit: false
           });
@@ -407,7 +416,7 @@ var render = function render() {
           },
           on: {
             click: function click($event) {
-              return _vm.removeRowHandler(data.index, !_vm.tableItems[data.index].isEdit, data);
+              return _vm.removeLinha(data);
             }
           }
         }, [_vm._v("\n                        Remover\n                    ")]) : _vm._e()];
