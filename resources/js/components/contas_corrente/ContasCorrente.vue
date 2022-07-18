@@ -119,35 +119,40 @@
                     <span v-else>{{data.value}}</span>
                 </template>
                 <template #cell(edit)="data">
-                    <b-button 
-                        v-if="!editando"
-                        variant="primary"
-                        @click="editarLinha(data)"
-                    >
-                        Editar
-                    </b-button>
-                    <b-button 
-                        v-if="editando && tableItems[data.index].isEdit" 
-                        variant="success"
-                        @click="salvarRegistro(data)"
-                    >
-                        Salvar
-                    </b-button>
-                    <b-button 
-                        v-if="editando && tableItems[data.index].isEdit" 
-                        variant="danger"
-                        @click="cancelarAlteracoes(data)"
-                    >
-                        Cancelar
-                    </b-button>
-                    <b-button 
-                        v-if="!editando"
-                        class="delete-button" 
-                        variant="danger" 
-                        @click="removeLinha(data)"
-                    >
-                        Remover
-                    </b-button>
+                    <div class="d-flex flex-nowrap">
+                        <b-button 
+                            v-if="!editando"
+                            variant="primary"
+                            @click="editarLinha(data)"
+                            class="m-1"
+                        >
+                            <b-icon icon="pencil-square"></b-icon>
+                        </b-button>
+                        <b-button 
+                            v-if="editando && tableItems[data.index].isEdit" 
+                            variant="success"
+                            @click="salvarRegistro(data)"
+                            class="m-1"
+                        >
+                            <b-icon icon="save"></b-icon>
+                        </b-button>
+                        <b-button 
+                            v-if="editando && tableItems[data.index].isEdit" 
+                            variant="danger"
+                            @click="cancelarAlteracoes(data)"
+                            class="m-1"
+                        >
+                            <b-icon icon="x-lg"></b-icon>
+                        </b-button>
+                        <b-button 
+                            v-if="!editando"
+                            class="delete-button m-1" 
+                            variant="danger" 
+                            @click="removeLinha(data)"
+                        >
+                            <b-icon icon="trash"></b-icon>
+                        </b-button>
+                    </div>
                 </template>
                 <template #table-caption>
                     Total de Contas corrente: {{totalLinhas}} 

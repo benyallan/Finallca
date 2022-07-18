@@ -392,7 +392,10 @@ var render = function render() {
     }, {
       key: "cell(edit)",
       fn: function fn(data) {
-        return [!_vm.editando ? _c("b-button", {
+        return [_c("div", {
+          staticClass: "d-flex flex-nowrap"
+        }, [!_vm.editando ? _c("b-button", {
+          staticClass: "m-1",
           attrs: {
             variant: "primary"
           },
@@ -401,7 +404,12 @@ var render = function render() {
               return _vm.editarLinha(data);
             }
           }
-        }, [_vm._v("\n                        Editar\n                    ")]) : _vm._e(), _vm._v(" "), _vm.editando && _vm.tableItems[data.index].isEdit ? _c("b-button", {
+        }, [_c("b-icon", {
+          attrs: {
+            icon: "pencil-square"
+          }
+        })], 1) : _vm._e(), _vm._v(" "), _vm.editando && _vm.tableItems[data.index].isEdit ? _c("b-button", {
+          staticClass: "m-1",
           attrs: {
             variant: "success"
           },
@@ -410,7 +418,12 @@ var render = function render() {
               return _vm.salvarRegistro(data);
             }
           }
-        }, [_vm._v("\n                        Salvar\n                    ")]) : _vm._e(), _vm._v(" "), _vm.editando && _vm.tableItems[data.index].isEdit ? _c("b-button", {
+        }, [_c("b-icon", {
+          attrs: {
+            icon: "save"
+          }
+        })], 1) : _vm._e(), _vm._v(" "), _vm.editando && _vm.tableItems[data.index].isEdit ? _c("b-button", {
+          staticClass: "m-1",
           attrs: {
             variant: "danger"
           },
@@ -419,8 +432,12 @@ var render = function render() {
               return _vm.cancelarAlteracoes(data);
             }
           }
-        }, [_vm._v("\n                        Cancelar\n                    ")]) : _vm._e(), _vm._v(" "), !_vm.editando ? _c("b-button", {
-          staticClass: "delete-button",
+        }, [_c("b-icon", {
+          attrs: {
+            icon: "x-lg"
+          }
+        })], 1) : _vm._e(), _vm._v(" "), !_vm.editando ? _c("b-button", {
+          staticClass: "delete-button m-1",
           attrs: {
             variant: "danger"
           },
@@ -429,7 +446,11 @@ var render = function render() {
               return _vm.removeLinha(data);
             }
           }
-        }, [_vm._v("\n                        Remover\n                    ")]) : _vm._e()];
+        }, [_c("b-icon", {
+          attrs: {
+            icon: "trash"
+          }
+        })], 1) : _vm._e()], 1)];
       }
     }, {
       key: "table-caption",
