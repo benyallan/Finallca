@@ -70,15 +70,15 @@ class ContaCorrenteController extends Controller
      * @param  \App\Models\ContaCorrente  $contaCorrente
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateContaCorrenteRequest $request, ContaCorrente $contaCorrente)
+    public function update(UpdateContaCorrenteRequest $request, ContaCorrente $contascorrente)
     {
         try {
-            $contaCorrente->update($request->all());
-            return json_encode($contaCorrente);
+            $contascorrente->update($request->all());
+            return json_encode($contascorrente);
             Log::info("\nUsuário: " . Auth::user() . 
                     "\nConta Corrente editada no Banco de Dados 
                     com sucesso." .
-                    json_encode($contaCorrente) . PHP_EOL
+                    json_encode($contascorrente) . PHP_EOL
                 );
         } catch (Exception $e) {
             $exception_message = !empty($e->getMessage()) ? 
@@ -101,17 +101,17 @@ class ContaCorrenteController extends Controller
      * @param  \App\Models\ContaCorrente  $contaCorrente
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ContaCorrente $contaCorrente)
+    public function destroy(ContaCorrente $contascorrente)
     {
         try {
-            $contaCorrente->delete();
+            $contascorrente->delete();
             return response()->json([
                 'message' => 'Conta corrente apagada com sucesso!'
             ], 200);
             Log::info("\nUsuário: " . Auth::user() . 
                     "\nConta Corrente apagada do Banco de Dados 
                     com sucesso." .
-                    json_encode($contaCorrente) . PHP_EOL
+                    json_encode($contascorrente) . PHP_EOL
                 );
         } catch (Exception $e) {
             $exception_message = !empty($e->getMessage()) ? 
@@ -119,7 +119,7 @@ class ContaCorrenteController extends Controller
                                     'Erro na Aplicação';
             Log::error("\nUsuário: " . Auth::user() . 
                 "\nErro ao apagar Conta Corrente | Request enviado: " . 
-                json_encode($contaCorrente) . PHP_EOL .
+                json_encode($contascorrente) . PHP_EOL .
                 $exception_message . PHP_EOL . "No arquivo " . 
                 $e->getFile() . " na linha " . $e->getLine() . PHP_EOL . 
                 $e
