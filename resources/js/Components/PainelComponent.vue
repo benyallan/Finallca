@@ -5,7 +5,11 @@
         variant="light"
     >
         <b-container>
-            <b-navbar-brand href="#">{{brandtitulo}}</b-navbar-brand>
+            <b-navbar-brand href="#">
+                <router-link :to="{ name: 'contascorrente' }">
+                    {{brandtitulo}}
+                </router-link>
+            </b-navbar-brand>
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
             <b-collapse id="nav-collapse" is-nav class="justify-content-end">

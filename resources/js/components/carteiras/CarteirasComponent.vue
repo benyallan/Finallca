@@ -52,6 +52,7 @@
             {{ tabela.items }}
         </pre>
         <nova-carteira-modal></nova-carteira-modal>
+        <router-view></router-view>
     </div>
 </template>
 
