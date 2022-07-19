@@ -21,7 +21,10 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])
+    ->name('home');
+Route::get('/auth', [App\Http\Controllers\HomeController::class, 'auth'])
+    ->name('auth');
 
 // Carteiras
 Route::get('/carteiras', [App\Http\Controllers\CarteiraController::class, 'index'])->name('carteira.index');
