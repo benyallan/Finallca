@@ -1,9 +1,9 @@
 <template>
 <div id="ContasCorrente">
     <template>
-        <article>
+        <b-container fluid>
             <b-row>
-                <b-col cols="2">
+                <b-col md="2" lg="2">
                 <b-button 
                     class="add-button d-flex" 
                     variant="success" 
@@ -12,26 +12,26 @@
                     Adicionar
                 </b-button>
             </b-col>
-            <b-col cols="4">
-                <b-input-group size="sm">
+            <b-col md="4" lg="4">
+                <b-input-group>
                     <b-form-input
                         id="filter-input"
                         v-model="filter"
                         type="search"
                         placeholder="Pesquisar"
                     ></b-form-input>
-
                     <b-input-group-append>
                             <b-button 
                                 :disabled="!filter" 
                                 @click="filter = ''"
+                                variant="outline-secondary"
                             >
-                                Limpar
+                                <b-icon icon="backspace"></b-icon>
                             </b-button>
                     </b-input-group-append>
                 </b-input-group>
             </b-col>
-            <b-col cols="6">
+            <b-col md="6" lg="6">
                 <b-form-checkbox-group
                     v-model="filterOn"
                     class="mt-1 d-flex"
@@ -164,7 +164,7 @@
                     </div>
                 </template>
             </b-table>
-        </article>
+        </b-container>
     </template>
 </div>
 </template>
@@ -317,7 +317,7 @@ export default {
 <style>
     #ContasCorrente {
     text-align: center;
-    margin: 60px;
+    margin: 10px;
     }
     thead, tbody, tfoot, tr, td, th {
     text-align: left;

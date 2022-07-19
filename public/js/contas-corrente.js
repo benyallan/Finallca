@@ -216,9 +216,14 @@ var render = function render() {
     attrs: {
       id: "ContasCorrente"
     }
-  }, [[_c("article", [_c("b-row", [_c("b-col", {
+  }, [[_c("b-container", {
     attrs: {
-      cols: "2"
+      fluid: ""
+    }
+  }, [_c("b-row", [_c("b-col", {
+    attrs: {
+      md: "2",
+      lg: "2"
     }
   }, [_c("b-button", {
     staticClass: "add-button d-flex",
@@ -230,13 +235,10 @@ var render = function render() {
     }
   }, [_vm._v("\n                    Adicionar\n                ")])], 1), _vm._v(" "), _c("b-col", {
     attrs: {
-      cols: "4"
+      md: "4",
+      lg: "4"
     }
-  }, [_c("b-input-group", {
-    attrs: {
-      size: "sm"
-    }
-  }, [_c("b-form-input", {
+  }, [_c("b-input-group", [_c("b-form-input", {
     attrs: {
       id: "filter-input",
       type: "search",
@@ -251,16 +253,22 @@ var render = function render() {
     }
   }), _vm._v(" "), _c("b-input-group-append", [_c("b-button", {
     attrs: {
-      disabled: !_vm.filter
+      disabled: !_vm.filter,
+      variant: "outline-secondary"
     },
     on: {
       click: function click($event) {
         _vm.filter = "";
       }
     }
-  }, [_vm._v("\n                                Limpar\n                            ")])], 1)], 1)], 1), _vm._v(" "), _c("b-col", {
+  }, [_c("b-icon", {
     attrs: {
-      cols: "6"
+      icon: "backspace"
+    }
+  })], 1)], 1)], 1)], 1), _vm._v(" "), _c("b-col", {
+    attrs: {
+      md: "6",
+      lg: "6"
     }
   }, [_c("b-form-checkbox-group", {
     staticClass: "mt-1 d-flex",
@@ -494,7 +502,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n#ContasCorrente {\n    text-align: center;\n    margin: 60px;\n}\nthead, tbody, tfoot, tr, td, th {\n    text-align: left;\n    width: 100px;\n    vertical-align: middle;\n}\n.add-button {\n        margin-bottom: 10px;\n}\nspan.sr-only {\n        display:none;\n}\nlabel.custom-control-label {\n        padding-left: 5px;\n}\npre {\n        text-align: left;\n        color: #d63384;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n#ContasCorrente {\n    text-align: center;\n    margin: 10px;\n}\nthead, tbody, tfoot, tr, td, th {\n    text-align: left;\n    width: 100px;\n    vertical-align: middle;\n}\n.add-button {\n        margin-bottom: 10px;\n}\nspan.sr-only {\n        display:none;\n}\nlabel.custom-control-label {\n        padding-left: 5px;\n}\npre {\n        text-align: left;\n        color: #d63384;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
