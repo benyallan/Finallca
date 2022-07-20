@@ -158,11 +158,11 @@ var render = function render() {
     attrs: {
       vertical: ""
     }
-  }, [_c("router-link", {
+  }, [_c("b-nav-item", [_c("router-link", {
     attrs: {
-      to: "/contascorrente"
+      to: "/home"
     }
-  }, [_vm._v("Contas Corrente")]), _vm._v(" "), _c("b-nav-item", {
+  }, [_vm._v("Dashboard")])], 1), _vm._v(" "), _c("b-nav-item", {
     directives: [{
       name: "b-toggle",
       rawName: "v-b-toggle.collapse-1",
@@ -174,29 +174,25 @@ var render = function render() {
     attrs: {
       icon: "plus"
     }
-  }), _vm._v("\n                            Link 2\n                        ")], 1), _vm._v(" "), _c("b-collapse", {
+  }), _vm._v("\n                            Contas\n                        ")], 1), _vm._v(" "), _c("b-collapse", {
     attrs: {
       id: "collapse-1"
     }
   }, [_c("b-card", {
     staticClass: "bg-dark border-0"
-  }, [_c("b-nav-item", [_vm._v("Link 2.1")]), _vm._v(" "), _c("b-nav-item", {
-    directives: [{
-      name: "b-toggle",
-      rawName: "v-b-toggle.collapse-1-inner",
-      modifiers: {
-        "collapse-1-inner": true
-      }
-    }]
-  }, [_c("b-icon", {
+  }, [_c("b-nav", {
     attrs: {
-      icon: "plus"
+      vertical: ""
     }
-  }), _vm._v("\n                                    Link 2.2\n                                ")], 1), _vm._v(" "), _c("b-collapse", {
+  }, [_c("b-nav-item", [_c("router-link", {
     attrs: {
-      id: "collapse-1-inner"
+      to: "/carteiras"
     }
-  }, [_c("b-nav-item", [_vm._v("Link 2.2.1")])], 1)], 1)], 1), _vm._v(" "), _c("b-nav-item", [_vm._v("Link 3")])], 1)], 1)])], 1)], 1)], 1);
+  }, [_vm._v("Carteiras")])], 1), _vm._v(" "), _c("b-nav-item", [_c("router-link", {
+    attrs: {
+      to: "/contascorrente"
+    }
+  }, [_vm._v("Contas Corrente")])], 1)], 1)], 1)], 1)], 1)], 1)])], 1)], 1)], 1);
 };
 
 var staticRenderFns = [];

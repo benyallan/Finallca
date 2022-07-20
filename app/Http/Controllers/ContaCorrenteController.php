@@ -31,12 +31,12 @@ class ContaCorrenteController extends Controller
     {
         try {
             $contacorrente = ContaCorrente::create($request->all());
-            return json_encode($contacorrente);
             Log::info("\nUsuário: " . Auth::user() . 
                     "\nConta Corrente adicionada ao Banco de Dados 
                     com sucesso." .
                     json_encode($contacorrente) . PHP_EOL
                 );
+            return json_encode($contacorrente);
         } catch (Exception $e) {
             $exception_message = !empty($e->getMessage()) ? 
                                     trim($e->getMessage()) : 
@@ -74,12 +74,12 @@ class ContaCorrenteController extends Controller
     {
         try {
             $contascorrente->update($request->all());
-            return json_encode($contascorrente);
             Log::info("\nUsuário: " . Auth::user() . 
                     "\nConta Corrente editada no Banco de Dados 
                     com sucesso." .
                     json_encode($contascorrente) . PHP_EOL
                 );
+            return json_encode($contascorrente);
         } catch (Exception $e) {
             $exception_message = !empty($e->getMessage()) ? 
                                     trim($e->getMessage()) : 
@@ -105,14 +105,14 @@ class ContaCorrenteController extends Controller
     {
         try {
             $contascorrente->delete();
-            return response()->json([
-                'message' => 'Conta corrente apagada com sucesso!'
-            ], 200);
             Log::info("\nUsuário: " . Auth::user() . 
                     "\nConta Corrente apagada do Banco de Dados 
                     com sucesso." .
                     json_encode($contascorrente) . PHP_EOL
                 );
+            return response()->json([
+                'message' => 'Conta corrente apagada com sucesso!'
+            ], 200);
         } catch (Exception $e) {
             $exception_message = !empty($e->getMessage()) ? 
                                     trim($e->getMessage()) : 

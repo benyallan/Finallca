@@ -30,7 +30,13 @@ class CarteiraController extends Controller
     public function store(StoreCarteiraRequest $request)
     {
         try {
-            return Carteira::create($request->all());
+            $carteira = Carteira::create($request->all());
+            Log::info("\nUsuário: " . Auth::user() . 
+                    "\nCarteira adicionada ao Banco de Dados 
+                    com sucesso." .
+                    json_encode($carteira) . PHP_EOL
+                );
+            return json_encode($carteira);
         } catch (Exception $e) {
             $exception_message = !empty($e->getMessage()) ? 
                                     trim($e->getMessage()) : 
@@ -58,17 +64,6 @@ class CarteiraController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Carteira  $carteira
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Carteira $carteira)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateCarteiraRequest  $request
@@ -77,7 +72,27 @@ class CarteiraController extends Controller
      */
     public function update(UpdateCarteiraRequest $request, Carteira $carteira)
     {
-        //
+        try {
+            $carteira->update($request->all());
+            Log::info("\nUsuário: " . Auth::user() . 
+                    "\nCarteira editada no Banco de Dados 
+                    com sucesso." .
+                    json_encode($carteira) . PHP_EOL
+                );
+            return json_encode($carteira);
+        } catch (Exception $e) {
+            $exception_message = !empty($e->getMessage()) ? 
+                                    trim($e->getMessage()) : 
+                                    'Erro na Aplicação';
+            Log::error("\nUsuário: " . Auth::user() . 
+                "\nErro ao editar Carteira | Request enviado: " . 
+                json_encode($request->all()) . PHP_EOL .
+                $exception_message . PHP_EOL . "No arquivo " . 
+                $e->getFile() . " na linha " . $e->getLine() . PHP_EOL . 
+                $e
+            );
+            return  response()->json(['status' => 'Erro interno'], 500);
+        }
     }
 
     /**
@@ -88,7 +103,29 @@ class CarteiraController extends Controller
      */
     public function destroy(Carteira $carteira)
     {
-        //
+        try {
+            $carteira->delete();
+            Log::info("\nUsuário: " . Auth::user() . 
+                    "\nCarteira apagada do Banco de Dados 
+                    com sucesso." .
+                    json_encode($carteira) . PHP_EOL
+                );
+            return response()->json([
+                'message' => 'Carteira apagada com sucesso!'
+            ], 200);
+        } catch (Exception $e) {
+            $exception_message = !empty($e->getMessage()) ? 
+                                    trim($e->getMessage()) : 
+                                    'Erro na Aplicação';
+            Log::error("\nUsuário: " . Auth::user() . 
+                "\nErro ao apagar Carteira | Request enviado: " . 
+                json_encode($carteira) . PHP_EOL .
+                $exception_message . PHP_EOL . "No arquivo " . 
+                $e->getFile() . " na linha " . $e->getLine() . PHP_EOL . 
+                $e
+            );
+            return  response()->json(['status' => 'Erro interno'], 500);
+        }
     }
 
     public function get()

@@ -2,7 +2,10 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ContaCorrenteController;
+use App\Http\Controllers\{
+    ContaCorrenteController,
+    CarteiraController
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -27,9 +30,10 @@ Route::get('/auth', [App\Http\Controllers\HomeController::class, 'auth'])
     ->name('auth');
 
 // Carteiras
-Route::get('/carteiras', [App\Http\Controllers\CarteiraController::class, 'index'])->name('carteira.index');
-Route::post('/carteiras', [App\Http\Controllers\CarteiraController::class, 'store'])->name('carteira.store');
-Route::get('/carteiras/get', [App\Http\Controllers\CarteiraController::class, 'get'])->name('carteira.get');
+Route::resource('carteiras', CarteiraController::class)
+    ->only(['index','store','update','destroy']);
+Route::get('/carteiras/get', [CarteiraController::class, 'get'])
+    ->name('carteiras.get');
 
 // Contas Corrente
 Route::resource('contascorrente', ContaCorrenteController::class)

@@ -50,24 +50,25 @@
                         <b-icon icon="arrow-left-square"></b-icon>
                     </b-button>
                      <b-nav vertical>
-                        <router-link to="/contascorrente">Contas Corrente</router-link>
+                        <b-nav-item>
+                            <router-link to="/home">Dashboard</router-link>
+                        </b-nav-item>
                         <b-nav-item v-b-toggle.collapse-1>
                             <b-icon icon="plus"></b-icon>
-                            Link 2
+                            Contas
                         </b-nav-item>
                         <b-collapse id="collapse-1">
                             <b-card class="bg-dark border-0">
-                                <b-nav-item>Link 2.1</b-nav-item>
-                                <b-nav-item v-b-toggle.collapse-1-inner>
-                                    <b-icon icon="plus" ></b-icon>
-                                    Link 2.2
-                                </b-nav-item>
-                                <b-collapse id="collapse-1-inner">
-                                    <b-nav-item>Link 2.2.1</b-nav-item>
-                                </b-collapse>
+                                <b-nav vertical>
+                                    <b-nav-item>
+                                        <router-link to="/carteiras">Carteiras</router-link>
+                                    </b-nav-item>
+                                    <b-nav-item>
+                                        <router-link to="/contascorrente">Contas Corrente</router-link>
+                                    </b-nav-item>
+                                </b-nav>
                             </b-card>
                         </b-collapse>
-                        <b-nav-item>Link 3</b-nav-item>
                     </b-nav>
                 </div>
                 </b-sidebar>

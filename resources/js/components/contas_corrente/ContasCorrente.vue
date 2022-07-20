@@ -1,179 +1,179 @@
 <template>
-<div id="ContasCorrente">
-    <template>
-        <b-container fluid>
-            <b-row>
-                <b-col md="2" lg="2">
-                <b-button 
-                    class="add-button d-flex" 
-                    variant="success" 
-                    @click="addNovaLinha"
+    <div id="contascorrente">
+        <template>
+            <b-container fluid>
+                <b-row>
+                    <b-col md="2" lg="2">
+                    <b-button 
+                        class="add-button d-flex" 
+                        variant="success" 
+                        @click="addNovaLinha"
+                    >
+                        Adicionar
+                    </b-button>
+                </b-col>
+                <b-col md="4" lg="4">
+                    <b-input-group>
+                        <b-form-input
+                            id="filter-input"
+                            v-model="filter"
+                            type="search"
+                            placeholder="Pesquisar"
+                        ></b-form-input>
+                        <b-input-group-append>
+                                <b-button 
+                                    :disabled="!filter" 
+                                    @click="filter = ''"
+                                    variant="outline-secondary"
+                                >
+                                    <b-icon icon="backspace"></b-icon>
+                                </b-button>
+                        </b-input-group-append>
+                    </b-input-group>
+                </b-col>
+                <b-col md="6" lg="6">
+                    <b-form-checkbox-group
+                        v-model="filterOn"
+                        class="mt-1 d-flex"
+                    >
+                        <b-form-checkbox value="banco" class="m-2">
+                            Banco
+                        </b-form-checkbox>
+                        <b-form-checkbox value="agencia" class="m-2">
+                            Agência
+                        </b-form-checkbox>
+                        <b-form-checkbox value="numero" class="m-2">
+                            Conta Corrente
+                        </b-form-checkbox>
+                    </b-form-checkbox-group>
+                </b-col>
+                </b-row>
+                <b-table 
+                    class="b-table" 
+                    :items="tableItems" 
+                    :fields="tableFields"
+                    :busy="isBusy"
+                    :filter="filter"
+                    :filter-included-fields="filterOn"
+                    responsive
+                    @filtered="onFiltered"
                 >
-                    Adicionar
-                </b-button>
-            </b-col>
-            <b-col md="4" lg="4">
-                <b-input-group>
-                    <b-form-input
-                        id="filter-input"
-                        v-model="filter"
-                        type="search"
-                        placeholder="Pesquisar"
-                    ></b-form-input>
-                    <b-input-group-append>
+                    <template #cell(banco)="data">
+                        <b-form-input 
+                            v-if="tableItems[data.index].isEdit" 
+                            type="text" 
+                            :value="linha['banco']" 
+                            @blur="(e) => 
+                                alteraTabela(e.target.value, 'banco')"
+                        ></b-form-input>
+                        <span v-else>{{data.value}}</span>
+                    </template>
+                    <template #cell(agencia)="data">
+                        <b-form-input 
+                            v-if="tableItems[data.index].isEdit" 
+                            type="text" 
+                            :value="linha['agencia']" 
+                            @blur="(e) => 
+                                alteraTabela(e.target.value, 'agencia')"
+                        ></b-form-input>
+                        <span v-else>{{data.value}}</span>
+                    </template>
+                    <template #cell(numero)="data">
+                        <b-form-input 
+                            v-if="tableItems[data.index].isEdit" 
+                            type="text" 
+                            :value="linha['numero']" 
+                            @blur="(e) => 
+                                alteraTabela(e.target.value, 'numero')"
+                        ></b-form-input>
+                        <span v-else>{{data.value}}</span>
+                    </template>
+                    <template #cell(nome)="data">
+                        <b-form-input 
+                            v-if="tableItems[data.index].isEdit" 
+                            type="text" 
+                            :value="linha['nome']" 
+                            @blur="(e) => 
+                                alteraTabela(e.target.value, 'nome')"
+                        ></b-form-input>
+                        <span v-else>{{data.value}}</span>
+                    </template>
+                    <template #cell(obs)="data">
+                        <b-form-input 
+                            v-if="tableItems[data.index].isEdit" 
+                            type="text" 
+                            :value="linha['obs']" 
+                            @blur="(e) => 
+                                alteraTabela(e.target.value, 'obs')"
+                        ></b-form-input>
+                        <span v-else>{{data.value}}</span>
+                    </template>
+                    <template #cell(saldo_inicial)="data">
+                        <b-form-input 
+                            v-if="tableItems[data.index].isEdit" 
+                            type="text" 
+                            :value="linha['saldo_inicial']" 
+                            @blur="(e) => 
+                                alteraTabela(e.target.value, 'saldo_inicial')"
+                        ></b-form-input>
+                        <span v-else>{{data.value}}</span>
+                    </template>
+                    <template #cell(edit)="data">
+                        <div class="d-flex flex-nowrap">
                             <b-button 
-                                :disabled="!filter" 
-                                @click="filter = ''"
-                                variant="outline-secondary"
+                                v-if="!editando"
+                                variant="primary"
+                                @click="editarLinha(data)"
+                                class="m-1"
                             >
-                                <b-icon icon="backspace"></b-icon>
+                                <b-icon icon="pencil-square"></b-icon>
                             </b-button>
-                    </b-input-group-append>
-                </b-input-group>
-            </b-col>
-            <b-col md="6" lg="6">
-                <b-form-checkbox-group
-                    v-model="filterOn"
-                    class="mt-1 d-flex"
-                >
-                    <b-form-checkbox value="banco" class="m-2">
-                        Banco
-                    </b-form-checkbox>
-                    <b-form-checkbox value="agencia" class="m-2">
-                        Agência
-                    </b-form-checkbox>
-                    <b-form-checkbox value="numero" class="m-2">
-                        Conta Corrente
-                    </b-form-checkbox>
-                </b-form-checkbox-group>
-            </b-col>
-            </b-row>
-            <b-table 
-                class="b-table" 
-                :items="tableItems" 
-                :fields="tableFields"
-                :busy="isBusy"
-                :filter="filter"
-                :filter-included-fields="filterOn"
-                responsive
-                @filtered="onFiltered"
-            >
-                <template #cell(banco)="data">
-                    <b-form-input 
-                        v-if="tableItems[data.index].isEdit" 
-                        type="text" 
-                        :value="linha['banco']" 
-                        @blur="(e) => 
-                            alteraTabela(e.target.value, 'banco')"
-                    ></b-form-input>
-                    <span v-else>{{data.value}}</span>
-                </template>
-                <template #cell(agencia)="data">
-                    <b-form-input 
-                        v-if="tableItems[data.index].isEdit" 
-                        type="text" 
-                        :value="linha['agencia']" 
-                        @blur="(e) => 
-                            alteraTabela(e.target.value, 'agencia')"
-                    ></b-form-input>
-                    <span v-else>{{data.value}}</span>
-                </template>
-                <template #cell(numero)="data">
-                    <b-form-input 
-                        v-if="tableItems[data.index].isEdit" 
-                        type="text" 
-                        :value="linha['numero']" 
-                        @blur="(e) => 
-                            alteraTabela(e.target.value, 'numero')"
-                    ></b-form-input>
-                    <span v-else>{{data.value}}</span>
-                </template>
-                <template #cell(nome)="data">
-                    <b-form-input 
-                        v-if="tableItems[data.index].isEdit" 
-                        type="text" 
-                        :value="linha['nome']" 
-                        @blur="(e) => 
-                            alteraTabela(e.target.value, 'nome')"
-                    ></b-form-input>
-                    <span v-else>{{data.value}}</span>
-                </template>
-                <template #cell(obs)="data">
-                    <b-form-input 
-                        v-if="tableItems[data.index].isEdit" 
-                        type="text" 
-                        :value="linha['obs']" 
-                        @blur="(e) => 
-                            alteraTabela(e.target.value, 'obs')"
-                    ></b-form-input>
-                    <span v-else>{{data.value}}</span>
-                </template>
-                <template #cell(saldo_inicial)="data">
-                    <b-form-input 
-                        v-if="tableItems[data.index].isEdit" 
-                        type="text" 
-                        :value="linha['saldo_inicial']" 
-                        @blur="(e) => 
-                            alteraTabela(e.target.value, 'saldo_inicial')"
-                    ></b-form-input>
-                    <span v-else>{{data.value}}</span>
-                </template>
-                <template #cell(edit)="data">
-                    <div class="d-flex flex-nowrap">
-                        <b-button 
-                            v-if="!editando"
-                            variant="primary"
-                            @click="editarLinha(data)"
-                            class="m-1"
-                        >
-                            <b-icon icon="pencil-square"></b-icon>
-                        </b-button>
-                        <b-button 
-                            v-if="editando && tableItems[data.index].isEdit" 
-                            variant="success"
-                            @click="salvarRegistro(data)"
-                            class="m-1"
-                        >
-                            <b-icon icon="save"></b-icon>
-                        </b-button>
-                        <b-button 
-                            v-if="editando && tableItems[data.index].isEdit" 
-                            variant="danger"
-                            @click="cancelarAlteracoes(data)"
-                            class="m-1"
-                        >
-                            <b-icon icon="x-lg"></b-icon>
-                        </b-button>
-                        <b-button 
-                            v-if="!editando"
-                            class="delete-button m-1" 
-                            variant="danger" 
-                            @click="removeLinha(data)"
-                        >
-                            <b-icon icon="trash"></b-icon>
-                        </b-button>
-                    </div>
-                </template>
-                <template #table-caption>
-                    Total de Contas corrente: {{totalLinhas}} 
-                </template>
-                <template #table-busy>
-                    <div class="text-center text-danger my-2">
-                        <b-spinner class="align-middle"></b-spinner>
-                        <strong>Carregando...</strong>
-                    </div>
-                </template>
-            </b-table>
-        </b-container>
-    </template>
-</div>
+                            <b-button 
+                                v-if="editando && tableItems[data.index].isEdit" 
+                                variant="success"
+                                @click="salvarRegistro(data)"
+                                class="m-1"
+                            >
+                                <b-icon icon="save"></b-icon>
+                            </b-button>
+                            <b-button 
+                                v-if="editando && tableItems[data.index].isEdit" 
+                                variant="danger"
+                                @click="cancelarAlteracoes(data)"
+                                class="m-1"
+                            >
+                                <b-icon icon="x-lg"></b-icon>
+                            </b-button>
+                            <b-button 
+                                v-if="!editando"
+                                class="delete-button m-1" 
+                                variant="danger" 
+                                @click="removeLinha(data)"
+                            >
+                                <b-icon icon="trash"></b-icon>
+                            </b-button>
+                        </div>
+                    </template>
+                    <template #table-caption>
+                        Total de Contas corrente: {{totalLinhas}} 
+                    </template>
+                    <template #table-busy>
+                        <div class="text-center text-danger my-2">
+                            <b-spinner class="align-middle"></b-spinner>
+                            <strong>Carregando...</strong>
+                        </div>
+                    </template>
+                </b-table>
+            </b-container>
+        </template>
+    </div>
 </template>
 
 <script>
 import axios from 'axios';
 
 export default {
-    name: "ContasCorrente",
+    name: "contascorrente",
     data() {
         return {
             isBusy: false,
