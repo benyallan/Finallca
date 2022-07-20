@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+    <painel-component></painel-component>
     <router-view></router-view>
-</div>
 @endsection

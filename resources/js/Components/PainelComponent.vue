@@ -81,6 +81,11 @@
 import axios from 'axios'
 
     export default {
+        computed: {
+            username() {
+            return this.$route.params.username
+            }
+        },
         data() {
             return {
                 brandtitulo: process.env.MIX_APP_NAME,
@@ -88,7 +93,7 @@ import axios from 'axios'
             }
         },
         mounted() {
-            axios.get('auth')
+            axios.get(`${process.env.MIX_BASE_URL}/auth/`)
             .then( res => {
                 this.auth = res.data
             })

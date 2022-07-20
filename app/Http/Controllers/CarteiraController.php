@@ -18,7 +18,7 @@ class CarteiraController extends Controller
      */
     public function index()
     {
-        return view('carteiras.carteiras');
+        return view('home');
     }
 
     /**

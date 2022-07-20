@@ -23,7 +23,6 @@
 </head>
 <body>
     <div id="app">
-        <painel-component></painel-component>
         <main class="py-4">
             @yield('content')
         </main>

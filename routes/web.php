@@ -23,17 +23,14 @@ Route::prefix('/home')->group(function () {
 
     // Carteiras
     Route::resource('carteiras', CarteiraController::class)
-        ->only(['store','update','destroy']);
+        ->only(['index','store','update','destroy']);
     Route::get('/carteiras/get', [CarteiraController::class, 'get'])
         ->name('carteiras.get');
 
     // Contas Corrente
     Route::resource('contascorrente', ContaCorrenteController::class)
-        ->only(['store','update','destroy']);
+        ->only(['index','store','update','destroy']);
     Route::get('/contascorrente/get', [ContaCorrenteController::class, 'get'])
         ->name('contascorrente.get');
-        
-    Route::get('/{any}', [HomeController::class, 'index'])
-        ->where('any', '.*');
 });
 

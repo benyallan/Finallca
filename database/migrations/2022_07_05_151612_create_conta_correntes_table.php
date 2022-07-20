@@ -19,7 +19,7 @@ class CreateContaCorrentesTable extends Migration
             $table->string('agencia');
             $table->string('numero');
             $table->string('nome');
-            $table->string('obs');
+            $table->string('obs')->nullable();
             $table->double('saldo_inicial', 8, 2);
             $table->softDeletes();
             $table->timestamps();

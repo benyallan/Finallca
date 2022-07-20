@@ -125,6 +125,9 @@
                                 variant="primary"
                                 @click="editarLinha(data)"
                                 class="m-1"
+                                data-toggle="tooltip" 
+                                data-placement="top" 
+                                title="Editar"
                             >
                                 <b-icon icon="pencil-square"></b-icon>
                             </b-button>
@@ -133,6 +136,9 @@
                                 variant="success"
                                 @click="salvarRegistro(data)"
                                 class="m-1"
+                                data-toggle="tooltip" 
+                                data-placement="top" 
+                                title="Salvar"
                             >
                                 <b-icon icon="save"></b-icon>
                             </b-button>
@@ -141,6 +147,9 @@
                                 variant="danger"
                                 @click="cancelarAlteracoes(data)"
                                 class="m-1"
+                                data-toggle="tooltip" 
+                                data-placement="top" 
+                                title="Cancelar"
                             >
                                 <b-icon icon="x-lg"></b-icon>
                             </b-button>
@@ -149,6 +158,9 @@
                                 class="delete-button m-1" 
                                 variant="danger" 
                                 @click="removeLinha(data)"
+                                data-toggle="tooltip" 
+                                data-placement="top" 
+                                title="Apagar"
                             >
                                 <b-icon icon="trash"></b-icon>
                             </b-button>

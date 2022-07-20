@@ -18,7 +18,7 @@ class ContaCorrenteController extends Controller
      */
     public function index()
     {
-        return view('contas_corrente.ContasCorrente');
+        return view('home');
     }
 
     /**
