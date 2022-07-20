@@ -130,6 +130,6 @@ class CarteiraController extends Controller
 
     public function get()
     {
-        return Carteira::select('nome','saldo_inicial')->get();
+        return Carteira::select('id','nome','saldo_inicial')->get();
     }
 }
