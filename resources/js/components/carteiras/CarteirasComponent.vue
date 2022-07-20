@@ -140,7 +140,7 @@ export default {
     },
     methods: {
         addContaCorrente(data) {
-            axios.post('/carteiras', this.linha)
+            axios.post('/home/carteiras', this.linha)
             .then( response => {
                 this.tableItems[data.index]['nome'] = response.data.nome
                 this.tableItems[data.index]['saldo_inicial'] = response.data.saldo_inicial
@@ -157,7 +157,7 @@ export default {
             this.tableItems[data.index].isEdit = true;
         },
         editarRegistro(data) {
-            axios.put('/carteiras/' + data.item.id, this.linha)
+            axios.put('/home/carteiras/' + data.item.id, this.linha)
             .then( response => {
                 this.tableItems[data.index]['nome'] = response.data.nome
                 this.tableItems[data.index]['saldo_inicial'] = response.data.saldo_inicial
@@ -199,7 +199,7 @@ export default {
             this.adicionando = true
         },
         removeLinha(data) {
-            axios.delete('/carteiras/' + data.item.id)
+            axios.delete('/home/carteiras/' + data.item.id)
             .then(response => {
                 this.tableItems = this.tableItems.filter((item, i) => i !== data.index);
                 this.$emit('input', this.tableItems);
@@ -218,7 +218,7 @@ export default {
         },
         get() {
             this.isBusy = true
-            axios.get('/carteiras/get')
+            axios.get('/home/carteiras/get')
             .then( response => {
                 this.totalLinhas = response.data.length
                 this.tableItems = response.data.map(item => ({...item, isEdit: false}))

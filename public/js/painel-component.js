@@ -186,11 +186,11 @@ var render = function render() {
     }
   }, [_c("b-nav-item", [_c("router-link", {
     attrs: {
-      to: "/carteiras"
+      to: "/home/carteiras"
     }
   }, [_vm._v("Carteiras")])], 1), _vm._v(" "), _c("b-nav-item", [_c("router-link", {
     attrs: {
-      to: "/contascorrente"
+      to: "/home/contascorrente"
     }
   }, [_vm._v("Contas Corrente")])], 1)], 1)], 1)], 1)], 1)], 1)])], 1)], 1)], 1);
 };

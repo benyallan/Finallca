@@ -18,12 +18,12 @@ const router = new VueRouter({
     mode: 'history',
     routes: [
         {
-            path: '/contascorrente',
+            path: '/home/contascorrente',
             name: 'contascorrente',
             component: ContasCorrente
         },
         {
-            path: '/carteiras',
+            path: '/home/carteiras',
             name: 'carteiras',
             component: Carteiras
         },
