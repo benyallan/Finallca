@@ -1,6 +1,5 @@
 <template>
 <div id="ContasCorrente">
-    <router-view></router-view>
     <template>
         <b-container fluid>
             <b-row>

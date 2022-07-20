@@ -1,14 +1,15 @@
 <template>
-    <b-navbar 
-        toggleable="md" 
-        type="light" 
-        variant="light"
-    >
-        <b-container>
-            <b-navbar-brand href="#">
-                <router-link :to="{ name: 'contascorrente' }">
-                    {{brandtitulo}}
-                </router-link>
+    <div id="painel">
+            <b-navbar 
+            toggleable="md" 
+            type="light" 
+            variant="light"
+        >
+            <b-navbar-brand>
+                <b-button v-b-toggle.painel-lateral size="sm">
+                    <b-icon icon="chevron-bar-right"></b-icon>
+                </b-button>
+                {{brandtitulo}}
             </b-navbar-brand>
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -23,7 +24,9 @@
                         <em>{{auth.name}}</em>
                     </template>
                     <b-dropdown-item href="#">Perfil</b-dropdown-item>
-                    <b-dropdown-item href="#">Sair</b-dropdown-item>
+                    <b-dropdown-item>
+                        <a href="#" @click.prevent="logout">Sair</a>
+                    </b-dropdown-item>
                     </b-nav-item-dropdown>
                     <b-navbar-nav v-else>
                         <b-nav-item href="#">Entrar</b-nav-item>
@@ -31,8 +34,46 @@
                     </b-navbar-nav>
                 </b-navbar-nav>
             </b-collapse>
-        </b-container>
-    </b-navbar>
+            <div>
+                <b-sidebar 
+                    id="painel-lateral" 
+                    title="Menu" 
+                    backdrop
+                    bg-variant="dark" 
+                    text-variant="light"
+                    close-label="Fechar"
+                    no-header
+                    shadow
+                >
+                <div class="px-3 py-2">
+                    <b-button variant="primary" v-b-toggle.painel-lateral>
+                        <b-icon icon="arrow-left-square"></b-icon>
+                    </b-button>
+                     <b-nav vertical>
+                        <router-link to="/contascorrente">Contas Corrente</router-link>
+                        <b-nav-item v-b-toggle.collapse-1>
+                            <b-icon icon="plus"></b-icon>
+                            Link 2
+                        </b-nav-item>
+                        <b-collapse id="collapse-1">
+                            <b-card class="bg-dark border-0">
+                                <b-nav-item>Link 2.1</b-nav-item>
+                                <b-nav-item v-b-toggle.collapse-1-inner>
+                                    <b-icon icon="plus" ></b-icon>
+                                    Link 2.2
+                                </b-nav-item>
+                                <b-collapse id="collapse-1-inner">
+                                    <b-nav-item>Link 2.2.1</b-nav-item>
+                                </b-collapse>
+                            </b-card>
+                        </b-collapse>
+                        <b-nav-item>Link 3</b-nav-item>
+                    </b-nav>
+                </div>
+                </b-sidebar>
+            </div>
+        </b-navbar>
+    </div>
 </template>
 
 <script>
@@ -50,6 +91,27 @@ import axios from 'axios'
             .then( res => {
                 this.auth = res.data
             })
+        },
+        methods: {
+            logout() {
+               axios.post('logout').then(response => {
+                  if (response.status === 302 || 401) {
+                    window.location.href = "/"
+                  }
+                  else {
+                    // throw error and go to catch block
+                  }
+                }).catch(error => {
+
+              });
+            }
         }
     }
 </script>
+
+<style>
+    #painel {
+        margin-left: 2%;
+        margin-right: 2%;
+    }
+</style>
