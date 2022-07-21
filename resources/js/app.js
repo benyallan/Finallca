@@ -1,6 +1,7 @@
  import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
  import money from 'v-money'
  import VueRouter from 'vue-router'
+ import VueMask from 'v-mask'
 
 // importações das rotas
 import ContasCorrente from './components/contas_corrente/ContasCorrente'
@@ -13,6 +14,12 @@ Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
 Vue.use(money, {precision: 4})
 Vue.use(VueRouter)
+Vue.use(VueMask);
+
+Vue.filter('formatPrice', function (value) {
+    let val = (value/1).toFixed(2).replace('.', ',')
+    return 'R$'+' ' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+})
 
 const router = new VueRouter({
     mode: 'history',

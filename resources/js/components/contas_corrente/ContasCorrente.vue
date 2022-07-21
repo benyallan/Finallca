@@ -115,14 +115,7 @@
                             class="form-control"
                             v-if="tableItems[data.index].isEdit"
                         ></money>
-                        <money 
-                            v-model="data.value" 
-                            v-bind="money"
-                            disabled
-                            :id="money"
-                            class="form-control money-disabled"
-                            v-else
-                        ></money>
+                        <span v-else>{{data.value | formatPrice}}</span>
                     </template>
                     <template #cell(edit)="data">
                         <div class="d-flex flex-nowrap">
@@ -190,6 +183,7 @@
 <script>
 import axios from 'axios';
 import Mixins from '../../shared/mixin';
+import {VMoney} from 'v-money'
 
 export default {
     name: "contascorrente",
@@ -331,7 +325,8 @@ export default {
     },
     mounted() {
         this.get()
-    }
+    },
+    directives: {money: VMoney}
 }
 </script>
 
@@ -353,11 +348,5 @@ export default {
     }
     label.custom-control-label {
         padding-left: 5px;
-    }
-    .money-disabled {
-        border: none;
-    }
-    #money {
-        background: #dddddd;
     }
 </style>
