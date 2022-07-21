@@ -21,7 +21,7 @@
                     <b-nav-item-dropdown right v-if="auth">
                     <!-- Using 'button-content' slot -->
                     <template #button-content>
-                        <em>{{auth.name}}</em>
+                        <strong>{{auth.name}}</strong>
                     </template>
                     <b-dropdown-item href="#">Perfil</b-dropdown-item>
                     <b-dropdown-item>
@@ -37,27 +37,22 @@
             <div>
                 <b-sidebar 
                     id="painel-lateral" 
-                    title="Menu" 
                     backdrop
                     bg-variant="dark" 
                     text-variant="light"
                     close-label="Fechar"
-                    no-header
                     shadow
                 >
                 <div class="px-3 py-2">
-                    <b-button variant="primary" v-b-toggle.painel-lateral>
-                        <b-icon icon="arrow-left-square"></b-icon>
-                    </b-button>
                      <b-nav vertical>
                         <b-nav-item>
                             <router-link to="/home">Dashboard</router-link>
                         </b-nav-item>
-                        <b-nav-item v-b-toggle.collapse-1>
+                        <b-nav-item v-b-toggle.contas>
                             <b-icon icon="plus"></b-icon>
                             Contas
                         </b-nav-item>
-                        <b-collapse id="collapse-1">
+                        <b-collapse id="contas">
                             <b-card class="bg-dark border-0">
                                 <b-nav vertical>
                                     <b-nav-item>
@@ -81,11 +76,6 @@
 import axios from 'axios'
 
     export default {
-        computed: {
-            username() {
-            return this.$route.params.username
-            }
-        },
         data() {
             return {
                 brandtitulo: process.env.MIX_APP_NAME,
@@ -93,14 +83,14 @@ import axios from 'axios'
             }
         },
         mounted() {
-            axios.get(`${process.env.MIX_BASE_URL}/auth/`)
+            axios.get(`${process.env.MIX_BASE_URL}/auth`)
             .then( res => {
                 this.auth = res.data
             })
         },
         methods: {
             logout() {
-               axios.post('logout').then(response => {
+               axios.post(`${process.env.MIX_BASE_URL}/logout`).then(response => {
                   if (response.status === 302 || 401) {
                     window.location.href = "/"
                   }
@@ -119,5 +109,30 @@ import axios from 'axios'
     #painel {
         margin-left: 2%;
         margin-right: 2%;
+    }
+    div.card-body {
+        padding-top: 0;
+        margin-top: 0;
+    }
+    #painel-lateral a:link, a:visited {
+        text-decoration: none;
+        color: darkgrey;
+    }
+    #painel-lateral a:hover {
+        background-color: gray;
+    }
+    button.close {
+        background-color: inherit;
+        border-radius: 25%;
+    }
+    .router-link-exact-active {
+        background-color: gray;
+        display: block;
+    }
+    #painel-lateral a.nav-link {
+        padding: 0px;
+    }
+    #painel-lateral li.nav-item {
+        padding: 3px;
     }
 </style>

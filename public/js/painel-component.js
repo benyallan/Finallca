@@ -15,11 +15,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  computed: {
-    username: function username() {
-      return this.$route.params.username;
-    }
-  },
   data: function data() {
     return {
       brandtitulo: "Finallca",
@@ -29,13 +24,13 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
-    axios__WEBPACK_IMPORTED_MODULE_0___default().get("".concat("", "/auth/")).then(function (res) {
+    axios__WEBPACK_IMPORTED_MODULE_0___default().get("".concat("", "/auth")).then(function (res) {
       _this.auth = res.data;
     });
   },
   methods: {
     logout: function logout() {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('logout').then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("".concat("", "/logout")).then(function (response) {
         if (response.status === 302 || 401) {
           window.location.href = "/";
         } else {}
@@ -105,10 +100,10 @@ var render = function render() {
     scopedSlots: _vm._u([{
       key: "button-content",
       fn: function fn() {
-        return [_c("em", [_vm._v(_vm._s(_vm.auth.name))])];
+        return [_c("strong", [_vm._v(_vm._s(_vm.auth.name))])];
       },
       proxy: true
-    }], null, false, 1050944348)
+    }], null, false, 2025335463)
   }, [_vm._v(" "), _c("b-dropdown-item", {
     attrs: {
       href: "#"
@@ -134,32 +129,15 @@ var render = function render() {
   }, [_vm._v("Registre-se")])], 1)], 1)], 1), _vm._v(" "), _c("div", [_c("b-sidebar", {
     attrs: {
       id: "painel-lateral",
-      title: "Menu",
       backdrop: "",
       "bg-variant": "dark",
       "text-variant": "light",
       "close-label": "Fechar",
-      "no-header": "",
       shadow: ""
     }
   }, [_c("div", {
     staticClass: "px-3 py-2"
-  }, [_c("b-button", {
-    directives: [{
-      name: "b-toggle",
-      rawName: "v-b-toggle.painel-lateral",
-      modifiers: {
-        "painel-lateral": true
-      }
-    }],
-    attrs: {
-      variant: "primary"
-    }
-  }, [_c("b-icon", {
-    attrs: {
-      icon: "arrow-left-square"
-    }
-  })], 1), _vm._v(" "), _c("b-nav", {
+  }, [_c("b-nav", {
     attrs: {
       vertical: ""
     }
@@ -170,9 +148,9 @@ var render = function render() {
   }, [_vm._v("Dashboard")])], 1), _vm._v(" "), _c("b-nav-item", {
     directives: [{
       name: "b-toggle",
-      rawName: "v-b-toggle.collapse-1",
+      rawName: "v-b-toggle.contas",
       modifiers: {
-        "collapse-1": true
+        contas: true
       }
     }]
   }, [_c("b-icon", {
@@ -181,7 +159,7 @@ var render = function render() {
     }
   }), _vm._v("\n                            Contas\n                        ")], 1), _vm._v(" "), _c("b-collapse", {
     attrs: {
-      id: "collapse-1"
+      id: "contas"
     }
   }, [_c("b-card", {
     staticClass: "bg-dark border-0"
@@ -222,7 +200,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n#painel {\n        margin-left: 2%;\n        margin-right: 2%;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n#painel {\n        margin-left: 2%;\n        margin-right: 2%;\n}\ndiv.card-body {\n        padding-top: 0;\n        margin-top: 0;\n}\n#painel-lateral a:link, a:visited {\n        text-decoration: none;\n        color: darkgrey;\n}\n#painel-lateral a:hover {\n        background-color: gray;\n}\nbutton.close {\n        background-color: inherit;\n        border-radius: 25%;\n}\n.router-link-exact-active {\n        background-color: gray;\n        display: block;\n}\n#painel-lateral a.nav-link {\n        padding: 0px;\n}\n#painel-lateral li.nav-item {\n        padding: 3px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
