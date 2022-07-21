@@ -183,7 +183,6 @@
 <script>
 import axios from 'axios';
 import Mixins from '../../shared/mixin';
-import {VMoney} from 'v-money'
 
 export default {
     name: "contascorrente",
@@ -326,7 +325,6 @@ export default {
     mounted() {
         this.get()
     },
-    directives: {money: VMoney}
 }
 </script>
 
