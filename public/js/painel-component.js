@@ -81,7 +81,9 @@ var render = function render() {
     attrs: {
       icon: "chevron-bar-right"
     }
-  })], 1), _vm._v("\n                " + _vm._s(_vm.brandtitulo) + "\n            ")], 1), _vm._v(" "), _c("b-navbar-toggle", {
+  })], 1), _vm._v(" "), _c("span", {
+    staticClass: "titulo"
+  }, [_vm._v(_vm._s(_vm.brandtitulo))])], 1), _vm._v(" "), _c("b-navbar-toggle", {
     attrs: {
       target: "nav-collapse"
     }
@@ -200,7 +202,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n#painel {\n        margin-left: 2%;\n        margin-right: 2%;\n}\ndiv.card-body {\n        padding-top: 0;\n        margin-top: 0;\n}\n#painel-lateral a:link, a:visited {\n        text-decoration: none;\n        color: darkgrey;\n}\n#painel-lateral a:hover {\n        background-color: gray;\n}\nbutton.close {\n        background-color: inherit;\n        border-radius: 25%;\n}\n.router-link-exact-active {\n        background-color: gray;\n        display: block;\n}\n#painel-lateral a.nav-link {\n        padding: 0px;\n}\n#painel-lateral li.nav-item {\n        padding: 3px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n#painel {\n        margin-left: 2%;\n        margin-right: 2%;\n}\ndiv.card-body {\n        padding-top: 0;\n        margin-top: 0;\n}\n#painel-lateral a:link, a:visited {\n        text-decoration: none;\n        color: darkgrey;\n}\n#painel-lateral a:hover {\n        background-color: gray;\n}\nbutton.close {\n        background-color: inherit;\n        border-radius: 25%;\n}\n.router-link-exact-active {\n        background-color: gray;\n        display: block;\n}\n#painel-lateral a.nav-link {\n        padding: 0px;\n}\n#painel-lateral li.nav-item {\n        padding: 3px;\n}\n.titulo {\n        font-weight: bolder;\n        font-family: Arial, Helvetica, sans-serif;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

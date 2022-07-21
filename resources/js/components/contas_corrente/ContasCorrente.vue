@@ -109,14 +109,20 @@
                         <span v-else>{{data.value}}</span>
                     </template>
                     <template #cell(saldo_inicial)="data">
-                        <b-form-input 
-                            v-if="tableItems[data.index].isEdit" 
-                            type="text" 
-                            :value="linha['saldo_inicial']" 
-                            @blur="(e) => 
-                                alteraTabela(e.target.value, 'saldo_inicial')"
-                        ></b-form-input>
-                        <span v-else>{{data.value}}</span>
+                        <money 
+                            v-model="linha['saldo_inicial']" 
+                            v-bind="money"
+                            class="form-control"
+                            v-if="tableItems[data.index].isEdit"
+                        ></money>
+                        <money 
+                            v-model="data.value" 
+                            v-bind="money"
+                            disabled
+                            :id="money"
+                            class="form-control money-disabled"
+                            v-else
+                        ></money>
                     </template>
                     <template #cell(edit)="data">
                         <div class="d-flex flex-nowrap">
@@ -183,9 +189,12 @@
 
 <script>
 import axios from 'axios';
+import Mixins from '../../shared/mixin';
 
 export default {
     name: "contascorrente",
+
+    mixins:[Mixins],
     data() {
         return {
             isBusy: false,
@@ -345,8 +354,10 @@ export default {
     label.custom-control-label {
         padding-left: 5px;
     }
-    pre {
-        text-align: left;
-        color: #d63384;
+    .money-disabled {
+        border: none;
+    }
+    #money {
+        background: #dddddd;
     }
 </style>

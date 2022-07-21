@@ -9,7 +9,7 @@
                 <b-button v-b-toggle.painel-lateral size="sm">
                     <b-icon icon="chevron-bar-right"></b-icon>
                 </b-button>
-                {{brandtitulo}}
+                <span class="titulo">{{brandtitulo}}</span>
             </b-navbar-brand>
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -134,5 +134,9 @@ import axios from 'axios'
     }
     #painel-lateral li.nav-item {
         padding: 3px;
+    }
+    .titulo {
+        font-weight: bolder;
+        font-family: Arial, Helvetica, sans-serif;
     }
 </style>
