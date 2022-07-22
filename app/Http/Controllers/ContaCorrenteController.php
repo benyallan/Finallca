@@ -132,7 +132,7 @@ class ContaCorrenteController extends Controller
     {
         return ContaCorrente::select(
             'id','banco','agencia','numero','nome','obs','saldo_inicial'
-        )->get();
+        )->orderByDesc('id')->get();
     }
 
     public function getList()

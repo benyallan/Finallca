@@ -147,7 +147,8 @@ class CartaoCreditoController extends Controller
         $cartaocredito = CartaoCredito::select(
             'id','conta_corrente_id','nome','dia_fechamento',
             'dia_vencimento'
-        )->with('contaCorrente:id,nome,banco,agencia,numero,obs')->get();
+        )->with('contaCorrente:id,nome,banco,agencia,numero,obs')
+        ->orderByDesc('id')->get();
         $cartaocredito->load('contaCorrente');
         return $cartaocredito;
     }
