@@ -42,7 +42,7 @@ class ContaCorrenteController extends Controller
                                     trim($e->getMessage()) : 
                                     'Erro na Aplicação';
             Log::error("\nUsuário: " . Auth::user() . 
-                "\nErro ao salvar nova Conte Corrente | Request enviado: " . 
+                "\nErro ao salvar nova Conta Corrente | Request enviado: " . 
                 json_encode($request->all()) . PHP_EOL .
                 $exception_message . PHP_EOL . "No arquivo " . 
                 $e->getFile() . " na linha " . $e->getLine() . PHP_EOL . 
@@ -132,6 +132,13 @@ class ContaCorrenteController extends Controller
     {
         return ContaCorrente::select(
             'id','banco','agencia','numero','nome','obs','saldo_inicial'
+        )->get();
+    }
+
+    public function getList()
+    {
+        return ContaCorrente::select(
+            'id','banco','nome'
         )->get();
     }
 }

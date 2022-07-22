@@ -20,4 +20,9 @@ class ContaCorrente extends Model
         'obs',
         'saldo_inicial',
     ];
+
+    public function cartoesCredito()
+    {
+        return $this->hasMany(CartaoCredito::class);
+    }
 }

@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCartaoCreditoRequest;
 use App\Http\Requests\UpdateCartaoCreditoRequest;
 use App\Models\CartaoCredito;
+use Exception;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CartaoCreditoController extends Controller
 {
@@ -15,17 +18,7 @@ class CartaoCreditoController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return view('home');
     }
 
     /**
@@ -36,7 +29,34 @@ class CartaoCreditoController extends Controller
      */
     public function store(StoreCartaoCreditoRequest $request)
     {
-        //
+        try {
+            $cartoescredito = CartaoCredito::create($request->all());
+            $cartoescredito = CartaoCredito::select(
+                'id','conta_corrente_id','nome'
+                ,'dia_fechamento','dia_vencimento'
+            )->with('contaCorrente:id,nome,banco,agencia,numero,obs')
+            ->where('id',$cartoescredito->id)
+            ->get();
+            $cartoescredito->load('contaCorrente');
+            Log::info("\nUsuário: " . Auth::user() . 
+                    "\nCartão de Crédito adicionado ao Banco de Dados 
+                    com sucesso." .
+                    json_encode($cartoescredito) . PHP_EOL
+                );
+            return json_encode($cartoescredito);
+        } catch (Exception $e) {
+            $exception_message = !empty($e->getMessage()) ? 
+                                    trim($e->getMessage()) : 
+                                    'Erro na Aplicação';
+            Log::error("\nUsuário: " . Auth::user() . 
+                "\nErro ao salvar novo Cartão de Crédito | Request enviado: " . 
+                json_encode($request->all()) . PHP_EOL .
+                $exception_message . PHP_EOL . "No arquivo " . 
+                $e->getFile() . " na linha " . $e->getLine() . PHP_EOL . 
+                $e
+            );
+            return  response()->json(['status' => 'Erro interno'], 500);
+        }
     }
 
     /**
@@ -45,18 +65,7 @@ class CartaoCreditoController extends Controller
      * @param  \App\Models\CartaoCredito  $cartaoCredito
      * @return \Illuminate\Http\Response
      */
-    public function show(CartaoCredito $cartaoCredito)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\CartaoCredito  $cartaoCredito
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(CartaoCredito $cartaoCredito)
+    public function show(CartaoCredito $cartaocredito)
     {
         //
     }
@@ -68,9 +77,36 @@ class CartaoCreditoController extends Controller
      * @param  \App\Models\CartaoCredito  $cartaoCredito
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCartaoCreditoRequest $request, CartaoCredito $cartaoCredito)
+    public function update(UpdateCartaoCreditoRequest $request, CartaoCredito $cartoescredito)
     {
-        //
+        try {
+            $cartoescredito->update($request->all());
+            $cartoescredito = CartaoCredito::select(
+                    'id','conta_corrente_id','nome'
+                    ,'dia_fechamento','dia_vencimento'
+                )->with('contaCorrente:id,nome,banco,agencia,numero,obs')
+                ->where('id',$cartoescredito->id)
+                ->get();
+            $cartoescredito->load('contaCorrente');
+            Log::info("\nUsuário: " . Auth::user() . 
+                    "\nCartão de Crédito editado no Banco de Dados 
+                    com sucesso." .
+                    json_encode($cartoescredito) . PHP_EOL
+                );
+            return json_encode($cartoescredito);
+        } catch (Exception $e) {
+            $exception_message = !empty($e->getMessage()) ? 
+                                    trim($e->getMessage()) : 
+                                    'Erro na Aplicação';
+            Log::error("\nUsuário: " . Auth::user() . 
+                "\nErro ao editar Cartão de Crédito | Request enviado: " . 
+                json_encode($request->all()) . PHP_EOL .
+                $exception_message . PHP_EOL . "No arquivo " . 
+                $e->getFile() . " na linha " . $e->getLine() . PHP_EOL . 
+                $e
+            );
+            return  response()->json(['status' => 'Erro interno'], 500);
+        }
     }
 
     /**
@@ -79,8 +115,40 @@ class CartaoCreditoController extends Controller
      * @param  \App\Models\CartaoCredito  $cartaoCredito
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CartaoCredito $cartaoCredito)
+    public function destroy(CartaoCredito $cartaocredito)
     {
-        //
+        try {
+            $cartaocredito->delete();
+            Log::info("\nUsuário: " . Auth::user() . 
+                    "\nCartão de Crédito apagado do Banco de Dados 
+                    com sucesso." .
+                    json_encode($cartaocredito) . PHP_EOL
+                );
+            return response()->json([
+                'message' => 'Cartão de Crédito apagado com sucesso!'
+            ], 200);
+        } catch (Exception $e) {
+            $exception_message = !empty($e->getMessage()) ? 
+                                    trim($e->getMessage()) : 
+                                    'Erro na Aplicação';
+            Log::error("\nUsuário: " . Auth::user() . 
+                "\nErro ao apagar Cartão de Crédito | Request enviado: " . 
+                json_encode($cartaocredito) . PHP_EOL .
+                $exception_message . PHP_EOL . "No arquivo " . 
+                $e->getFile() . " na linha " . $e->getLine() . PHP_EOL . 
+                $e
+            );
+            return  response()->json(['status' => 'Erro interno'], 500);
+        }
+    }
+
+    public function get()
+    {
+        $cartaocredito = CartaoCredito::select(
+            'id','conta_corrente_id','nome','dia_fechamento',
+            'dia_vencimento'
+        )->with('contaCorrente:id,nome,banco,agencia,numero,obs')->get();
+        $cartaocredito->load('contaCorrente');
+        return $cartaocredito;
     }
 }

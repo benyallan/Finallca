@@ -177,7 +177,11 @@ var render = function render() {
     attrs: {
       to: "/home/contascorrente"
     }
-  }, [_vm._v("Contas Corrente")])], 1)], 1)], 1)], 1)], 1)], 1)])], 1)], 1)], 1);
+  }, [_vm._v("Contas Corrente")])], 1), _vm._v(" "), _c("b-nav-item", [_c("router-link", {
+    attrs: {
+      to: "/home/cartoescredito"
+    }
+  }, [_vm._v("Cartões de Crédito")])], 1)], 1)], 1)], 1)], 1)], 1)])], 1)], 1)], 1);
 };
 
 var staticRenderFns = [];

@@ -6,6 +6,7 @@
 // importações das rotas
 import ContasCorrente from './components/contas_corrente/ContasCorrente'
 import Carteiras from './components/carteiras/CarteirasComponent'
+import CartoesCredito from './components/cartoes_credito/CartoesCredito'
 
 require('./bootstrap');
 
@@ -33,6 +34,11 @@ const router = new VueRouter({
             path: '/home/carteiras',
             name: 'carteiras',
             component: Carteiras
+        },
+        {
+            path: '/home/cartoescredito',
+            name: 'cartoescredito',
+            component: CartoesCredito
         },
     ],
 });

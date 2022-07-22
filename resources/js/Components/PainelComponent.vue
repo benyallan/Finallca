@@ -61,6 +61,9 @@
                                     <b-nav-item>
                                         <router-link to="/home/contascorrente">Contas Corrente</router-link>
                                     </b-nav-item>
+                                    <b-nav-item>
+                                        <router-link to="/home/cartoescredito">Cartões de Crédito</router-link>
+                                    </b-nav-item>
                                 </b-nav>
                             </b-card>
                         </b-collapse>

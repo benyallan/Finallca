@@ -1,5 +1,5 @@
 <template>
-    <div id="carteiras">
+    <div id="cartoescredito">
         <template>
             <b-container fluid>
                 <b-row>
@@ -52,14 +52,34 @@
                         ></b-form-input>
                         <span v-else>{{data.value}}</span>
                     </template>
-                    <template #cell(saldo_inicial)="data">
-                        <money 
-                            v-model="linha['saldo_inicial']" 
-                            v-bind="money"
+                    <template #cell(dia_fechamento)="data">
+                        <b-form-input 
+                            v-if="tableItems[data.index].isEdit" 
+                            type="text" 
+                            :value="linha['dia_fechamento']" 
+                            @blur="(e) => 
+                                alteraTabela(e.target.value, 'dia_fechamento')"
+                        ></b-form-input>
+                        <span v-else>{{data.value}}</span>
+                    </template>
+                    <template #cell(dia_vencimento)="data">
+                        <b-form-input 
+                            v-if="tableItems[data.index].isEdit" 
+                            type="text" 
+                            :value="linha['dia_vencimento']" 
+                            @blur="(e) => 
+                                alteraTabela(e.target.value, 'dia_vencimento')"
+                        ></b-form-input>
+                        <span v-else>{{data.value}}</span>
+                    </template>
+                    <template #cell(conta_corrente)="data">
+                        <b-form-select 
+                            v-if="tableItems[data.index].isEdit" 
                             class="form-control"
-                            v-if="tableItems[data.index].isEdit"
-                        ></money>
-                        <span v-else>{{data.value | formatPrice}}</span>
+                            v-model="linha.conta_corrente_id" 
+                            :options="options"
+                        ></b-form-select>
+                        <span v-else>{{data.value.banco}}</span>
                     </template>
                     <template #cell(edit)="data">
                         <div class="d-flex flex-nowrap">
@@ -98,7 +118,7 @@
                         </div>
                     </template>
                     <template #table-caption>
-                        Total de Carteiras: {{totalLinhas}} 
+                        Total de Cartões de Crédito: {{totalLinhas}} 
                     </template>
                     <template #table-busy>
                         <div class="text-center text-danger my-2">
@@ -117,7 +137,7 @@ import axios from 'axios';
 import Mixins from '../../shared/mixin';
 
 export default {
-    name: "carteiras",
+    name: "cartoescredito",
     mixins:[Mixins],
     data() {
         return {
@@ -127,24 +147,42 @@ export default {
             editando: false,
             linha: {
                 nome: null,
-                saldo_inicial: null,
+                dia_fechamento: null,
+                dia_vencimento: null,
+                conta_corrente_id: null,
+                conta_corrente: {
+                    id: null,
+                    agencia: null,
+                    banco: null,
+                    nome: null,
+                    numero: null,
+                    obs: null
+                }
             },
+            options: [
+                { value: null, text: 'Não vinculado' },
+            ],
             filterOn: [],
             totalLinhas: 0,
             tableFields: [
                 { key: "nome", label: "Nome", type: 'text', sortable: true },
-                { key: "saldo_inicial", label: "Saldo Inicial", type: 'text', sortable: false },
+                { key: "dia_fechamento", label: "Dia de Fechamento", type: 'text', sortable: true },
+                { key: "dia_vencimento", label: "Dia de Vencimento", type: 'text', sortable: true },
+                { key: "conta_corrente", label: "Conta Corrente", type: 'text', sortable: true },
                 { key: "edit", label: "", type: "edit", sortable: false }
             ],
             tableItems: []
         };
     },
     methods: {
-        addContaCorrente(data) {
-            axios.post('/home/carteiras', this.linha)
+        addCartaoCredito(data) {
+            axios.post('/home/cartoescredito', this.linha)
             .then( response => {
-                this.tableItems[data.index]['nome'] = response.data.nome
-                this.tableItems[data.index]['saldo_inicial'] = response.data.saldo_inicial
+                this.tableItems[data.index]['nome'] = response.data[0].nome
+                this.tableItems[data.index]['dia_fechamento'] = response.data[0].dia_fechamento
+                this.tableItems[data.index]['dia_vencimento'] = response.data[0].dia_vencimento
+                this.tableItems[data.index]['conta_corrente_id'] = response.data[0].conta_corrente_id
+                this.tableItems[data.index]['conta_corrente'] = response.data[0].conta_corrente
                 this.totalLinhas ++
             })
             .catch(function (error) {
@@ -154,14 +192,20 @@ export default {
         editarLinha(data) {
             this.editando = true
             this.linha['nome'] = this.tableItems[data.index]['nome']
-            this.linha['saldo_inicial'] = this.tableItems[data.index]['saldo_inicial']
+            this.linha['dia_fechamento'] = this.tableItems[data.index]['dia_fechamento']
+            this.linha['dia_vencimento'] = this.tableItems[data.index]['dia_vencimento']
+            this.linha['conta_corrente_id'] = this.tableItems[data.index]['conta_corrente_id']
+            this.linha['conta_corrente'] = this.tableItems[data.index]['conta_corrente']
             this.tableItems[data.index].isEdit = true;
         },
         editarRegistro(data) {
-            axios.put('/home/carteiras/' + data.item.id, this.linha)
+            axios.put('/home/cartoescredito/' + data.item.id, this.linha)
             .then( response => {
-                this.tableItems[data.index]['nome'] = response.data.nome
-                this.tableItems[data.index]['saldo_inicial'] = response.data.saldo_inicial
+                this.tableItems[data.index]['nome'] = response.data[0].nome
+                this.tableItems[data.index]['dia_fechamento'] = response.data[0].dia_fechamento
+                this.tableItems[data.index]['dia_vencimento'] = response.data[0].dia_vencimento
+                this.tableItems[data.index]['conta_corrente_id'] = response.data[0].conta_corrente_id
+                this.tableItems[data.index]['conta_corrente'] = response.data[0].conta_corrente
             })
             .catch(function (error) {
                 console.log(error);
@@ -169,7 +213,7 @@ export default {
         },
         salvarRegistro(data) {
             if (this.adicionando) {
-                this.addContaCorrente(data)
+                this.addCartaoCredito(data)
             } else {
                 this.editarRegistro(data)
             }
@@ -200,7 +244,7 @@ export default {
             this.adicionando = true
         },
         removeLinha(data) {
-            axios.delete('/home/carteiras/' + data.item.id)
+            axios.delete('/home/cartoescredito/' + data.item.id)
             .then(response => {
                 this.tableItems = this.tableItems.filter((item, i) => i !== data.index);
                 this.$emit('input', this.tableItems);
@@ -212,17 +256,35 @@ export default {
         },
         limpaLinha() {
             this.linha.nome = null,
-            this.linha.saldo_inicial = null
+            this.linha.dia_fechamento = null,
+            this.linha.dia_vencimento = null,
+            this.linha.conta_corrente_id = null,
+            this.linha.conta_corrente = null
         },
         onFiltered(filteredItems) {
             this.totalLinhas = filteredItems.length
         },
         get() {
             this.isBusy = true
-            axios.get('/home/carteiras/get')
+            axios.get('/home/cartoescredito/get')
             .then( response => {
                 this.totalLinhas = response.data.length
-                this.tableItems = response.data.map(item => ({...item, isEdit: false}))
+                this.tableItems = response.data.map(
+                    item => ({...item, isEdit: false})
+                )
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+            axios.get('/home/contascorrente/get/list')
+            .then( response => {
+                response.data.forEach(contacorrente => {
+                    this.options.push({
+                        value: contacorrente.id,
+                        text: contacorrente.nome + ': ' + 
+                            contacorrente.banco
+                    })
+                });
             })
             .catch(function (error) {
                 console.log(error);
@@ -237,7 +299,7 @@ export default {
 </script>
 
 <style>
-    #ContasCorrente {
+    #cartoescredito {
     text-align: center;
     margin: 10px;
     }
@@ -254,9 +316,5 @@ export default {
     }
     label.custom-control-label {
         padding-left: 5px;
-    }
-    pre {
-        text-align: left;
-        color: #d63384;
     }
 </style>
