@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreLancamentoRequest;
 use App\Http\Requests\UpdateLancamentoRequest;
 use App\Models\Lancamento;
+use App\Models\Parcela;
+use Exception;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LancamentoController extends Controller
 {
@@ -15,17 +19,7 @@ class LancamentoController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return view('home');
     }
 
     /**
@@ -36,7 +30,27 @@ class LancamentoController extends Controller
      */
     public function store(StoreLancamentoRequest $request)
     {
-        //
+        try {
+            $lancamento = Lancamento::create($request->all());
+            Log::info("\nUsuário: " . Auth::user() . 
+                    "\nLançamento adicionado ao Banco de Dados 
+                    com sucesso." .
+                    json_encode($lancamento) . PHP_EOL
+                );
+            return json_encode($lancamento);
+        } catch (Exception $e) {
+            $exception_message = !empty($e->getMessage()) ? 
+                                    trim($e->getMessage()) : 
+                                    'Erro na Aplicação';
+            Log::error("\nUsuário: " . Auth::user() . 
+                "\nErro ao salvar novo Lançamento | Request enviado: " . 
+                json_encode($request->all()) . PHP_EOL .
+                $exception_message . PHP_EOL . "No arquivo " . 
+                $e->getFile() . " na linha " . $e->getLine() . PHP_EOL . 
+                $e
+            );
+            return  response()->json(['status' => 'Erro interno'], 500);
+        }
     }
 
     /**
@@ -51,17 +65,6 @@ class LancamentoController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Lancamento  $lancamento
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Lancamento $lancamento)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateLancamentoRequest  $request
@@ -70,7 +73,27 @@ class LancamentoController extends Controller
      */
     public function update(UpdateLancamentoRequest $request, Lancamento $lancamento)
     {
-        //
+        try {
+            $lancamento->update($request->all());
+            Log::info("\nUsuário: " . Auth::user() . 
+                    "\nLançamento editado no Banco de Dados 
+                    com sucesso." .
+                    json_encode($lancamento) . PHP_EOL
+                );
+            return json_encode($lancamento);
+        } catch (Exception $e) {
+            $exception_message = !empty($e->getMessage()) ? 
+                                    trim($e->getMessage()) : 
+                                    'Erro na Aplicação';
+            Log::error("\nUsuário: " . Auth::user() . 
+                "\nErro ao editar Lançamento | Request enviado: " . 
+                json_encode($request->all()) . PHP_EOL .
+                $exception_message . PHP_EOL . "No arquivo " . 
+                $e->getFile() . " na linha " . $e->getLine() . PHP_EOL . 
+                $e
+            );
+            return  response()->json(['status' => 'Erro interno'], 500);
+        }
     }
 
     /**
@@ -81,12 +104,44 @@ class LancamentoController extends Controller
      */
     public function destroy(Lancamento $lancamento)
     {
-        //
+        try {
+            $lancamento->delete();
+            Log::info("\nUsuário: " . Auth::user() . 
+                    "\nLançamento apagado do Banco de Dados 
+                    com sucesso." .
+                    json_encode($lancamento) . PHP_EOL
+                );
+            return response()->json([
+                'message' => 'Lançamento apagado com sucesso!'
+            ], 200);
+        } catch (Exception $e) {
+            $exception_message = !empty($e->getMessage()) ? 
+                                    trim($e->getMessage()) : 
+                                    'Erro na Aplicação';
+            Log::error("\nUsuário: " . Auth::user() . 
+                "\nErro ao apagar Lançamento | Request enviado: " . 
+                json_encode($lancamento) . PHP_EOL .
+                $exception_message . PHP_EOL . "No arquivo " . 
+                $e->getFile() . " na linha " . $e->getLine() . PHP_EOL . 
+                $e
+            );
+            return  response()->json(['status' => 'Erro interno'], 500);
+        }
     }
 
     public function get()
     {
-        return Lancamento::select('id','descricao','data','obs')
-            ->orderByDesc('id')->get();
+        return Parcela::select(
+            'id','lancamento_id','forma_pagamento_type','forma_pagamento_id',
+            'tipo','valor','data_pagamento','data_vencimento','numero',
+            'total','periodo','obs'
+        )
+        ->with(
+                'lancamento:id,descricao,data,obs',
+                'transferencia',
+                'situacao',
+                'forma_pagamento'
+            )
+        ->orderByDesc('id')->get();
     }
 }

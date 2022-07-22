@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class Parcela extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
+    protected $appends = ['situacao'];
     protected $fillable = [
         'lancamento_id',
         'forma_pagamento_type',
@@ -18,7 +20,7 @@ class Parcela extends Model
         'tipo',
         'valor',
         'data_pagamento',
-        'dia_vencimento',
+        'data_vencimento',
         'numero',
         'total',
         'periodo',
@@ -33,5 +35,16 @@ class Parcela extends Model
     public function formaPagamento()
     {
         return $this->morphTo();
+    }
+
+    public function getSituacaoAttribute()
+    {
+        if ($this->data_pagamento) {
+            return "Pago";
+        } if (Carbon::now()->lessThanOrEqualTo($this->data_pagamento)) {
+            return "Em Aberto";
+        } else {
+            return "Em Atraso";
+        }
     }
 }

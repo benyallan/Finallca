@@ -21,7 +21,7 @@ class CreateParcelasTable extends Migration
             $table->enum('tipo', ['receita', 'despesa']);
             $table->double('valor');
             $table->date('data_pagamento')->nullable();
-            $table->date('dia_vencimento')->nullable();
+            $table->date('data_vencimento')->nullable();
             $table->integer('numero')->default(1);
             $table->integer('total')->default(1);
             $table->enum('periodo', ['diario', 'mensal', 'anual'])

@@ -1,7 +1,8 @@
 <template>
-    <div id="cartoescredito">
+    <div id="lancamentos">
         <template>
             <b-container fluid>
+                <h1>Lançamentos</h1>
                 <b-row>
                     <b-col md="2" lg="2">
                     <b-button 
@@ -137,7 +138,7 @@ import axios from 'axios';
 import Mixins from '../../shared/mixin';
 
 export default {
-    name: "cartoescredito",
+    name: "lancamentos",
     mixins:[Mixins],
     data() {
         return {
@@ -165,10 +166,11 @@ export default {
             filterOn: [],
             totalLinhas: 0,
             tableFields: [
-                { key: "nome", label: "Nome", type: 'text', sortable: true },
-                { key: "dia_fechamento", label: "Dia de Fechamento", type: 'text', sortable: true },
-                { key: "dia_vencimento", label: "Dia de Vencimento", type: 'text', sortable: true },
-                { key: "conta_corrente", label: "Conta Corrente", type: 'text', sortable: true },
+                { key: "situacao", label: "Situação", type: 'text', sortable: true },
+                { key: "data_vencimento", label: "Data", type: 'text', sortable: true },
+                { key: "lancamento", label: "Descrição", type: 'text', sortable: true },
+                { key: "valor", label: "Valor", type: 'text', sortable: true },
+                { key: "forma_pagamento", label: "Pagamento", type: 'text', sortable: true },
                 { key: "edit", label: "", type: "edit", sortable: false }
             ],
             tableItems: []
@@ -266,25 +268,13 @@ export default {
         },
         get() {
             this.isBusy = true
-            axios.get('/home/cartoescredito/get')
+            axios.get('/home/lancamentos/get')
             .then( response => {
+                console.log(response.data)
                 this.totalLinhas = response.data.length
                 this.tableItems = response.data.map(
                     item => ({...item, isEdit: false})
                 )
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-            axios.get('/home/contascorrente/get/list')
-            .then( response => {
-                response.data.forEach(contacorrente => {
-                    this.options.push({
-                        value: contacorrente.id,
-                        text: contacorrente.nome + ': ' + 
-                            contacorrente.banco
-                    })
-                });
             })
             .catch(function (error) {
                 console.log(error);
@@ -299,7 +289,7 @@ export default {
 </script>
 
 <style>
-    #cartoescredito {
+    #lancamentos {
     text-align: center;
     margin: 10px;
     }
