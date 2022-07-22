@@ -12,4 +12,9 @@ class Carteira extends Model
     use SoftDeletes;
 
     protected $fillable = ['nome','saldo_inicial'];
+
+    public function lancamentos()
+    {
+        return $this->morphMany(Parcela::class, 'formaPagamento');
+    }
 }

@@ -7,6 +7,7 @@
 import ContasCorrente from './components/contas_corrente/ContasCorrente'
 import Carteiras from './components/carteiras/CarteirasComponent'
 import CartoesCredito from './components/cartoes_credito/CartoesCredito'
+import LancamentosComponent from './components/lancamentos/LancamentosComponent'
 
 require('./bootstrap');
 
@@ -40,14 +41,17 @@ const router = new VueRouter({
             name: 'cartoescredito',
             component: CartoesCredito
         },
+        {
+            path: '/home/lancamentos',
+            name: 'lancamentos',
+            component: LancamentosComponent
+        },
     ],
 });
 
 const app = new Vue({
     el: '#app',
     components: {
-        CarteirasComponent: () => import('./components/carteiras/CarteirasComponent.vue' /* webpackChunkName: "carteiras-component" */ ),
-        ContasCorrente: () => import('./components/contas_corrente/ContasCorrente.vue' /* webpackChunkName: "contas-corrente" */ ),
         PainelComponent: () => import('./Components/PainelComponent.vue' /* webpackChunkName: "painel-component" */ ),
     },
     router

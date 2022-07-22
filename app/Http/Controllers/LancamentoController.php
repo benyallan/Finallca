@@ -83,4 +83,10 @@ class LancamentoController extends Controller
     {
         //
     }
+
+    public function get()
+    {
+        return Lancamento::select('id','descricao','data','obs')
+            ->orderByDesc('id')->get();
+    }
 }

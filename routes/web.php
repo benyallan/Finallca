@@ -6,7 +6,8 @@ use App\Http\Controllers\{
     ContaCorrenteController,
     CarteiraController,
     HomeController,
-    CartaoCreditoController
+    CartaoCreditoController,
+    LancamentoController
 };
 
 Route::get('/', function () {
@@ -46,5 +47,12 @@ Route::middleware(['auth'])->group(function() {
         Route::get(
             '/cartoescredito/get', [CartaoCreditoController::class, 'get']
         )->name('cartoescredito.get');
+
+        // Cartões de Crédito
+        Route::resource('lancamentos', LancamentoController::class)
+            ->only(['index','store','update','destroy']);
+        Route::get(
+            '/lancamentos/get', [LancamentoController::class, 'get']
+        )->name('lancamentos.get');
     });
 });

@@ -16,7 +16,7 @@ class CreateParcelasTable extends Migration
     {
         Schema::create('parcelas', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Lancamento::class);
+            $table->foreignIdFor(Lancamento::class)->constrained();
             $table->nullableMorphs('forma_pagamento');
             $table->enum('tipo', ['receita', 'despesa']);
             $table->double('valor');

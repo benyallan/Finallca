@@ -25,4 +25,9 @@ class ContaCorrente extends Model
     {
         return $this->hasMany(CartaoCredito::class);
     }
+
+    public function lancamentos()
+    {
+        return $this->morphMany(Parcela::class, 'formaPagamento');
+    }
 }

@@ -23,4 +23,9 @@ class CartaoCredito extends Model
     {
         return $this->belongsTo(ContaCorrente::class);
     }
+
+    public function lancamentos()
+    {
+        return $this->morphMany(Parcela::class, 'formaPagamento');
+    }
 }
