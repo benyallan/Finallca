@@ -43,45 +43,6 @@
                     responsive
                     @filtered="onFiltered"
                 >
-                    <template #cell(nome)="data">
-                        <b-form-input 
-                            v-if="tableItems[data.index].isEdit" 
-                            type="text" 
-                            :value="linha['nome']" 
-                            @blur="(e) => 
-                                alteraTabela(e.target.value, 'nome')"
-                        ></b-form-input>
-                        <span v-else>{{data.value}}</span>
-                    </template>
-                    <template #cell(dia_fechamento)="data">
-                        <b-form-input 
-                            v-if="tableItems[data.index].isEdit" 
-                            type="text" 
-                            :value="linha['dia_fechamento']" 
-                            @blur="(e) => 
-                                alteraTabela(e.target.value, 'dia_fechamento')"
-                        ></b-form-input>
-                        <span v-else>{{data.value}}</span>
-                    </template>
-                    <template #cell(dia_vencimento)="data">
-                        <b-form-input 
-                            v-if="tableItems[data.index].isEdit" 
-                            type="text" 
-                            :value="linha['dia_vencimento']" 
-                            @blur="(e) => 
-                                alteraTabela(e.target.value, 'dia_vencimento')"
-                        ></b-form-input>
-                        <span v-else>{{data.value}}</span>
-                    </template>
-                    <template #cell(conta_corrente)="data">
-                        <b-form-select 
-                            v-if="tableItems[data.index].isEdit" 
-                            class="form-control"
-                            v-model="linha.conta_corrente_id" 
-                            :options="options"
-                        ></b-form-select>
-                        <span v-else>{{data.value.banco}}</span>
-                    </template>
                     <template #cell(edit)="data">
                         <div class="d-flex flex-nowrap">
                             <b-button 
@@ -147,17 +108,19 @@ export default {
             adicionando: false,
             editando: false,
             linha: {
-                nome: null,
-                dia_fechamento: null,
-                dia_vencimento: null,
+                situacao: null,
+                data_vencimento: null,
+                valor: null,
                 conta_corrente_id: null,
-                conta_corrente: {
+                lancamento: {
                     id: null,
-                    agencia: null,
-                    banco: null,
-                    nome: null,
-                    numero: null,
+                    descricao: null,
+                    data: null,
                     obs: null
+                },
+                forma_pagamento: {
+                    forma_pagamento_id: null,
+                    forma_pagamento_type: null,
                 }
             },
             options: [
@@ -177,8 +140,8 @@ export default {
         };
     },
     methods: {
-        addCartaoCredito(data) {
-            axios.post('/home/cartoescredito', this.linha)
+        addLancamento(data) {
+            axios.post('/home/lancamentos', this.linha)
             .then( response => {
                 this.tableItems[data.index]['nome'] = response.data[0].nome
                 this.tableItems[data.index]['dia_fechamento'] = response.data[0].dia_fechamento
@@ -215,7 +178,7 @@ export default {
         },
         salvarRegistro(data) {
             if (this.adicionando) {
-                this.addCartaoCredito(data)
+                this.addLancamento(data)
             } else {
                 this.editarRegistro(data)
             }
