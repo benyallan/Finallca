@@ -14,7 +14,8 @@ class CarteiraFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'nome' => $this->faker->name(),
+            'saldo_inicial' => $this->faker->randomFloat(2, 0, 9999)
         ];
     }
 }

@@ -14,7 +14,9 @@ class CartaoCreditoFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'nome' => $this->faker->name(),
+            'dia_fechamento' => $this->faker->numberBetween(1,29),
+            'dia_vencimento' => $this->faker->numberBetween(1,29)
         ];
     }
 }

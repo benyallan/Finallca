@@ -14,7 +14,9 @@ class LancamentoFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'descricao' => $this->faker->word(),
+            'data' => $this->faker->date(),
+            'obs' => $this->faker->sentence(6)
         ];
     }
 }

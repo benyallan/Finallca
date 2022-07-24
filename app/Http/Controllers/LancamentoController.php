@@ -139,9 +139,6 @@ class LancamentoController extends Controller
         )
         ->with(
                 'lancamento:id,descricao,data,obs',
-                'transferencia',
-                'situacao',
-                'forma_pagamento'
             )
         ->orderByDesc('id')->get();
     }

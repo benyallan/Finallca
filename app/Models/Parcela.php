@@ -41,7 +41,7 @@ class Parcela extends Model
     {
         if ($this->data_pagamento) {
             return "Pago";
-        } if (Carbon::now()->lessThanOrEqualTo($this->data_pagamento)) {
+        } if (Carbon::now()->lessThanOrEqualTo(Carbon::parse($this->data_vencimento))) {
             return "Em Aberto";
         } else {
             return "Em Atraso";

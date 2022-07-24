@@ -13,8 +13,20 @@ class ParcelaFactory extends Factory
      */
     public function definition()
     {
+        
+
+        if ($this->faker->numberBetween(0,1) === 1) {
+            $tipo = 'receita';
+        } else {
+            $tipo = 'despesa';
+        }
         return [
-            //
+            'tipo' => $tipo,
+            'valor' => $this->faker->randomFloat(2, 0, 9999),
+            'data_vencimento' => $this->faker->date(),
+            'numero' => 1,
+            'total' => 1,
+            'obs' => $this->faker->sentence(6)
         ];
     }
 }

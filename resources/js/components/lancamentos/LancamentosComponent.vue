@@ -43,6 +43,31 @@
                     responsive
                     @filtered="onFiltered"
                 >
+                    <template #cell(tipo)="data">
+                        <div class="d-flex justify-content-center">
+                            <b-icon-plus-circle-fill
+                                v-if="data.value === 'receita'"
+                                style="
+                                    color: green; 
+                                    height: 2em; 
+                                    width: 2em;
+                                "
+                            >
+                            </b-icon-plus-circle-fill>
+                            <b-icon-dash-circle-fill
+                                v-else
+                                style="
+                                    color: red; 
+                                    height: 2em; 
+                                    width: 2em;
+                                "
+                            >
+                            </b-icon-dash-circle-fill>
+                        </div>
+                    </template>
+                    <template #cell(lancamento)="data">
+                        <span>{{data.value.descricao}}</span>
+                    </template>
                     <template #cell(edit)="data">
                         <div class="d-flex flex-nowrap">
                             <b-button 
@@ -129,8 +154,9 @@ export default {
             filterOn: [],
             totalLinhas: 0,
             tableFields: [
+                { key: "tipo", label: "E/S", type: 'text', sortable: true, thStyle: 'text-align: center;' },
                 { key: "situacao", label: "Situação", type: 'text', sortable: true },
-                { key: "data_vencimento", label: "Data", type: 'text', sortable: true },
+                { key: "data_vencimento", label: "Data", type: 'date', sortable: true },
                 { key: "lancamento", label: "Descrição", type: 'text', sortable: true },
                 { key: "valor", label: "Valor", type: 'text', sortable: true },
                 { key: "forma_pagamento", label: "Pagamento", type: 'text', sortable: true },

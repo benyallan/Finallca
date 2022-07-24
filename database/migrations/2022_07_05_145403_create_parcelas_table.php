@@ -25,7 +25,7 @@ class CreateParcelasTable extends Migration
             $table->integer('numero')->default(1);
             $table->integer('total')->default(1);
             $table->enum('periodo', ['diario', 'mensal', 'anual'])
-                ->default('mensal')->nullable();
+                ->nullable();
             $table->string('obs');
             $table->softDeletes();
             $table->timestamps();

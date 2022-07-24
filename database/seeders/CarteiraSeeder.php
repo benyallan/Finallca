@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Carteira;
 use Illuminate\Database\Seeder;
 
 class CarteiraSeeder extends Seeder
@@ -13,6 +14,8 @@ class CarteiraSeeder extends Seeder
      */
     public function run()
     {
-        //
+        Carteira::factory()
+            ->count(5)
+            ->create();
     }
 }

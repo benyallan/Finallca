@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Lancamento;
+use App\Models\Parcela;
 use Illuminate\Database\Seeder;
 
 class LancamentoSeeder extends Seeder
@@ -13,6 +15,8 @@ class LancamentoSeeder extends Seeder
      */
     public function run()
     {
-        //
+        Lancamento::factory(100)
+            ->has(Parcela::factory()->count(1))
+            ->create();
     }
 }
