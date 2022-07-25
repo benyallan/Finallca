@@ -15,6 +15,7 @@ class LancamentoFactory extends Factory
     {
         return [
             'descricao' => $this->faker->word(),
+            'valorTotal' => $this->faker->randomFloat(2, 0, 9999),
             'data' => $this->faker->date(),
             'obs' => $this->faker->sentence(6)
         ];

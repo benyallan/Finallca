@@ -8,7 +8,7 @@
                     <b-button 
                         class="add-button d-flex" 
                         variant="success" 
-                        @click="addNovaLinha"
+                        v-b-modal.form-lancamentos
                     >
                         Adicionar
                     </b-button>
@@ -167,16 +167,21 @@
                 </b-table>
             </b-container>
         </template>
+        <FormLancamentos></FormLancamentos>
     </div>
 </template>
 
 <script>
 import axios from 'axios';
 import Mixins from '../../shared/mixin';
+import FormLancamentos from './form/FormLancamentos.vue';
 
 export default {
     name: "lancamentos",
     mixins:[Mixins],
+    components: {
+        FormLancamentos,
+    },
     data() {
         return {
             isBusy: false,
@@ -281,11 +286,7 @@ export default {
             this.$emit("input", this.linha);
         },
         addNovaLinha() {
-            this.editando = true
-            const newRow = this.tableFields.reduce((a, c) => ({...a, [c.key]: null}) ,{})
-            newRow.isEdit = true
-            this.tableItems.unshift(newRow)
-            this.adicionando = true
+            //
         },
         removeLinha(data) {
             axios.delete('/home/cartoescredito/' + data.item.id)

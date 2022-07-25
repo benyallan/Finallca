@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             CarteiraSeeder::class,
             ContaCorrenteSeeder::class,
             CartaoCreditoSeeder::class,
+            LancamentoSeeder::class,
         ]);
     }
 }

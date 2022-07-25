@@ -16,12 +16,20 @@ class CreateParcelasTable extends Migration
     {
         Schema::create('parcelas', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Lancamento::class)->constrained();
+            $table->foreignIdFor(Lancamento::class)->constrained()
+                ->onDelete('cascade');
             $table->nullableMorphs('forma_pagamento');
-            $table->enum('tipo', ['receita', 'despesa']);
-            $table->double('valor');
-            $table->date('data_pagamento')->nullable();
-            $table->date('data_vencimento')->nullable();
+            $table->double('valor',null,null,true);
+            $table->enum('tipo', ['receita', 'despesa'])
+                ->comment('Tem que estar vinculado a parcela 
+                    pois alguns lançamentos possuem uma entrada 
+                    e uma saída, como transferências e empréstimos');
+            $table->date('data_pagamento')->nullable()
+                ->comment('Data em que efetivamente foi pago 
+                    ou recebido o valor');
+            $table->date('data_vencimento')->nullable()
+                ->comment('Data em está programado o recebimento 
+                    ou o pagamento');
             $table->integer('numero')->default(1);
             $table->integer('total')->default(1);
             $table->enum('periodo', ['diario', 'mensal', 'anual'])

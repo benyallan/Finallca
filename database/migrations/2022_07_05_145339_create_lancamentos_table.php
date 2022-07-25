@@ -16,7 +16,10 @@ class CreateLancamentosTable extends Migration
         Schema::create('lancamentos', function (Blueprint $table) {
             $table->id();
             $table->string('descricao');
-            $table->date('data');
+            $table->double('valorTotal',null,2,true);
+            $table->date('data')
+                ->comment('Data que foi feita a compra
+                    ou a promessa de recebimento');
             $table->string('obs');
             $table->softDeletes();
             $table->timestamps();

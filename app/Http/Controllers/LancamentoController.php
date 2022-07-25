@@ -134,11 +134,11 @@ class LancamentoController extends Controller
     {
         return Parcela::select(
             'id','lancamento_id','forma_pagamento_type','forma_pagamento_id',
-            'tipo','valor','data_pagamento','data_vencimento','numero',
+            'valor','data_pagamento','data_vencimento','numero','tipo',
             'total','periodo','obs'
         )
         ->with(
-                'lancamento:id,descricao,data,obs',
+                'lancamento:id,descricao,valorTotal,data,obs',
             )
         ->orderByDesc('id')->get();
     }
