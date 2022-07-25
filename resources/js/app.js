@@ -2,6 +2,8 @@
  import money from 'v-money'
  import VueRouter from 'vue-router'
  import VueMask from 'v-mask'
+ import moment from 'moment'
+ 
 
 // importações das rotas
 import ContasCorrente from './components/contas_corrente/ContasCorrente'
@@ -17,6 +19,10 @@ Vue.use(BootstrapVueIcons);
 Vue.use(money, {precision: 4})
 Vue.use(VueRouter)
 Vue.use(VueMask);
+
+Vue.filter('momentDate', function (date) {
+    return date ? moment(date).format('DD/MM/YYYY') : null
+});
 
 Vue.filter('formatPrice', function (value) {
     let val = (value/1).toFixed(2).replace('.', ',')

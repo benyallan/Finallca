@@ -42,20 +42,22 @@
                     :filter-included-fields="filterOn"
                     responsive
                     @filtered="onFiltered"
+                    :per-page="perPage"
+                    :current-page="currentPage"
                 >
-                    <template #cell(tipo)="data">
+                    <template #cell(situacao)="data">
                         <div class="d-flex justify-content-center">
-                            <b-icon-plus-circle-fill
-                                v-if="data.value === 'receita'"
+                            <b-icon-check-circle-fill
+                                v-if="data.value === 'Pago'"
                                 style="
                                     color: green; 
                                     height: 2em; 
                                     width: 2em;
                                 "
                             >
-                            </b-icon-plus-circle-fill>
+                            </b-icon-check-circle-fill>
                             <b-icon-dash-circle-fill
-                                v-else
+                                v-if="data.value === 'Em Atraso'"
                                 style="
                                     color: red; 
                                     height: 2em; 
@@ -67,6 +69,23 @@
                     </template>
                     <template #cell(lancamento)="data">
                         <span>{{data.value.descricao}}</span>
+                    </template>
+                    <template #cell(data_vencimento)="data">
+                        <span>{{data.value | momentDate }}</span>
+                    </template>
+                    <template #cell(valor)="data">
+                        <span
+                            v-if="data.item.tipo === 'receita'"
+                            style="color: green;"
+                        >
+                            {{data.value | formatPrice}}
+                        </span>
+                        <span
+                            v-else
+                            style="color: red;"
+                        >
+                            {{data.value | formatPrice}}
+                        </span>
                     </template>
                     <template #cell(edit)="data">
                         <div class="d-flex flex-nowrap">
@@ -105,7 +124,39 @@
                         </div>
                     </template>
                     <template #table-caption>
-                        Total de Cartões de Crédito: {{totalLinhas}} 
+                        <b-row>
+                            <b-col sm="4" md="2" class="my-1">
+                                Total: {{totalLinhas}} 
+                            </b-col>
+                            <b-col sm="4" md="5" class="my-1">
+                                <b-row>
+                                    <b-col cols="4">
+                                        <span>
+                                            Lançamentos por página:
+                                        </span>
+                                    </b-col>
+                                    <b-col cols="8">
+                                        <b-form-select
+                                            id="per-page-select"
+                                            v-model="perPage"
+                                            :options="pageOptions"
+                                            class="form-control"
+                                        ></b-form-select>
+                                    </b-col>
+                                </b-row>
+                            </b-col>
+    
+                            <b-col sm="4" md="5" class="my-1">
+                                <b-pagination
+                                v-model="currentPage"
+                                :total-rows="totalLinhas"
+                                :per-page="perPage"
+                                align="fill"
+                                size="sm"
+                                class="my-0"
+                                ></b-pagination>
+                            </b-col>
+                        </b-row>
                     </template>
                     <template #table-busy>
                         <div class="text-center text-danger my-2">
@@ -132,6 +183,9 @@ export default {
             filter: null,
             adicionando: false,
             editando: false,
+            perPage: 10,
+            currentPage: 1,
+            pageOptions: [5, 10, 15, 100],
             linha: {
                 situacao: null,
                 data_vencimento: null,
@@ -154,7 +208,6 @@ export default {
             filterOn: [],
             totalLinhas: 0,
             tableFields: [
-                { key: "tipo", label: "E/S", type: 'text', sortable: true, thStyle: 'text-align: center;' },
                 { key: "situacao", label: "Situação", type: 'text', sortable: true },
                 { key: "data_vencimento", label: "Data", type: 'date', sortable: true },
                 { key: "lancamento", label: "Descrição", type: 'text', sortable: true },
@@ -259,7 +312,6 @@ export default {
             this.isBusy = true
             axios.get('/home/lancamentos/get')
             .then( response => {
-                console.log(response.data)
                 this.totalLinhas = response.data.length
                 this.tableItems = response.data.map(
                     item => ({...item, isEdit: false})
