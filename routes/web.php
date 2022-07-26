@@ -48,7 +48,7 @@ Route::middleware(['auth'])->group(function() {
             '/cartoescredito/get', [CartaoCreditoController::class, 'get']
         )->name('cartoescredito.get');
 
-        // Cartões de Crédito
+        // Lançamentos
         Route::resource('lancamentos', LancamentoController::class)
             ->only(['index','store','update','destroy']);
         Route::get(

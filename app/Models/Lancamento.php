@@ -14,6 +14,7 @@ class Lancamento extends Model
     protected $fillable = [
         'descricao',
         'data',
+        'valorTotal',
         'obs'
     ];
 

@@ -3,6 +3,8 @@
  import VueRouter from 'vue-router'
  import VueMask from 'v-mask'
  import moment from 'moment'
+ import VeeValidate, { Validator, } from 'vee-validate'
+ import Dictionary from './dictionary'
  
 
 // importações das rotas
@@ -10,6 +12,7 @@ import ContasCorrente from './components/contas_corrente/ContasCorrente'
 import Carteiras from './components/carteiras/CarteirasComponent'
 import CartoesCredito from './components/cartoes_credito/CartoesCredito'
 import LancamentosComponent from './components/lancamentos/LancamentosComponent'
+
 
 require('./bootstrap');
 
@@ -19,6 +22,31 @@ Vue.use(BootstrapVueIcons);
 Vue.use(money, {precision: 4})
 Vue.use(VueRouter)
 Vue.use(VueMask);
+
+const config = {
+    errorBagName: 'errors', // Altera a propriedade se houver conflitos.
+    fieldsBagName: 'inputs ', // O padrão é fields
+    delay: 0,
+    locale: 'pt_BR',
+    dictionary: Dictionary,
+    strict: true,
+    enableAutoClasses: false,
+    classNames: {
+    touched: 'touched', // the control has been blurred
+    untouched: 'untouched', // the control hasn't been blurred
+    valid: 'valid', // model is valid
+    invalid: 'invalid', // model is invalid
+    pristine: 'pristine', // control has not been interacted with
+    dirty: 'dirty' // control has been interacted with
+    },
+    events: 'input|blur',
+    inject: true
+};
+    
+// Vue.use(VeeValidate, config);
+Vue.use(VeeValidate, config)
+Vue.config.debug = true
+
 
 Vue.filter('momentDate', function (date) {
     return date ? moment(date).format('DD/MM/YYYY') : null

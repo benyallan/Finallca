@@ -20,7 +20,7 @@ class CreateLancamentosTable extends Migration
             $table->date('data')
                 ->comment('Data que foi feita a compra
                     ou a promessa de recebimento');
-            $table->string('obs');
+            $table->string('obs')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

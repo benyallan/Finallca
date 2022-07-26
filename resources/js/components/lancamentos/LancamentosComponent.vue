@@ -225,18 +225,13 @@ export default {
     },
     methods: {
         addLancamento(data) {
-            axios.post('/home/lancamentos', this.linha)
-            .then( response => {
-                this.tableItems[data.index]['nome'] = response.data[0].nome
-                this.tableItems[data.index]['dia_fechamento'] = response.data[0].dia_fechamento
-                this.tableItems[data.index]['dia_vencimento'] = response.data[0].dia_vencimento
-                this.tableItems[data.index]['conta_corrente_id'] = response.data[0].conta_corrente_id
-                this.tableItems[data.index]['conta_corrente'] = response.data[0].conta_corrente
-                this.totalLinhas ++
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+            console.log(data)
+            // this.tableItems[data.index]['nome'] = response.data[0].nome
+            // this.tableItems[data.index]['dia_fechamento'] = response.data[0].dia_fechamento
+            // this.tableItems[data.index]['dia_vencimento'] = response.data[0].dia_vencimento
+            // this.tableItems[data.index]['conta_corrente_id'] = response.data[0].conta_corrente_id
+            // this.tableItems[data.index]['conta_corrente'] = response.data[0].conta_corrente
+            // this.totalLinhas ++
         },
         editarLinha(data) {
             this.editando = true
@@ -309,9 +304,9 @@ export default {
         onFiltered(filteredItems) {
             this.totalLinhas = filteredItems.length
         },
-        get() {
+        async get() {
             this.isBusy = true
-            axios.get('/home/lancamentos/get')
+            await axios.get('/home/lancamentos/get')
             .then( response => {
                 this.totalLinhas = response.data.length
                 this.tableItems = response.data.map(

@@ -11,7 +11,7 @@
             @hide="cancelar"
             size="xl"
         >
-            <template>
+            <template v-if="!busy">
                 <b-row>
                     <b-col cols="12" md="6" lg="2">
                         <b-form-group>
@@ -24,7 +24,7 @@
                             <b-form-select 
                                 id="tipo"
                                 name="tipo"
-                                v-model="post.tipo" 
+                                v-model="post.parcela.tipo" 
                                 :options="tipoOptions"
                                 @input="alteraCor"
                                 :style="`color: ${corTipo}`"
@@ -46,9 +46,17 @@
                                 v-model="post.descricao"
                                 type="text"
                                 name="descricao"
+                                :state="false"
+                                v-validate="{ required: true }"
+                                data-vv-as="descrição"
                                 :style="`color: ${corTipo}`"
-                                class="form-control form-control-sm"
+                                :class="['form-control form-control-sm', 
+                                    {'is-invalid': errors.has('descricao')}]"
+                                trim
                             >
+                            <span v-show="errors.has('descricao')" class="invalid-feedback">
+                                {{ errors.first('descricao') }}
+                            </span>
                         </b-form-group>
                     </b-col>
                     <b-col cols="12" md="6" lg="3">
@@ -115,7 +123,7 @@
                                 id="data_vencimento"
                                 type="date"
                                 :style="`color: ${corTipo}`"
-                                v-model="post.data_vencimento"
+                                v-model="post.parcela.data_vencimento"
                                 name="data_vencimento"
                                 data-toggle="tooltip" 
                                 data-placement="top" 
@@ -152,7 +160,7 @@
                         >
                             <b-icon-check2-circle>
                             </b-icon-check2-circle>
-                            {{ post.tipo === 'receita' ? 
+                            {{ post.parcela.tipo === 'receita' ? 
                                 'Receber' : 'Pagar' 
                             }}
                         </b-button>
@@ -169,14 +177,14 @@
                                                 :title="tipValor"
                                             >
                                                 Valor 
-                                                {{ post.tipo === 'receita' ? 
+                                                {{ post.parcela.tipo === 'receita' ? 
                                                     'Recebido' : 'Pago' 
                                                 }}:
                                             </label>
                                             <money 
                                                 id="valor"
                                                 :style="`color: ${corTipo}`"
-                                                v-model="parcela.valor" 
+                                                v-model="post.parcela.valor" 
                                                 v-bind="money"
                                                 data-toggle="tooltip" 
                                                 data-placement="top" 
@@ -195,7 +203,7 @@
                                                 :title="tipDataVencimento"
                                             >
                                                 Data que 
-                                                {{ post.tipo === 'receita' ? 
+                                                {{ post.parcela.tipo === 'receita' ? 
                                                     'recebeu o pagamento' 
                                                     : 'pagou a despesa' 
                                                 }}:
@@ -204,7 +212,7 @@
                                                 id="data_pagamento"
                                                 type="date"
                                                 :style="`color: ${corTipo}`"
-                                                v-model="post.data_pagamento"
+                                                v-model="post.parcela.data_pagamento"
                                                 name="data_pagamento"
                                                 data-toggle="tooltip" 
                                                 data-placement="top" 
@@ -226,7 +234,7 @@
                                             <input
                                                 id="obsParcela"
                                                 type="text"
-                                                v-model="post.obsParcela"
+                                                v-model="post.parcela.obs"
                                                 name="obsParcela"
                                                 :style="`color: ${corTipo}`"
                                                 class="form-control form-control-sm"
@@ -239,6 +247,12 @@
                     </div>
                 </b-row>
             </template>
+            <template v-else>
+                <div class="text-center text-primary my-2">
+                    <b-spinner class="align-middle"></b-spinner>
+                    <strong>Salvando...</strong>
+                </div>
+            </template>
             <template #modal-footer>
                 <b-button
                     @click="$bvModal.hide('form-lancamentos')"
@@ -247,7 +261,7 @@
                     Cancelar
                 </b-button>
                 <b-button
-                    @click="$bvModal.hide('form-lancamentos')"
+                    @click="salvar"
                     class="btn btn-success px-4"
                 >
                     Salvar
@@ -258,6 +272,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import moment from 'moment';
 import Mixins from '../../../shared/mixin';
 moment.locale('pt-br');
@@ -266,26 +281,26 @@ moment.locale('pt-br');
         mixins:[Mixins],
         data() {
             return {
+                busy: false,
                 title: null,
                 tipValorTotal: null,
                 tipValor: null,
                 tipData: null,
                 tipDataVencimento: null,
                 post: {
-                    tipo: null,
-                    descricao: null,
+                    descricao: '',
                     valorTotal: null,
                     data: null,
                     obs: null,
-                    obsParcela: null,
-                    data_vencimento: null,
-                    data_pagamento: null,
-                    parcelas: [{
+                    parcela: {
+                        tipo: null,
                         valor: null,
-                    }]
-                },
-                parcela: {
-                    valor: null,
+                        data_vencimento: null,
+                        data_pagamento: null,
+                        numero: 1,
+                        total: 1,
+                        obs: null
+                    }
                 },
                 corTipo: null,
                 headerTipo: null,
@@ -296,7 +311,17 @@ moment.locale('pt-br');
             }
         },
         methods: {
-            
+            async salvar() {
+                this.busy = true
+                await axios.post('/home/lancamentos', this.post)
+                .then( response => {
+                    this.$emit('addLancamento', response.data)
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+                this.busy = false
+            },
             alteraCor(e) {
                 if (e === 'receita') {
                     this.corTipo = 'green'
@@ -308,15 +333,15 @@ moment.locale('pt-br');
             },
             cancelar() {
                 this.title = "Adicionar Lançamentos"
-                this.post.tipo = 'receita'
-                this.post.descricao = null
+                this.post.parcela.tipo = 'receita'
+                this.post.descricao = ''
                 this.post.valorTotal = 0
-                this.parcela.valor = 0
+                this.post.parcela.valor = 0
                 this.post.data = moment().format("YYYY-MM-DD")
                 this.post.obs = null
-                this.post.obsParcela = null
-                this.post.data_vencimento = moment().format("YYYY-MM-DD")
-                this.post.data_pagamento = moment().format("YYYY-MM-DD")
+                this.post.parcela.obs = null
+                this.post.parcela.data_vencimento = moment().format("YYYY-MM-DD")
+                this.post.parcela.data_pagamento = moment().format("YYYY-MM-DD")
                 this.tipValorTotal = 'Valor esperado para receber'
                 this.tipValor = 'Valor esperado para receber '
                     + 'ou que foi realmente recebido'

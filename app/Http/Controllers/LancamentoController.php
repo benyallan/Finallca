@@ -31,8 +31,17 @@ class LancamentoController extends Controller
     public function store(StoreLancamentoRequest $request)
     {
         try {
-            dd($request->all());
             $lancamento = Lancamento::create($request->all());
+            if ($request->parcela) {
+                $parcela = new Parcela($request->parcela);
+                $lancamento->parcelas()->save($parcela);
+            } elseif ($request->parcelas) {
+                foreach ($request->parcelas as $parcela) {
+                    $lancamento->parcelas()->save(
+                        new Parcela($parcela)
+                    );
+                }
+            }
             Log::info("\nUsuário: " . Auth::user() . 
                     "\nLançamento adicionado ao Banco de Dados 
                     com sucesso." .
