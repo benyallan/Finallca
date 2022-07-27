@@ -32,12 +32,12 @@ const config = {
     strict: true,
     enableAutoClasses: false,
     classNames: {
-    touched: 'touched', // the control has been blurred
-    untouched: 'untouched', // the control hasn't been blurred
-    valid: 'valid', // model is valid
-    invalid: 'invalid', // model is invalid
-    pristine: 'pristine', // control has not been interacted with
-    dirty: 'dirty' // control has been interacted with
+    touched: 'touched',
+    untouched: 'untouched',
+    valid: 'valid',
+    invalid: 'invalid',
+    pristine: 'pristine',
+    dirty: 'dirty'
     },
     events: 'input|blur',
     inject: true

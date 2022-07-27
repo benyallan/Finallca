@@ -11,6 +11,11 @@
             @hide="cancelar"
             size="xl"
         >
+        <b-alert v-model="showAlert" variant="danger">
+            <p>{{ messageAlert }}</p>
+            <hr v-if="!messageErroAlert === ''">
+            <p>{{ messageErroAlert }}</p>
+        </b-alert>
             <template v-if="!busy">
                 <b-row>
                     <b-col cols="12" md="6" lg="2">
@@ -47,12 +52,12 @@
                                 type="text"
                                 name="descricao"
                                 :state="false"
+                                :style="`color: ${corTipo}`"
+                                trim
                                 v-validate="{ required: true }"
                                 data-vv-as="descrição"
-                                :style="`color: ${corTipo}`"
                                 :class="['form-control form-control-sm', 
                                     {'is-invalid': errors.has('descricao')}]"
-                                trim
                             >
                             <span v-show="errors.has('descricao')" class="invalid-feedback">
                                 {{ errors.first('descricao') }}
@@ -72,14 +77,21 @@
                             </label>
                             <money 
                                 id="valorTotal"
+                                name="valorTotal"
                                 :style="`color: ${corTipo}`"
                                 v-model="post.valorTotal" 
                                 v-bind="money"
                                 data-toggle="tooltip" 
                                 data-placement="top" 
+                                v-validate="'min_value:0.01'"
+                                data-vv-as="valor"
                                 :title="tipValorTotal"
-                                class="form-control form-control-sm"
+                                :class="['form-control form-control-sm', 
+                                    {'is-invalid': errors.has('valorTotal')}]"
                             ></money>
+                            <span v-show="errors.has('valorTotal')" class="invalid-feedback">
+                                {{ errors.first('valorTotal') }}
+                            </span>
                         </b-form-group>
                     </b-col>
                 </b-row>
@@ -105,7 +117,14 @@
                                 data-placement="top" 
                                 :title="tipData"
                                 class="form-control form-control-sm"
+                                v-validate="{ required: true }"
+                                data-vv-as="data"
+                                :class="['form-control form-control-sm', 
+                                    {'is-invalid': errors.has('data')}]"
                             >
+                            <span v-show="errors.has('data')" class="invalid-feedback">
+                                {{ errors.first('data') }}
+                            </span>
                         </b-form-group>
                     </b-col>
                     <b-col cols="12" md="6" lg="3">
@@ -129,7 +148,14 @@
                                 data-placement="top" 
                                 :title="tipDataVencimento"
                                 class="form-control form-control-sm"
+                                v-validate="{ required: true }"
+                                data-vv-as="data do vencimento"
+                                :class="['form-control form-control-sm', 
+                                    {'is-invalid': errors.has('data_vencimento')}]"
                             >
+                            <span v-show="errors.has('data_vencimento')" class="invalid-feedback">
+                                {{ errors.first('data_vencimento') }}
+                            </span>
                         </b-form-group>
                     </b-col>
                     <b-col md="6">
@@ -164,7 +190,7 @@
                                 'Receber' : 'Pagar' 
                             }}
                         </b-button>
-                        <b-collapse id="dados" class="mt-2">
+                        <b-collapse id="dados" class="mt-2" v-model="post.pag">
                             <b-card>
                                 <b-row>
                                     <b-col cols="12" md="6" lg="6">
@@ -287,11 +313,15 @@ moment.locale('pt-br');
                 tipValor: null,
                 tipData: null,
                 tipDataVencimento: null,
+                showAlert: false,
+                messageAlert: '',
+                messageErroAlert: '',
                 post: {
                     descricao: '',
                     valorTotal: null,
                     data: null,
                     obs: null,
+                    formaPagamento: {},
                     parcela: {
                         tipo: null,
                         valor: null,
@@ -299,7 +329,8 @@ moment.locale('pt-br');
                         data_pagamento: null,
                         numero: 1,
                         total: 1,
-                        obs: null
+                        obs: null,
+                        pag: false
                     }
                 },
                 corTipo: null,
@@ -311,16 +342,26 @@ moment.locale('pt-br');
             }
         },
         methods: {
-            async salvar() {
-                this.busy = true
-                await axios.post('/home/lancamentos', this.post)
-                .then( response => {
-                    this.$emit('addLancamento', response.data)
+            salvar() {
+                this.$validator.validate().then((valid) => {
+                    if (valid) {
+                        this.busy = true
+                        axios.post('/home/lancamentos', this.post)
+                        .then( response => {
+                            this.$emit('addLancamento', response.data)
+                            this.busy = false
+                        })
+                        .catch(error => {
+                            this.messageAlert = "Erro ao tentar salvar"
+                            this.messageErroAlert = error
+                            this.showAlert = true
+                        })
+                    } else {
+                        this.showAlert = true
+                        this.messageAlert = 'Preencha os campos corretamente'
+                    }
+                    
                 })
-                .catch(function (error) {
-                    console.log(error);
-                })
-                this.busy = false
             },
             alteraCor(e) {
                 if (e === 'receita') {
@@ -332,6 +373,7 @@ moment.locale('pt-br');
                 }
             },
             cancelar() {
+                this.busy = false
                 this.title = "Adicionar Lançamentos"
                 this.post.parcela.tipo = 'receita'
                 this.post.descricao = ''
@@ -341,7 +383,7 @@ moment.locale('pt-br');
                 this.post.obs = null
                 this.post.parcela.obs = null
                 this.post.parcela.data_vencimento = moment().format("YYYY-MM-DD")
-                this.post.parcela.data_pagamento = moment().format("YYYY-MM-DD")
+                this.post.parcela.data_pagamento = null
                 this.tipValorTotal = 'Valor esperado para receber'
                 this.tipValor = 'Valor esperado para receber '
                     + 'ou que foi realmente recebido'
@@ -351,6 +393,10 @@ moment.locale('pt-br');
                     + 'receber o valor'
                 this.corTipo = 'green'
                 this.headerTipo = 'success'
+                this.post.pag = false
+                this.showAlert = false
+                this.messageAlert = ''
+                this.messageErroAlert = ''
             }
         },
         mounted () {
@@ -360,5 +406,5 @@ moment.locale('pt-br');
 </script>
 
 <style lang="scss" scoped>
-
+    
 </style>
