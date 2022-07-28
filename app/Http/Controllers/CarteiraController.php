@@ -133,4 +133,10 @@ class CarteiraController extends Controller
         return Carteira::select('id','nome','saldo_inicial')
             ->orderByDesc('id')->get();
     }
+
+    public function getSelect()
+    {
+        return Carteira::select('id','nome')
+            ->orderBy('nome')->get();
+    }
 }

@@ -29,6 +29,8 @@ Route::middleware(['auth'])->group(function() {
             ->only(['index','store','update','destroy']);
         Route::get('/carteiras/get', [CarteiraController::class, 'get'])
             ->name('carteiras.get');
+        Route::get('/carteiras/getselect', [CarteiraController::class, 'getSelect'])
+            ->name('carteiras.getselect');
 
         // Contas Corrente
         Route::resource('contascorrente', ContaCorrenteController::class)

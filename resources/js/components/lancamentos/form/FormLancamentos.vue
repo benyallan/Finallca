@@ -249,7 +249,27 @@
                                     </b-col>
                                 </b-row>
                                 <b-row>
-                                    <b-col>
+                                    <b-col md="6">
+                                        <b-form-group>
+                                            <label 
+                                                for="obsParcela"
+                                                :style="`color: ${corTipo}`" 
+                                            >
+                                                {{post.tipo === 'receita' ? 
+                                                'Recabido em' : 'Pago com'}}:
+                                            </label>
+                                            <b-form-select
+                                                id="frmPagamento"
+                                                type="text"
+                                                v-model="post.formaPagamento"
+                                                :options="formasPagamento"
+                                                name="frmPagamento"
+                                                :style="`color: ${corTipo}`"
+                                                class="form-control form-control-sm"
+                                            ></b-form-select>
+                                        </b-form-group>
+                                    </b-col>
+                                    <b-col md="6">
                                         <b-form-group>
                                             <label 
                                                 for="obsParcela"
@@ -316,12 +336,16 @@ moment.locale('pt-br');
                 showAlert: false,
                 messageAlert: '',
                 messageErroAlert: '',
+                formasPagamento: [{
+                    value: null,
+                    text: 'Selecione...'
+                }],
                 post: {
                     descricao: '',
                     valorTotal: null,
                     data: null,
                     obs: null,
-                    formaPagamento: {},
+                    formaPagamento: null,
                     parcela: {
                         tipo: null,
                         valor: null,
@@ -401,6 +425,15 @@ moment.locale('pt-br');
         },
         mounted () {
             this.cancelar();
+            axios.get('carteiras/getselect')
+            .then( res => {
+                res.data.forEach(carteira => {
+                    this.formasPagamento.push({
+                        value: carteira.id,
+                        text: carteira.nome
+                    })
+                });
+            })
         },
     }
 </script>
