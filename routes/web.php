@@ -29,8 +29,8 @@ Route::middleware(['auth'])->group(function() {
             ->only(['index','store','update','destroy']);
         Route::get('/carteiras/get', [CarteiraController::class, 'get'])
             ->name('carteiras.get');
-        Route::get('/carteiras/getselect', [CarteiraController::class, 'getSelect'])
-            ->name('carteiras.getselect');
+        Route::get('/carteiras/get/list', [CarteiraController::class, 'getList'])
+            ->name('carteiras.getlist');
 
         // Contas Corrente
         Route::resource('contascorrente', ContaCorrenteController::class)
@@ -49,6 +49,9 @@ Route::middleware(['auth'])->group(function() {
         Route::get(
             '/cartoescredito/get', [CartaoCreditoController::class, 'get']
         )->name('cartoescredito.get');
+        Route::get(
+            '/cartoescredito/get/list', [CartaoCreditoController::class, 'getList']
+        )->name('cartoescredito.getlist');
 
         // Lançamentos
         Route::resource('lancamentos', LancamentoController::class)

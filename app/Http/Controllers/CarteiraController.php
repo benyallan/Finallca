@@ -134,7 +134,7 @@ class CarteiraController extends Controller
             ->orderByDesc('id')->get();
     }
 
-    public function getSelect()
+    public function getList()
     {
         return Carteira::select('id','nome')
             ->orderBy('nome')->get();

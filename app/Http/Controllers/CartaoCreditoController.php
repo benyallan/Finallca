@@ -152,4 +152,11 @@ class CartaoCreditoController extends Controller
         $cartaocredito->load('contaCorrente');
         return $cartaocredito;
     }
+
+    public function getList()
+    {
+        return CartaoCredito::select(
+            'id','nome'
+        )->orderBy('nome')->get();
+    }
 }

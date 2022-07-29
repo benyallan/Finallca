@@ -249,19 +249,18 @@
                                     </b-col>
                                 </b-row>
                                 <b-row>
-                                    <b-col md="6">
+                                    <b-col md="3">
                                         <b-form-group>
                                             <label 
-                                                for="obsParcela"
+                                                for="frmPagamento"
                                                 :style="`color: ${corTipo}`" 
                                             >
                                                 {{post.tipo === 'receita' ? 
-                                                'Recabido em' : 'Pago com'}}:
+                                                'Recebido em' : 'Pago com'}}:
                                             </label>
                                             <b-form-select
                                                 id="frmPagamento"
-                                                type="text"
-                                                v-model="post.formaPagamento"
+                                                v-model="post.formaPagamento.classe"
                                                 :options="formasPagamento"
                                                 name="frmPagamento"
                                                 :style="`color: ${corTipo}`"
@@ -269,7 +268,95 @@
                                             ></b-form-select>
                                         </b-form-group>
                                     </b-col>
-                                    <b-col md="6">
+                                    <b-col 
+                                        md="9"
+                                        lg="5"
+                                        v-if="post.formaPagamento.classe === 'carteira'"
+                                    >
+                                        <b-form-group>
+                                            <label 
+                                                for="opcCarteira"
+                                                :style="`color: ${corTipo}`" 
+                                            >
+                                                Escolha qual:
+                                            </label>
+                                            <b-form-select
+                                                id="opcCarteira"
+                                                v-model="post.formaPagamento.id"
+                                                :options="carteiras"
+                                                text-field="nome"
+                                                value-field="id"
+                                                name="opcCarteira"
+                                                :style="`color: ${corTipo}`"
+                                                class="form-control form-control-sm"
+                                            >
+                                                <template #first>
+                                                    <b-form-select-option :value="null" disabled>
+                                                        -- Selecione... --
+                                                    </b-form-select-option>
+                                                </template>
+                                            </b-form-select>
+                                        </b-form-group>
+                                    </b-col>
+                                    <b-col 
+                                        md="9"
+                                        lg="5"
+                                        v-if="post.formaPagamento.classe === 'conta corrente'"
+                                    >
+                                        <b-form-group>
+                                            <label 
+                                                for="opcContaCorrente"
+                                                :style="`color: ${corTipo}`" 
+                                            >
+                                                Escolha qual:
+                                            </label>
+                                            <b-form-select
+                                                id="opcContaCorrente"
+                                                v-model="post.formaPagamento.id"
+                                                :options="contascorrente"
+                                                name="opcContaCorrente"
+                                                :style="`color: ${corTipo}`"
+                                                class="form-control form-control-sm"
+                                            >
+                                                <template #first>
+                                                    <b-form-select-option :value="null" disabled>
+                                                        -- Selecione... --
+                                                    </b-form-select-option>
+                                                </template>
+                                            </b-form-select>
+                                        </b-form-group>
+                                    </b-col>
+                                    <b-col 
+                                        md="9"
+                                        lg="5"
+                                        v-if="post.formaPagamento.classe === 'cartao credito'"
+                                    >
+                                        <b-form-group>
+                                            <label 
+                                                for="opcCartaoCredito"
+                                                :style="`color: ${corTipo}`" 
+                                            >
+                                                Escolha qual:
+                                            </label>
+                                            <b-form-select
+                                                id="opcCartaoCredito"
+                                                v-model="post.formaPagamento.id"
+                                                :options="cartoescredito"
+                                                text-field="nome"
+                                                value-field="id"
+                                                name="opcCartaoCredito"
+                                                :style="`color: ${corTipo}`"
+                                                class="form-control form-control-sm"
+                                            >
+                                                <template #first>
+                                                    <b-form-select-option :value="null" disabled>
+                                                        -- Selecione... --
+                                                    </b-form-select-option>
+                                                </template>
+                                            </b-form-select>
+                                        </b-form-group>
+                                    </b-col>
+                                    <b-col>
                                         <b-form-group>
                                             <label 
                                                 for="obsParcela"
@@ -325,6 +412,11 @@ moment.locale('pt-br');
 
     export default {
         mixins:[Mixins],
+        watch: {
+            "post.formaPagamento.classe": function (newValue, oldValue) {
+                this.post.formaPagamento.id = null
+            }
+        },
         data() {
             return {
                 busy: false,
@@ -336,16 +428,24 @@ moment.locale('pt-br');
                 showAlert: false,
                 messageAlert: '',
                 messageErroAlert: '',
-                formasPagamento: [{
-                    value: null,
-                    text: 'Selecione...'
-                }],
+                formasPagamento: [
+                    { value: null, text: 'Selecione...' },
+                    { value: "carteira", text: 'Carteira' },
+                    { value: "cartao credito", text: 'Cartão de crédito' },
+                    { value: "conta corrente", text: 'Conta Corrente' }
+                ],
+                carteiras:null,
+                contascorrente: [],
+                cartoescredito: null,
                 post: {
                     descricao: '',
                     valorTotal: null,
                     data: null,
                     obs: null,
-                    formaPagamento: null,
+                    formaPagamento: {
+                        id: null,
+                        classe: null
+                    },
                     parcela: {
                         tipo: null,
                         valor: null,
@@ -408,6 +508,8 @@ moment.locale('pt-br');
                 this.post.parcela.obs = null
                 this.post.parcela.data_vencimento = moment().format("YYYY-MM-DD")
                 this.post.parcela.data_pagamento = null
+                this.post.formaPagamento.id = null,
+                this.post.formaPagamento.classe = null,
                 this.tipValorTotal = 'Valor esperado para receber'
                 this.tipValor = 'Valor esperado para receber '
                     + 'ou que foi realmente recebido'
@@ -425,14 +527,23 @@ moment.locale('pt-br');
         },
         mounted () {
             this.cancelar();
-            axios.get('carteiras/getselect')
+            axios.get('carteiras/get/list')
             .then( res => {
-                res.data.forEach(carteira => {
-                    this.formasPagamento.push({
-                        value: carteira.id,
-                        text: carteira.nome
+                this.carteiras = res.data
+            })
+            axios.get('cartoescredito/get/list')
+            .then( res => {
+                this.cartoescredito = res.data
+            })
+            axios.get('contascorrente/get/list')
+            .then( res => {
+                res.data.forEach(contacorrente => {
+                    this.contascorrente.push({
+                        value: contacorrente.id,
+                        text: `${contacorrente.nome}: 
+                            ${contacorrente.banco}`
                     })
-                });
+                })
             })
         },
     }

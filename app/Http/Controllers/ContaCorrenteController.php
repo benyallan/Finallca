@@ -139,6 +139,6 @@ class ContaCorrenteController extends Controller
     {
         return ContaCorrente::select(
             'id','banco','nome'
-        )->get();
+        )->OrderBy("nome")->get();
     }
 }
