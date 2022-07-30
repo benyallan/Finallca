@@ -483,6 +483,7 @@ moment.locale('pt-br');
                         axios.post('/home/lancamentos', this.post)
                         .then( response => {
                             this.$emit('addLancamento', response.data)
+                            this.cancelar()
                             this.busy = false
                         })
                         .catch(error => {

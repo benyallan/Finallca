@@ -33,16 +33,22 @@ class LancamentoController extends Controller
     public function store(StoreLancamentoRequest $request)
     {
         try {
-            $classname = FormaPagamento::formaPagamento(
-                (string) $request->formaPagamento["classe"]
-            );
-            $class = new Carteira();
-            eval("\$class = \"$classname\"::find(\$request->formaPagamento['id']);");
+            if ($request->quitado) {
+                $classname = FormaPagamento::formaPagamento(
+                    (string) $request->formaPagamento["classe"]
+                );
+                $class = new Carteira();
+                eval(
+                    "\$class = \"$classname\"::find(\$request->formaPagamento['id']);"
+                );
+            }
             $lancamento = Lancamento::create($request->all());
             if ($request->parcela) {
                 $parcela = new Parcela($request->parcela);
                 $lancamento->parcelas()->save($parcela);
-                $class->lancamentos()->save($parcela);
+                if ($request->quitado) {
+                    $class->lancamentos()->save($parcela);
+                }
             } elseif ($request->parcelas) {
                 foreach ($request->parcelas as $parcela) {
                     $lancamento->parcelas()->save(
