@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Library\FormaPagamento;
-use App\Library\formaPagamentoAbstract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -48,11 +46,5 @@ class Parcela extends Model
         } else {
             return "Em Atraso";
         }
-    }
-
-    public function atrelaPagamento(formaPagamentoAbstract $fp)
-    {
-        $this->forma_pagamento_id = $fp->id;
-        $this->forma_pagamento_type = $fp->getClass();
     }
 }

@@ -6,15 +6,11 @@ use App\Http\Requests\StoreLancamentoRequest;
 use App\Http\Requests\UpdateLancamentoRequest;
 use App\Library\FormaPagamento;
 use App\Models\Carteira;
-use App\Models\ContaCorrente;
-use App\Models\CartaoCredito;
 use App\Models\Lancamento;
 use App\Models\Parcela;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use PhpParser\Node\Expr\Eval_;
-use stdClass;
 
 class LancamentoController extends Controller
 {
