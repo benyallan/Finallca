@@ -87,6 +87,9 @@
                             {{data.value | formatPrice}}
                         </span>
                     </template>
+                    <template #cell(forma_pagamento)="data">
+                        <span>{{data.value.identificador}}</span>
+                    </template>
                     <template #cell(edit)="data">
                         <div class="d-flex flex-nowrap">
                             <b-button 

@@ -24,7 +24,9 @@ class StoreLancamentoRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'descricao' => 'required',
+            'data' => 'required',
+            'valorTotal' => 'required',
         ];
     }
 }

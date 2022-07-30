@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
+use App\Library\formaPagamentoAbstract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ContaCorrente extends Model
+class ContaCorrente extends formaPagamentoAbstract
 {
     use HasFactory;
     use SoftDeletes;
 
+    protected $appends = ['identificador'];
     protected $table = 'contas_corrente';
     protected $fillable = [
         'banco',
@@ -28,6 +29,11 @@ class ContaCorrente extends Model
 
     public function lancamentos()
     {
-        return $this->morphMany(Parcela::class, 'formaPagamento');
+        return $this->morphMany(Parcela::class, 'forma_pagamento');
+    }
+
+    public function getIdentificadorAttribute()
+    {
+        return $this->nome . " | " . $this->banco;
     }
 }

@@ -31,7 +31,7 @@
                                 name="tipo"
                                 v-model="post.parcela.tipo" 
                                 :options="tipoOptions"
-                                @input="alteraCor"
+                                @input="alteraCorTela"
                                 :style="`color: ${corTipo}`"
                                 class="form-control form-control-sm"
                                 size="sm"
@@ -190,36 +190,10 @@
                                 'Receber' : 'Pagar' 
                             }}
                         </b-button>
-                        <b-collapse id="dados" class="mt-2" v-model="post.pag">
+                        <b-collapse id="dados" class="mt-2" v-model="post.quitado">
                             <b-card>
                                 <b-row>
-                                    <b-col cols="12" md="6" lg="6">
-                                        <b-form-group>
-                                            <label 
-                                                for="valor"
-                                                :style="`color: ${corTipo}`" 
-                                                data-toggle="tooltip" 
-                                                data-placement="top" 
-                                                :title="tipValor"
-                                            >
-                                                Valor 
-                                                {{ post.parcela.tipo === 'receita' ? 
-                                                    'Recebido' : 'Pago' 
-                                                }}:
-                                            </label>
-                                            <money 
-                                                id="valor"
-                                                :style="`color: ${corTipo}`"
-                                                v-model="post.parcela.valor" 
-                                                v-bind="money"
-                                                data-toggle="tooltip" 
-                                                data-placement="top" 
-                                                :title="tipValor"
-                                                class="form-control form-control-sm"
-                                            ></money>
-                                        </b-form-group>
-                                    </b-col>
-                                    <b-col cols="12" md="6" lg="6">
+                                    <b-col cols="12" md="6" lg="3">
                                         <b-form-group>
                                             <label 
                                                 for="data_pagamento"
@@ -228,11 +202,7 @@
                                                 data-placement="top" 
                                                 :title="tipDataVencimento"
                                             >
-                                                Data que 
-                                                {{ post.parcela.tipo === 'receita' ? 
-                                                    'recebeu o pagamento' 
-                                                    : 'pagou a despesa' 
-                                                }}:
+                                                Foi quitado em:
                                             </label>
                                             <input
                                                 id="data_pagamento"
@@ -243,13 +213,17 @@
                                                 data-toggle="tooltip" 
                                                 data-placement="top" 
                                                 :title="tipDataVencimento"
-                                                class="form-control form-control-sm"
+                                                v-validate="{ required: post.quitado }"
+                                                data-vv-as="forma de pagamento"
+                                                :class="['form-control form-control-sm', 
+                                                    {'is-invalid': errors.has('data_pagamento')}]"
                                             >
+                                            <span v-show="errors.has('data_pagamento')" class="invalid-feedback">
+                                                {{ errors.first('data_pagamento') }}
+                                            </span>
                                         </b-form-group>
                                     </b-col>
-                                </b-row>
-                                <b-row>
-                                    <b-col md="3">
+                                    <b-col md="6" lg="3">
                                         <b-form-group>
                                             <label 
                                                 for="frmPagamento"
@@ -265,13 +239,19 @@
                                                 name="frmPagamento"
                                                 :style="`color: ${corTipo}`"
                                                 class="form-control form-control-sm"
+                                                v-validate="{ required: post.quitado }"
+                                                data-vv-as="forma de pagamento"
+                                                :class="['form-control form-control-sm', 
+                                                    {'is-invalid': errors.has('frmPagamento')}]"
                                             ></b-form-select>
+                                            <span v-show="errors.has('frmPagamento')" class="invalid-feedback">
+                                                {{ errors.first('frmPagamento') }}
+                                            </span>
                                         </b-form-group>
                                     </b-col>
                                     <b-col 
-                                        md="9"
-                                        lg="5"
-                                        v-if="post.formaPagamento.classe === 'carteira'"
+                                        lg="6"
+                                        v-show="post.formaPagamento.classe === 'carteira'"
                                     >
                                         <b-form-group>
                                             <label 
@@ -299,9 +279,8 @@
                                         </b-form-group>
                                     </b-col>
                                     <b-col 
-                                        md="9"
-                                        lg="5"
-                                        v-if="post.formaPagamento.classe === 'conta corrente'"
+                                        lg="6"
+                                        v-show="post.formaPagamento.classe === 'conta corrente'"
                                     >
                                         <b-form-group>
                                             <label 
@@ -327,9 +306,8 @@
                                         </b-form-group>
                                     </b-col>
                                     <b-col 
-                                        md="9"
-                                        lg="5"
-                                        v-if="post.formaPagamento.classe === 'cartao credito'"
+                                        lg="6"
+                                        v-show="post.formaPagamento.classe === 'cartao credito'"
                                     >
                                         <b-form-group>
                                             <label 
@@ -356,6 +334,8 @@
                                             </b-form-select>
                                         </b-form-group>
                                     </b-col>
+                                </b-row>
+                                <b-row>
                                     <b-col>
                                         <b-form-group>
                                             <label 
@@ -413,18 +393,46 @@ moment.locale('pt-br');
     export default {
         mixins:[Mixins],
         watch: {
-            "post.formaPagamento.classe": function (newValue, oldValue) {
+            "post.formaPagamento.classe": function () {
                 this.post.formaPagamento.id = null
+            },
+            "post.quitado": function () {
+                this.post.parcela.data_pagamento = null
+                this.post.parcela.valor = 0
+                this.post.parcela.obs = null
+                this.post.formaPagamento.id = null
+                this.post.formaPagamento.classe = null
+            }
+        },
+        computed: {
+            tipValorTotal() {
+                if (this.post.parcela.tipo === 'receita') {
+                    return 'Valor esperado para receber'
+                } else {
+                    return 'Valor da dívida'
+                }
+            },
+            tipData() {
+                if (this.post.parcela.tipo === 'receita') {
+                    return 'Data em que foi combinado o valor'
+                        + ' a receber'
+                } else {
+                    return 'Data em que foi combinado o valor'
+                        + ' a pagar'
+                }
+            },
+            tipDataVencimento() {
+                if (this.post.parcela.tipo === 'receita') {
+                    return 'Data que realmente foi recebido' 
+                } else {
+                    return 'Data que realmente foi pago' 
+                }
             }
         },
         data() {
             return {
                 busy: false,
                 title: null,
-                tipValorTotal: null,
-                tipValor: null,
-                tipData: null,
-                tipDataVencimento: null,
                 showAlert: false,
                 messageAlert: '',
                 messageErroAlert: '',
@@ -454,8 +462,8 @@ moment.locale('pt-br');
                         numero: 1,
                         total: 1,
                         obs: null,
-                        pag: false
-                    }
+                    },
+                    quitado: false
                 },
                 corTipo: null,
                 headerTipo: null,
@@ -470,6 +478,8 @@ moment.locale('pt-br');
                 this.$validator.validate().then((valid) => {
                     if (valid) {
                         this.busy = true
+                        // Necessário por causa do Backend
+                        this.post.parcela.valor = this.post.valorTotal
                         axios.post('/home/lancamentos', this.post)
                         .then( response => {
                             this.$emit('addLancamento', response.data)
@@ -487,7 +497,7 @@ moment.locale('pt-br');
                     
                 })
             },
-            alteraCor(e) {
+            alteraCorTela(e) {
                 if (e === 'receita') {
                     this.corTipo = 'green'
                     this.headerTipo = 'success'
@@ -510,16 +520,9 @@ moment.locale('pt-br');
                 this.post.parcela.data_pagamento = null
                 this.post.formaPagamento.id = null,
                 this.post.formaPagamento.classe = null,
-                this.tipValorTotal = 'Valor esperado para receber'
-                this.tipValor = 'Valor esperado para receber '
-                    + 'ou que foi realmente recebido'
-                this.tipData = 'Data em que foi combinado o valor' 
-                    + ' a receber'
-                this.tipDataVencimento = 'Data programada para ' 
-                    + 'receber o valor'
                 this.corTipo = 'green'
                 this.headerTipo = 'success'
-                this.post.pag = false
+                this.post.quitado = false
                 this.showAlert = false
                 this.messageAlert = ''
                 this.messageErroAlert = ''
