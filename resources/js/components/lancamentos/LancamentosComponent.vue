@@ -5,14 +5,23 @@
                 <h1>Lançamentos</h1>
                 <b-row>
                     <b-col md="2" lg="2">
-                    <b-button 
-                        class="add-button d-flex" 
-                        variant="success" 
-                        v-b-modal.form-lancamentos
-                    >
-                        Adicionar
-                    </b-button>
-                </b-col>
+                        <b-button 
+                            class="add-button d-flex" 
+                            variant="success" 
+                            v-b-modal.form-lancamentos
+                        >
+                            Adicionar simples
+                        </b-button>
+                    </b-col>
+                    <b-col>
+                        <router-link 
+                            to="/home/lancamentos/add"
+                            class="btn btn-primary"
+                            style="color: white;"
+                        >
+                            Adicionar completo
+                        </router-link>
+                    </b-col>
                 <b-col md="4" lg="4">
                     <b-input-group>
                         <b-form-input
@@ -90,7 +99,7 @@
                     <template #cell(forma_pagamento)="data">
                         <span>{{data.value.identificador}}</span>
                     </template>
-                    <template #cell(edit)="row">
+                    <template #cell(acoes)="row">
                         <div class="d-flex flex-nowrap">
                             <b-button 
                                 variant="primary"
@@ -279,19 +288,20 @@ export default {
             isBusy: false,
             filter: null,
             adicionando: false,
-            editando: false,
             perPage: 10,
             currentPage: 1,
             pageOptions: [5, 10, 15, 100],
             linha: {
                 situacao: null,
                 data_vencimento: null,
+                data_pagamento: null,
                 valor: null,
                 forma_pagamento: null,
                 lancamento: {
                     id: null,
                     descricao: null,
                     data: null,
+                    valorTotal: null,
                     obs: null
                 }
             },
@@ -306,92 +316,56 @@ export default {
                 { key: "lancamento", label: "Descrição", type: 'text', sortable: true },
                 { key: "valor", label: "Valor", type: 'text', sortable: true },
                 { key: "forma_pagamento", label: "Pagamento", type: 'text', sortable: true },
-                { key: "edit", label: "", type: "edit", sortable: false }
+                { key: "acoes", label: "", type: "acoes", sortable: false }
             ],
             tableItems: []
         };
     },
     methods: {
         addLancamento(data) {
-            this.linha.situacao = data.parcela[0].situacao
-            this.linha.data_vencimento = data.parcela[0].situacao
-            this.linha.valor = data.parcela[0].situacao
-            this.linha.situacao = data.parcela[0].situacao
-            this.linha.situacao = data.parcela[0].situacao
-            // this.tableItems[data.index]['nome'] = response.data[0].nome
-            // this.tableItems[data.index]['dia_fechamento'] = response.data[0].dia_fechamento
-            // this.tableItems[data.index]['dia_vencimento'] = response.data[0].dia_vencimento
-            // this.tableItems[data.index]['conta_corrente_id'] = response.data[0].conta_corrente_id
-            // this.tableItems[data.index]['conta_corrente'] = response.data[0].conta_corrente
-            // this.totalLinhas ++
-        },
-        editarLinha(data) {
-            this.editando = true
-            this.linha['nome'] = this.tableItems[data.index]['nome']
-            this.linha['dia_fechamento'] = this.tableItems[data.index]['dia_fechamento']
-            this.linha['dia_vencimento'] = this.tableItems[data.index]['dia_vencimento']
-            this.linha['conta_corrente_id'] = this.tableItems[data.index]['conta_corrente_id']
-            this.linha['conta_corrente'] = this.tableItems[data.index]['conta_corrente']
-            this.tableItems[data.index].isEdit = true;
-        },
-        editarRegistro(data) {
-            axios.put('/home/cartoescredito/' + data.item.id, this.linha)
-            .then( response => {
-                this.tableItems[data.index]['nome'] = response.data[0].nome
-                this.tableItems[data.index]['dia_fechamento'] = response.data[0].dia_fechamento
-                this.tableItems[data.index]['dia_vencimento'] = response.data[0].dia_vencimento
-                this.tableItems[data.index]['conta_corrente_id'] = response.data[0].conta_corrente_id
-                this.tableItems[data.index]['conta_corrente'] = response.data[0].conta_corrente
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-        },
-        salvarRegistro(data) {
-            if (this.adicionando) {
-                this.addLancamento(data)
-            } else {
-                this.editarRegistro(data)
+            let newRow = {
+                situacao: null,
+                data_vencimento: null,
+                data_pagamento: null,
+                valor: null,
+                forma_pagamento: null,
+                lancamento: {
+                    id: null,
+                    descricao: null,
+                    data: null,
+                    valorTotal: null,
+                    obs: null
+                }
             }
-            this.tableItems[data.index].isEdit = false
-            this.editando = false
-            this.adicionando = false
-            this.$emit('input', this.tableItems)
-            this.limpaLinha()
-        },
-        cancelarAlteracoes(data) {
-            if (this.adicionando) {
-                this.tableItems.shift()
-            }
-            this.editando = false
-            this.tableItems[data.index].isEdit = false
-            this.adicionando = false
-            this.limpaLinha()
-        },
-        alteraTabela(value, key) {
-            this.linha[key] = value;
-            this.$emit("input", this.linha);
-        },
-        addNovaLinha() {
-            //
-        },
-        removeLinha(data) {
-            axios.delete('/home/cartoescredito/' + data.item.id)
-            .then(response => {
-                this.tableItems = this.tableItems.filter((item, i) => i !== data.index);
-                this.$emit('input', this.tableItems);
-                this.totalLinhas --
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
+            newRow.lancamento.data = data.data
+            newRow.lancamento.descricao = data.descricao
+            newRow.lancamento.valorTotal = data.valorTotal
+            newRow.lancamento.obs = data.obs
+            newRow.data_pagamento = data.parcela[0].data_pagamento
+            newRow.data_vencimento = data.parcela[0].data_vencimento
+            newRow.situacao = data.parcela[0].situacao
+            newRow.valor = data.parcela[0].valor
+            newRow.situacao = data.parcela[0].situacao
+            newRow.numero = data.parcela[0].numero
+            newRow.tipo = data.parcela[0].tipo
+            newRow.total = data.parcela[0].total
+            newRow.forma_pagamento = data.parcela[0].forma_pagamento
+            this.tableItems.unshift(newRow)
         },
         limpaLinha() {
-            this.linha.nome = null,
-            this.linha.dia_fechamento = null,
-            this.linha.dia_vencimento = null,
-            this.linha.conta_corrente_id = null,
-            this.linha.conta_corrente = null
+            this.linha.lancamento.data = null
+            this.linha.lancamento.descricao = null
+            this.linha.lancamento.valorTotal = null
+            this.linha.lancamento.obs = null
+            this.linha.data_pagamento = null
+            this.linha.data_vencimento = null
+            this.linha.situacao = null
+            this.linha.valor = null
+            this.linha.situacao = null
+            this.linha.numero = null
+            this.linha.tipo = null
+            this.linha.total = null
+            this.linha.forma_pagamento = null
         },
         onFiltered(filteredItems) {
             this.totalLinhas = filteredItems.length
@@ -401,9 +375,7 @@ export default {
             await axios.get('/home/lancamentos/get')
             .then( response => {
                 this.totalLinhas = response.data.length
-                this.tableItems = response.data.map(
-                    item => ({...item, isEdit: false})
-                )
+                this.tableItems = response.data
             })
             .catch(function (error) {
                 console.log(error);

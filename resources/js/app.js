@@ -12,6 +12,7 @@ import ContasCorrente from './components/contas_corrente/ContasCorrente'
 import Carteiras from './components/carteiras/CarteirasComponent'
 import CartoesCredito from './components/cartoes_credito/CartoesCredito'
 import LancamentosComponent from './components/lancamentos/LancamentosComponent'
+import AddLancamentos from './components/lancamentos/addLancamentos'
 
 
 require('./bootstrap');
@@ -79,6 +80,11 @@ const router = new VueRouter({
             path: '/home/lancamentos',
             name: 'lancamentos',
             component: LancamentosComponent
+        },
+        {
+            path: '/home/lancamentos/add',
+            name: 'addlancamentos',
+            component: AddLancamentos
         },
     ],
 });
