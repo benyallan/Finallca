@@ -229,7 +229,7 @@
                                                 for="frmPagamento"
                                                 :style="`color: ${corTipo}`" 
                                             >
-                                                {{post.tipo === 'receita' ? 
+                                                {{post.parcela.tipo === 'receita' ? 
                                                 'Recebido em' : 'Pago com'}}:
                                             </label>
                                             <b-form-select
