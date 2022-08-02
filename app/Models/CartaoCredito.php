@@ -12,7 +12,7 @@ class CartaoCredito extends formaPagamentoAbstract
     use SoftDeletes;
 
     protected $table = 'cartoes_credito';
-    protected $appends = ['identificador'];
+    protected $appends = ['identificador','tipo'];
     protected $fillable = [
         'conta_corrente_id',
         'nome',
@@ -33,5 +33,10 @@ class CartaoCredito extends formaPagamentoAbstract
     public function getIdentificadorAttribute()
     {
         return $this->nome . " | Cartão de Crédito";
+    }
+
+    public function getTipoAttribute()
+    {
+        return "Cartão de Crédito";
     }
 }

@@ -12,7 +12,7 @@ class Carteira extends formaPagamentoAbstract
     use SoftDeletes;
 
     protected $fillable = ['nome','saldo_inicial'];
-    protected $appends = ['identificador'];
+    protected $appends = ['identificador','tipo'];
 
     public function lancamentos()
     {
@@ -22,5 +22,10 @@ class Carteira extends formaPagamentoAbstract
     public function getIdentificadorAttribute()
     {
         return $this->nome . " | Carteira";
+    }
+
+    public function getTipoAttribute()
+    {
+        return "Carteira";
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreLancamentoRequest;
 use App\Http\Requests\UpdateLancamentoRequest;
+use App\Http\Resources\LancamentoResource;
 use App\Library\FormaPagamento;
 use App\Models\Carteira;
 use App\Models\Lancamento;
@@ -61,7 +62,7 @@ class LancamentoController extends Controller
                     com sucesso." .
                     json_encode($lancamento) . PHP_EOL
                 );
-            return json_encode($lancamento);
+            return new LancamentoResource($lancamento);
         } catch (Exception $e) {
             $exception_message = !empty($e->getMessage()) ? 
                                     trim($e->getMessage()) : 

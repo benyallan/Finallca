@@ -34,6 +34,8 @@
                 </b-col>
                 </b-row>
                 <b-table 
+                    id="tbl-lancamentos"
+                    name="tbl-lancamentos"
                     class="b-table" 
                     :items="tableItems" 
                     :fields="tableFields"
@@ -44,6 +46,7 @@
                     @filtered="onFiltered"
                     :per-page="perPage"
                     :current-page="currentPage"
+                    show-empty
                 >
                     <template #cell(situacao)="data">
                         <div class="d-flex justify-content-center">
@@ -75,14 +78,11 @@
                     </template>
                     <template #cell(valor)="data">
                         <span
-                            v-if="data.item.tipo === 'receita'"
-                            style="color: green;"
-                        >
-                            {{data.value | formatPrice}}
-                        </span>
-                        <span
-                            v-else
-                            style="color: red;"
+                            :style="`color: ${
+                                data.item.tipo === 'receita'
+                                    ? 'green'
+                                    : 'red'
+                            };`"
                         >
                             {{data.value | formatPrice}}
                         </span>
@@ -90,48 +90,128 @@
                     <template #cell(forma_pagamento)="data">
                         <span>{{data.value.identificador}}</span>
                     </template>
-                    <template #cell(edit)="data">
+                    <template #cell(edit)="row">
                         <div class="d-flex flex-nowrap">
                             <b-button 
-                                v-if="!editando"
                                 variant="primary"
-                                @click="editarLinha(data)"
+                                @click="row.toggleDetails"
                                 class="m-1"
                             >
-                                <b-icon icon="pencil-square"></b-icon>
+                                <b-icon icon="eye"></b-icon>
                             </b-button>
                             <b-button 
-                                v-if="editando && tableItems[data.index].isEdit" 
-                                variant="success"
-                                @click="salvarRegistro(data)"
-                                class="m-1"
-                            >
-                                <b-icon icon="save"></b-icon>
-                            </b-button>
-                            <b-button 
-                                v-if="editando && tableItems[data.index].isEdit" 
-                                variant="danger"
-                                @click="cancelarAlteracoes(data)"
-                                class="m-1"
-                            >
-                                <b-icon icon="x-lg"></b-icon>
-                            </b-button>
-                            <b-button 
-                                v-if="!editando"
                                 class="delete-button m-1" 
                                 variant="danger" 
-                                @click="removeLinha(data)"
+                                @click=""
                             >
                                 <b-icon icon="trash"></b-icon>
                             </b-button>
                         </div>
                     </template>
-                    <template #table-caption>
-                        <b-row>
+                    <template #row-details="row">
+                        <b-card :title="row.item.situacao">
+                            <b-row
+                                class="mb-2"
+                                v-if="row.item.total > 1"
+                            >
+                                <b-col>
+                                    <strong>Valor da parcela: </strong>
+                                    <span
+                                        :style="`color: ${
+                                            row.item.tipo === 'receita'
+                                                ? 'green'
+                                                : 'red'
+                                        };`"
+                                    >
+                                        {{ row.item.valor | formatPrice }}
+                                    </span>
+                                </b-col>
+                                <b-col>
+                                    <strong>Valor total: </strong>
+                                    <span
+                                        :style="`color: ${
+                                            row.item.tipo === 'receita'
+                                                ? 'green'
+                                                : 'red'
+                                        };`"
+                                    >
+                                    {{ row.item.lancamento.valorTotal
+                                        | formatPrice }}
+                                    </span>
+                                </b-col>
+                                <b-col>
+                                    <strong>Parcela: </strong>
+                                    {{ row.item.numero }}
+                                    /
+                                    {{ row.item.total }}
+                                </b-col>
+                            </b-row>
+                            <b-row 
+                                class="mb-2"
+                                v-if="row.item.total === 1"
+                            >
+                                <b-col>
+                                    <strong>Valor: </strong>
+                                    <span
+                                        :style="`color: ${
+                                            row.item.tipo === 'receita'
+                                                ? 'green'
+                                                : 'red'
+                                        };`"
+                                    >
+                                    {{ row.item.lancamento.valorTotal
+                                        | formatPrice }}
+                                    </span>
+                                </b-col>
+                            </b-row>
+                            <b-row class="mb-2">
+                                <b-col>
+                                    {{ row.item.lancamento.descricao }}
+                                </b-col>
+                            </b-row>
+                            <b-row class="mb-2">
+                                <b-col>
+                                    <strong>Data da compra:</strong>
+                                    {{ row.item.lancamento.data | momentDate }}
+                                </b-col>
+                                <b-col
+                                    v-if="row.item.data_vencimento != row.item.lancamento.data"
+                                >
+                                    <strong>Data do vencimento:</strong>
+                                    {{ row.item.data_vencimento | momentDate }}
+                                </b-col>
+                                <b-col v-if="row.item.data_pagamento">
+                                    <strong>Data do pagamento:</strong>
+                                    {{ row.item.data_pagamento | momentDate }}
+                                </b-col>
+                            </b-row>
+                            <b-row class="mb-2" col v-if="row.item.data_pagamento">
+                                <b-col>
+                                    <strong>Pagamento:</strong>
+                                    {{ row.item.forma_pagamento.identificador }}
+                                </b-col>
+                            </b-row>
+                            <b-row class="mb-2" col v-if="row.item.data_pagamento">
+                                <b-col>
+                                    <strong>Pago com:</strong>
+                                    {{ row.item.forma_pagamento.tipo }}
+                                </b-col>
+                                <b-col>
+                                    <strong>De: </strong>
+                                    {{ row.item.forma_pagamento.nome }}
+                                </b-col>
+                            </b-row>
+                        </b-card>
+                    </template>
+                    <template #table-caption="data">
+                        <b-row v-if="!data.empty">
                             <b-col sm="4" md="2" class="my-1">
                                 Total: {{totalLinhas}} 
                             </b-col>
-                            <b-col sm="4" md="5" class="my-1">
+                            <b-col 
+                                sm="4" md="5" class="my-1"
+                                v-if="totalLinhas > 5"
+                            >
                                 <b-row>
                                     <b-col cols="4">
                                         <span>
@@ -149,7 +229,10 @@
                                 </b-row>
                             </b-col>
     
-                            <b-col sm="4" md="5" class="my-1">
+                            <b-col 
+                                sm="4" md="5" class="my-1"
+                                v-if="totalLinhas > perPage"
+                            >
                                 <b-pagination
                                 v-model="currentPage"
                                 :total-rows="totalLinhas"
@@ -167,10 +250,16 @@
                             <strong>Carregando...</strong>
                         </div>
                     </template>
+                    <template #empty="scope">
+                        <h4 class="text-center">Não há lançamentos</h4>
+                    </template>
+                    <template #emptyfiltered="scope">
+                        <h4 class="text-center">Sem lançamentos com este filtro</h4>
+                    </template>
                 </b-table>
             </b-container>
         </template>
-        <FormLancamentos></FormLancamentos>
+        <FormLancamentos @addLancamento="addLancamento"></FormLancamentos>
     </div>
 </template>
 
@@ -198,16 +287,12 @@ export default {
                 situacao: null,
                 data_vencimento: null,
                 valor: null,
-                conta_corrente_id: null,
+                forma_pagamento: null,
                 lancamento: {
                     id: null,
                     descricao: null,
                     data: null,
                     obs: null
-                },
-                forma_pagamento: {
-                    forma_pagamento_id: null,
-                    forma_pagamento_type: null,
                 }
             },
             options: [
@@ -228,7 +313,11 @@ export default {
     },
     methods: {
         addLancamento(data) {
-            console.log(data)
+            this.linha.situacao = data.parcela[0].situacao
+            this.linha.data_vencimento = data.parcela[0].situacao
+            this.linha.valor = data.parcela[0].situacao
+            this.linha.situacao = data.parcela[0].situacao
+            this.linha.situacao = data.parcela[0].situacao
             // this.tableItems[data.index]['nome'] = response.data[0].nome
             // this.tableItems[data.index]['dia_fechamento'] = response.data[0].dia_fechamento
             // this.tableItems[data.index]['dia_vencimento'] = response.data[0].dia_vencimento

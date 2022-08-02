@@ -11,7 +11,7 @@ class ContaCorrente extends formaPagamentoAbstract
     use HasFactory;
     use SoftDeletes;
 
-    protected $appends = ['identificador'];
+    protected $appends = ['identificador','tipo'];
     protected $table = 'contas_corrente';
     protected $fillable = [
         'banco',
@@ -35,5 +35,10 @@ class ContaCorrente extends formaPagamentoAbstract
     public function getIdentificadorAttribute()
     {
         return $this->nome . " | " . $this->banco;
+    }
+
+    public function getTipoAttribute()
+    {
+        return "Conta Corrente";
     }
 }
