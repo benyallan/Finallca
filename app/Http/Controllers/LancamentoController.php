@@ -26,6 +26,16 @@ class LancamentoController extends Controller
     }
 
     /**
+     * Mostra tela de criação de lançamentos.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return view('home');
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreLancamentoRequest  $request

@@ -82,7 +82,7 @@ const router = new VueRouter({
             component: LancamentosComponent
         },
         {
-            path: '/home/lancamentos/add',
+            path: '/home/lancamentos/create',
             name: 'addlancamentos',
             component: AddLancamentos
         },

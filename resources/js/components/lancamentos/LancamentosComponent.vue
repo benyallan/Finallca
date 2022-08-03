@@ -4,22 +4,22 @@
             <b-container fluid>
                 <h1>Lançamentos</h1>
                 <b-row>
-                    <b-col md="2" lg="2">
+                    <b-col>
                         <b-button 
                             class="add-button d-flex" 
                             variant="success" 
                             v-b-modal.form-lancamentos
                         >
-                            Adicionar simples
+                            Adicionar lançamento simples
                         </b-button>
                     </b-col>
                     <b-col>
                         <router-link 
-                            to="/home/lancamentos/add"
+                            to="/home/lancamentos/create"
                             class="btn btn-primary"
                             style="color: white;"
                         >
-                            Adicionar completo
+                            Adicionar lançamento parcelado
                         </router-link>
                     </b-col>
                 <b-col md="4" lg="4">

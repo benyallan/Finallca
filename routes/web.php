@@ -54,10 +54,9 @@ Route::middleware(['auth'])->group(function() {
         )->name('cartoescredito.getlist');
 
         // Lançamentos
-        Route::resource('lancamentos', LancamentoController::class)
-            ->only(['index','store','update','destroy']);
         Route::get(
             '/lancamentos/get', [LancamentoController::class, 'get']
         )->name('lancamentos.get');
+        Route::resource('lancamentos', LancamentoController::class);
     });
 });
