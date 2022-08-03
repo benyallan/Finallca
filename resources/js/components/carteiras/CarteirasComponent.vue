@@ -128,7 +128,7 @@ export default {
             editando: false,
             linha: {
                 nome: null,
-                saldo_inicial: null,
+                saldo_inicial: 0,
             },
             filterOn: [],
             totalLinhas: 0,
@@ -213,7 +213,7 @@ export default {
         },
         limpaLinha() {
             this.linha.nome = null,
-            this.linha.saldo_inicial = null
+            this.linha.saldo_inicial = 0
         },
         onFiltered(filteredItems) {
             this.totalLinhas = filteredItems.length

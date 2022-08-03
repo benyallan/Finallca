@@ -305,7 +305,7 @@ export default {
             this.linha.numero = null,
             this.linha.nome = null,
             this.linha.obs = null,
-            this.linha.saldo_inicial = null
+            this.linha.saldo_inicial = 0
         },
         onFiltered(filteredItems) {
             this.totalLinhas = filteredItems.length

@@ -210,6 +210,18 @@
                                     {{ row.item.forma_pagamento.nome }}
                                 </b-col>
                             </b-row>
+                            <b-row class="mb-2" col>
+                                <b-col>
+                                    <strong>Observação do lançamento:</strong>
+                                    {{ row.item.lancamento.obs }}
+                                </b-col>
+                            </b-row>
+                            <b-row class="mb-2" col>
+                                <b-col>
+                                    <strong>Observação da parcela: </strong>
+                                    {{ row.item.obs }}
+                                </b-col>
+                            </b-row>
                         </b-card>
                     </template>
                     <template #table-caption="data">
@@ -329,6 +341,7 @@ export default {
                 data_pagamento: null,
                 valor: null,
                 forma_pagamento: null,
+                obs: null,
                 lancamento: {
                     id: null,
                     descricao: null,
@@ -350,6 +363,7 @@ export default {
             newRow.tipo = data.parcela[0].tipo
             newRow.total = data.parcela[0].total
             newRow.forma_pagamento = data.parcela[0].forma_pagamento
+            newRow.obs = data.parcela[0].obs
             this.tableItems.unshift(newRow)
         },
         limpaLinha() {
