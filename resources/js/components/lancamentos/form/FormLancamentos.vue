@@ -266,6 +266,7 @@
                                                 :options="carteiras"
                                                 text-field="nome"
                                                 value-field="id"
+                                                :state="sttCarteira"
                                                 name="opcCarteira"
                                                 :style="`color: ${corTipo}`"
                                                 class="form-control form-control-sm"
@@ -276,6 +277,9 @@
                                                     </b-form-select-option>
                                                 </template>
                                             </b-form-select>
+                                            <span v-show="sttCarteira===false" class="invalid-feedback">
+                                                Carteira não pode ser nula
+                                            </span>
                                         </b-form-group>
                                     </b-col>
                                     <b-col 
@@ -295,6 +299,7 @@
                                                 :options="contascorrente"
                                                 name="opcContaCorrente"
                                                 :style="`color: ${corTipo}`"
+                                                :state="sttContaCorrente"
                                                 class="form-control form-control-sm"
                                             >
                                                 <template #first>
@@ -303,6 +308,9 @@
                                                     </b-form-select-option>
                                                 </template>
                                             </b-form-select>
+                                            <span v-show="sttContaCorrente===false" class="invalid-feedback">
+                                                Conta Corrente não pode ser nula
+                                            </span>
                                         </b-form-group>
                                     </b-col>
                                     <b-col 
@@ -322,6 +330,7 @@
                                                 :options="cartoescredito"
                                                 text-field="nome"
                                                 value-field="id"
+                                                :state="sttCartaoCredito"
                                                 name="opcCartaoCredito"
                                                 :style="`color: ${corTipo}`"
                                                 class="form-control form-control-sm"
@@ -332,6 +341,9 @@
                                                     </b-form-select-option>
                                                 </template>
                                             </b-form-select>
+                                            <span v-show="sttCartaoCredito===false" class="invalid-feedback">
+                                                Cartão de Crédito não pode ser nulo
+                                            </span>
                                         </b-form-group>
                                     </b-col>
                                 </b-row>
@@ -434,6 +446,9 @@ moment.locale('pt-br');
                 busy: false,
                 title: null,
                 showAlert: false,
+                sttCarteira: null,
+                sttContaCorrente: null,
+                sttCartaoCredito: null,
                 messageAlert: '',
                 messageErroAlert: '',
                 formasPagamento: [
@@ -474,9 +489,25 @@ moment.locale('pt-br');
             }
         },
         methods: {
+            validaCampos() {
+                if (this.post.formaPagamento.id === null
+                        && this.post.quitado
+                    ) {
+                    this.sttCarteira = false
+                    this.sttContaCorrente = false
+                    this.sttCartaoCredito = false
+                    return false
+                }
+                return true
+            },
             salvar() {
                 this.$validator.validate().then((valid) => {
                     if (valid) {
+                        if (!this.validaCampos()) {
+                            this.showAlert = true
+                            this.messageAlert = 'Preencha os campos corretamente'
+                            return
+                        }
                         this.busy = true
                         // Necessário por causa do Backend
                         this.post.parcela.valor = this.post.valorTotal
