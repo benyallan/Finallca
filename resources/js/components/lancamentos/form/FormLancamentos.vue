@@ -11,11 +11,11 @@
             @hide="cancelar"
             size="xl"
         >
-        <b-alert v-model="showAlert" variant="danger">
-            <p>{{ messageAlert }}</p>
-            <hr v-if="!messageErroAlert === ''">
-            <p>{{ messageErroAlert }}</p>
-        </b-alert>
+            <b-alert v-model="showAlert" variant="danger">
+                <p>{{ messageAlert }}</p>
+                <hr v-if="!messageErroAlert === ''">
+                <p>{{ messageErroAlert }}</p>
+            </b-alert>
             <template v-if="!busy">
                 <b-row>
                     <b-col cols="12" md="6" lg="2">
